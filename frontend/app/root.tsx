@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { Navbar } from "./components/navbar";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -44,7 +45,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
+  return <>
+    <Navbar />
+    <div className="pt-10">
+      <Outlet />
+    </div>
+  </>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
