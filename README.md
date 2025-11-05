@@ -33,3 +33,6 @@ Firebase requirements:
 ## Deployment
 (to implement: https://github.com/gitname/react-gh-pages)
 ``npm run deploy``
+
+## Important Rule
+If u put in chatgpt'd code I will kill you, doubly so if it's ag*ntic ai :nauseated_face: 
