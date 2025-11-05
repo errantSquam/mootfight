@@ -23,7 +23,6 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
-//test
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
