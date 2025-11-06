@@ -11,7 +11,6 @@ import { doc, setDoc, getDoc } from "firebase/firestore";
 const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_KEY as string)
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const auth = getAuth()
 
 var db = getFirestore(app)
