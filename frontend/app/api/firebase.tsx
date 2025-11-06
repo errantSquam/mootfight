@@ -35,7 +35,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
             setDoc(docRef, {
                 email: email,
-                username: `User #${Math.random() * 100}`,
+                username: `User #${Math.floor(Math.random() * 100)}`,
 
             });
         }
