@@ -27,6 +27,7 @@ type ImageInput = {
     profilePicture: any //figure out the image type later...sorry i'm baby at typescript :baby:
 }
 
+//todo: refactor these into their own folder
 const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false, required = false }:
     { defaultValue: any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean, disabled?: boolean, required?: boolean }) => {
     return <input className={`disabled:bg-gray-800/0 
@@ -222,12 +223,6 @@ export function SettingsPage() {
         })
 
     }
-    const onImageSubmit: SubmitHandler<any> = (data, e) => {
-
-    }
-
-
-
 
     return (
         <div className="flex items-center justify-center pt-16 pb-4">

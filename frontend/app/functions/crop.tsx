@@ -1,3 +1,5 @@
+//code taken from here https://codesandbox.io/p/sandbox/react-easy-crop-demo-with-cropped-output-q8q1mnr01w?file=%2Fsrc%2FcropImage.js%3A102%2C1
+
 export const createImage = (url) =>
   new Promise((resolve, reject) => {
     const image = new Image()

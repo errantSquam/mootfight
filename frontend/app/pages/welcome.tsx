@@ -1,5 +1,24 @@
 
+import { getUsers } from "~/api/firebase";
+import { useState, useEffect } from "react";
+
 export function Welcome() {
+
+  //mostly a placeholder for now to test functionality
+  const [userList, setUserlist] = useState<any>([])
+
+  //perhaps worth react querying these sorts of calls?
+  useEffect(()=> {
+    getUsers().then((resp) => {
+      let tempArray: any[] = []
+      resp.forEach((user) => {
+        tempArray = [...tempArray, user.data()]
+      })
+      setUserlist(tempArray)
+    })
+
+  }, [])
+
   return (
     <div className="flex items-center justify-center pt-16 pb-4">
       <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
@@ -7,11 +26,20 @@ export function Welcome() {
           Welcome to Mootfight!
         </div>
         <div className="max-w-[300px] w-full space-y-6 px-4">
-          <nav className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
-            <p className="leading-6 text-gray-700 dark:text-gray-200 text-center">
-              Placeholder Bottom Text
-            </p>
-          </nav>
+          <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
+            <div>
+              <b>First Three Users</b>
+              <div key = {userList} className = "flex flex-row">
+              {userList.map((user: any) => {
+                return <div className = "flex flex-col items-center">
+                  <img src = {user.profilePicture} className = "w-20"/>
+                  <span>{user.username}</span>
+                  </div>
+
+              })}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

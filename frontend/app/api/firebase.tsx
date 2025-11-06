@@ -7,9 +7,10 @@ import { getAuth } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
 import { collection } from "firebase/firestore";
-import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { onAuthStateChanged } from "firebase/auth";
+import { query, orderBy, limit } from "firebase/firestore";
 
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
@@ -127,10 +128,20 @@ const logOut = async () => {
 
 }
 
+const getUsers = async (limitAmount:number = 3) => {
+    let usersRef = collection(db, "users")
+    const q = query(usersRef, orderBy("username"), limit(limitAmount));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot
+
+
+}
+
 export {
     signIn,
     auth,
     logOut,
     getUserInfo,
+    getUsers,
     updateUserInfo
 }
