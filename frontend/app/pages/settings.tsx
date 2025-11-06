@@ -40,8 +40,8 @@ const SettingsInput = ({ defaultValue, value, register, isPassword = false, disa
     />
 }
 
-const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
-    { isOpen: boolean, setIsOpen: any, modalImage: string, handleSubmission: any }) => {
+const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmission }:
+    { isOpen: boolean, setIsOpen: any, modalImage: string, handleSubmission: any, resetSubmission: any }) => {
 
     const [crop, setCrop] = useState({ x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
@@ -53,8 +53,13 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
         setResult([croppedArea, croppedAreaPixels])
     }
 
+    const handleClose = () => {
+        setIsOpen(false)
+        resetSubmission()
+    }
 
-    return <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={() => setIsOpen(false)}>
+
+    return <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={() => handleClose()}>
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
                 <DialogPanel
@@ -96,7 +101,9 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
                         </Button>
                         <Button
                             className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                            onClick={() => setIsOpen(false)}
+                            onClick={() => {
+                                handleClose()
+                            }}
                         >
                             Cancel
                         </Button>
@@ -108,8 +115,7 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
 }
 
 
-const ProfilePictureComponent = ({ onImageSubmit }: 
-    { onImageSubmit: SubmitHandler<Inputs>}) => {
+const ProfilePictureComponent = () => {
 
     const {
         register: registerImage,
@@ -117,7 +123,7 @@ const ProfilePictureComponent = ({ onImageSubmit }:
         watch: watchImage,
         reset: resetImage,
         formState: { errors: errorsImage },
-    } = useForm<Inputs>()
+    } = useForm<ImageInput>()
 
     const [isModalOpen, setModalOpen] = useState(false)
     const [modalImage, setModalImage] = useState<any>('')
@@ -132,7 +138,12 @@ const ProfilePictureComponent = ({ onImageSubmit }:
         updateUserInfo({profilePicture: base64}).then((resp) => {
             handleToast(resp)
             refreshAuthUser()
+            resetImage()
         })
+    }
+
+    const resetSubmission = () => {
+        resetImage()
     }
 
 
@@ -147,10 +158,11 @@ const ProfilePictureComponent = ({ onImageSubmit }:
         }
     }
 
-    return <form onSubmit={handleImageSubmit(onImageSubmit)}>
+    return <form onSubmit={handleImageSubmit(() =>{})}>
         <CropModal isOpen={isModalOpen} setIsOpen={(setModalOpen)}
             modalImage={modalImage}
-            handleSubmission={handleSubmission} />
+            handleSubmission={handleSubmission} 
+            resetSubmission = {resetSubmission}/>
 
         <label htmlFor="fileField">
             <div className="w-full">
@@ -170,10 +182,11 @@ const ProfilePictureComponent = ({ onImageSubmit }:
             </div>
         </label>
         <input type="file" id="fileField" accept="image/*" hidden={true}
+        
+            {...registerImage("profilePicture")}
             onChange={(e) => {
                 if (e.target.value !== '') {
                     setModalOpen(true)
-                    //setModalImage(e.target.value)
                     onSelectFile(e)
                 }
             }} 
@@ -209,7 +222,7 @@ export function SettingsPage() {
         })
 
     }
-    const onImageSubmit: SubmitHandler<Inputs> = (data, e) => {
+    const onImageSubmit: SubmitHandler<any> = (data, e) => {
 
     }
 
@@ -228,7 +241,7 @@ export function SettingsPage() {
                     dark:border-gray-700">
                         <div className="flex flex-col">
 
-                            <ProfilePictureComponent onImageSubmit={onImageSubmit} />
+                            <ProfilePictureComponent/>
 
                             {
                                 userInfo !== null &&
