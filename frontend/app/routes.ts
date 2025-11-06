@@ -5,6 +5,11 @@ export default [
     route("login", "routes/login.tsx"),
     ...prefix("submit", [
         route("attack", "routes/submit/submit_attack.tsx")
-    ])
+    ]),
+    ...prefix("user",[
+        route("settings", "routes/user/settings.tsx")
+    ]
+
+    )
 
 ] satisfies RouteConfig;

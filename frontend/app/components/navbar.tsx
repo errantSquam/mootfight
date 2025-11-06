@@ -7,6 +7,36 @@ import { onAuthStateChanged } from "firebase/auth"
 import { useState } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { useContext } from "react"
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { Icon } from "@iconify/react";
+
+const UserDropdown = ({userInfo}: {userInfo: any}) => {
+    return <Menu>
+        <MenuButton className="font-semibold text-white hover:cursor-pointer">
+          {userInfo.username}
+          {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
+        </MenuButton>
+
+        <MenuItems
+          transition
+          anchor="bottom end"
+          className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+        >
+          <MenuItem>
+            <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+              {/*<PencilIcon className="size-4 fill-white/30" />*/}
+              Profile
+            </button>
+          </MenuItem>
+          <MenuItem>
+            <Link to = '/user/settings' className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+              {/*<Square2StackIcon className="size-4 fill-white/30" />*/}
+              Settings
+            </Link>
+          </MenuItem>
+        </MenuItems>
+      </Menu>
+}
 
 export function Navbar() {
     const {userInfo, setUserInfo} = useContext(AuthContext)
@@ -32,7 +62,7 @@ export function Navbar() {
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <div>{userInfo !== null && <span>Welcome {userInfo.username}</span>}</div>
+                <div>{userInfo !== null && <UserDropdown userInfo= {userInfo}/>}</div>
             </div>
         </div>
 

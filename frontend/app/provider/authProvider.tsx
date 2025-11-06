@@ -12,14 +12,11 @@ const AuthProvider = ({ children }: { children: any }) => {
     const [userInfo, setUserInfo] = useState<any>(null)
     const value = { userInfo, authLoaded, setUserInfo };
 
-    let debounceTimeout: NodeJS.Timeout | null;
-    const DebounceDueTime = 200;
     onAuthStateChanged(auth, (user) => {
         handleAuthStateChanged(user)
     });
 
     function handleAuthStateChanged(user: User | null) {
-        console.log("call")
         if (user) {
             if (userInfo === null) {
                 getUserInfoFromUid(user.uid).then((resp) => {
