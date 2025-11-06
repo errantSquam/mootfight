@@ -73,7 +73,7 @@ export function SettingsPage() {
     }
 
     const handleImageUpload = () => {
-        
+
     }
 
     return (
@@ -86,76 +86,81 @@ export function SettingsPage() {
                     <div className="flex justify-center items-center w-full 
                     rounded-3xl border p-6 
                     dark:border-gray-700">
-                        {
-                            userInfo !== null &&
+                        <label htmlFor="fileField">
                             <div className="w-full">
                                 <div className="w-full flex items-center justify-center p-2">
                                     <div className="relative group cursor-pointer">
                                         <img src={
+                                            userInfo === null ? "/assets/images/default owlcroraptor.png" :
                                             userInfo.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : userInfo.profilePicture
                                         }
                                             className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
-                                        <Icon icon = "lucide:edit" 
-                                        className = {`opacity-0 group-hover:opacity-100 transition
-                                        absolute text-3xl bottom-0 right-1 bg-zinc-800 rounded p-1`}/>
-                                        
+                                        <Icon icon="lucide:edit"
+                                            className={`opacity-0 group-hover:opacity-100 transition
+                                        absolute text-3xl bottom-0 right-1 bg-zinc-800 rounded p-1`} />
+
                                     </div>
                                 </div>
-                                <form onSubmit={handleSubmit(onSubmit)}
-                                >
-                                    <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
-                                        <div>
-                                            Username: <SettingsInput
-                                                defaultValue={userInfo.username}
-                                                value="username"
-                                                register={register}
-                                                required={true} />
-                                        </div>
-                                        <div>
-                                            Email: <SettingsInput
-                                                defaultValue={userInfo.email}
-                                                value="email"
-                                                register={register}
-                                                disabled />
-                                        </div>
-                                        <div>
-                                            Pronouns: <SettingsInput
-                                                defaultValue={userInfo.pronouns}
-                                                value="pronouns"
-                                                register={register} />
-                                        </div>
-                                        <div>
-                                            Status: <i><SettingsInput
-                                                defaultValue={userInfo.status}
-                                                value="status"
-                                                register={register} /></i>
-                                        </div>
+                                </div>
+                        </label>
 
-                                        <div className="py-2 flex flex-row gap-x-2">
-                                            <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
+                        {
+                            userInfo !== null &&
+
+                            <form onSubmit={handleSubmit(onSubmit)}
+                            >
+                                <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
+                                    <div>
+                                        Username: <SettingsInput
+                                            defaultValue={userInfo.username}
+                                            value="username"
+                                            register={register}
+                                            required={true} />
+                                    </div>
+                                    <div>
+                                        Email: <SettingsInput
+                                            defaultValue={userInfo.email}
+                                            value="email"
+                                            register={register}
+                                            disabled />
+                                    </div>
+                                    <div>
+                                        Pronouns: <SettingsInput
+                                            defaultValue={userInfo.pronouns}
+                                            value="pronouns"
+                                            register={register} />
+                                    </div>
+                                    <div>
+                                        Status: <i><SettingsInput
+                                            defaultValue={userInfo.status}
+                                            value="status"
+                                            register={register} /></i>
+                                    </div>
+
+                                    <div className="py-2 flex flex-row gap-x-2">
+                                        <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                                onClick={() => {
-                                                    setIsEditing(true)
-                                                }}>
-                                                Edit
-                                            </span>
+                                            onClick={() => {
+                                                setIsEditing(true)
+                                            }}>
+                                            Edit
+                                        </span>
 
-                                            <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                        <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
 
-                                            <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
+                                        <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                                onClick={() => {
-                                                    setIsEditing(false)
-                                                    reset()
-                                                }} value="Cancel" />
-                                        </div>
-                                    </fieldset>
-                                </form>
-                            </div>
+                                            onClick={() => {
+                                                setIsEditing(false)
+                                                reset()
+                                            }} value="Cancel" />
+                                    </div>
+                                </fieldset>
+                            </form>
                         }
 
 
-                        {/*
+                    {/*
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4 items-center">
                             <RequiredField title="Email"
                                 value="email" register={register} />
@@ -171,9 +176,9 @@ export function SettingsPage() {
                             <input type="submit" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
                         </form>
                         */}
-                    </div>
                 </div>
             </div>
         </div>
+        </div >
     );
 }
