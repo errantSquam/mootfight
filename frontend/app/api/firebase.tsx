@@ -32,10 +32,13 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
             setDoc(docRef, {
                 email: email,
-                username: email,
+                username: `User #${Math.random()*100}`,
 
             });
         }
+
+        localStorage.setItem('authUser', JSON.stringify(auth.currentUser))
+
         return {
             toastType: "success",
             message: "Successfully logged in!"
@@ -44,7 +47,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
         if (error instanceof FirebaseError) {
             console.log(`GOT ERROR: ` + error.code)
 
-            let errorMessage = "ERROR:" + error.code
+            let errorMessage = "ERROR: " + error.code
             if (error.code === "auth/invalid-credential") {
                 errorMessage = "Invalid email or password."
             }

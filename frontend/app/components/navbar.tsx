@@ -1,12 +1,15 @@
 import { signIn, auth } from "~/api/firebase"
 import { Link } from "react-router"
+import { useOutletContext } from "react-router"
 
-export function Navbar() {
+export function Navbar(currentUser: any) {
+    
+
     return <div className = "fixed w-screen h-10 p-4 px-10 bg-zinc-900">
         <div className = "flex flex-row text-white gap-x-4 h-full items-center"> 
             <div><Link to="/">Home</Link></div>
-            {auth.currentUser === null && <div><Link to="login">Login </Link></div>}
-            {auth.currentUser !== null && <div>Submit Attack</div>}
+            {currentUser === null && <div><Link to="login">Login </Link></div>}
+            {currentUser !== null && <div>Submit Attack</div>}
         </div> 
 
     </div>

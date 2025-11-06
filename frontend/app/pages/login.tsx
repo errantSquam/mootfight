@@ -2,6 +2,7 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import { type UseFormRegister } from "react-hook-form"
 import { toast } from "react-toastify"
 import { signIn } from "~/api/firebase"
+import { useNavigate } from "react-router"
 
 type Inputs = {
     email: string
@@ -26,12 +27,16 @@ export function Login() {
         formState: { errors },
     } = useForm<Inputs>()
 
+    let navigate = useNavigate()
+
     const onSubmit: SubmitHandler<Inputs> = (data, e) => {
         console.log(data)
 
         signIn(data.email, data.password).then((resp) => {
             if (resp.toastType === "success") {
                 toast.success(resp.message)
+                navigate('/')
+                
             } else if (resp.toastType === "error") {
                 toast.error(resp.message)
             }
@@ -40,7 +45,7 @@ export function Login() {
     }
 
     return (
-        <main className="flex items-center justify-center pt-16 pb-4">
+        <div className="flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-4 min-h-0">
                 <header className="flex flex-col items-center text-xl">
                     Login
@@ -66,6 +71,6 @@ export function Login() {
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

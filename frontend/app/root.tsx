@@ -12,9 +12,8 @@ import type { Route } from "./+types/root";
 import "./app.css";
 
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import { useState } from "react";
+import { useEffect } from "react";
 
 
 export const links: Route.LinksFunction = () => [
@@ -50,16 +49,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
-  return <>
-    <Navbar />
-    <div className="pt-10">
-      <Outlet />
-      
-        <ToastContainer/>
-    </div>
+  const [currentUser, setCurrentUser] = useState(null)
 
-  </>
+  useEffect(() => {
+    let userJson = localStorage.getItem('authUser')
+    if (userJson !== null ) {
+      setCurrentUser(JSON.parse(userJson))
+    }
+  }, []
+  )
+  //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
+  return <div>
+    <Navbar currentUser = {currentUser}/>
+    <div className="pt-10">
+      <Outlet context = {[currentUser, setCurrentUser]} />
+    </div>
+    <ToastContainer />
+  </div>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -79,7 +85,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="pt-16 p-4 container mx-auto">
+    <div className="pt-16 p-4 container mx-auto">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (
@@ -87,6 +93,6 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
           <code>{stack}</code>
         </pre>
       )}
-    </main>
+    </div>
   );
 }
