@@ -23,10 +23,66 @@ type ToastResponse = {
     message: string
 }
 
-const getUserInfoFromUid = async (uid: string) => {
+const handleError = (error: unknown) => {
+    if (error instanceof FirebaseError) {
+        console.log(`GOT ERROR: ` + error.code)
+
+        let errorMessage = "ERROR: " + error.code
+        if (error.code === "auth/invalid-credential") {
+            errorMessage = "Invalid email or password."
+        }
+
+        return {
+            toastType: "error",
+            message: errorMessage
+        }
+    } else {
+        return {
+            toastType: "error",
+            message: "UNKNOWN ERROR"
+
+        }
+    }
+}
+
+const getUserInfo = async (uid?: string) => {
+    if (auth.currentUser === null){
+        return null
+    }
+    if (uid === undefined) {
+        uid = auth.currentUser.uid
+    }
     let docRef = doc(db, "users", uid)
     let docSnap = await getDoc(docRef)
     return docSnap.data()
+}
+
+const updateUserInfo = async (toUpdate: any) => {
+    if (auth.currentUser === null){
+        return {
+            toastType: "error",
+            message: "Not logged in!"
+        }
+    }
+
+    let docRef = doc(db, "users", auth.currentUser.uid)
+    let docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+        setDoc(docRef, toUpdate);
+
+        return {
+            toastType: "success",
+            message: "Successfully updated info!"
+        }
+    }
+    else {
+        return {
+            toastType: "error",
+            message: "User does not exist."
+        }
+
+    }
+
 }
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
@@ -49,25 +105,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
             message: "Successfully logged in!"
         }
     } catch (error: unknown) {
-        if (error instanceof FirebaseError) {
-            console.log(`GOT ERROR: ` + error.code)
-
-            let errorMessage = "ERROR: " + error.code
-            if (error.code === "auth/invalid-credential") {
-                errorMessage = "Invalid email or password."
-            }
-
-            return {
-                toastType: "error",
-                message: errorMessage
-            }
-        } else {
-            return {
-                toastType: "error",
-                message: "UNKNOWN ERROR"
-
-            }
-        }
+        return handleError(error)
     }
 
 
@@ -83,21 +121,7 @@ const logOut = async () => {
 
     }
     catch (error: unknown) {
-        if (error instanceof FirebaseError) {
-            console.log(`GOT ERROR: ` + error.code)
-
-            let errorMessage = "ERROR: " + error.code
-
-            return {
-                toastType: "error",
-                message: errorMessage
-            }
-        }
-        return {
-            toastType: "error",
-            message: "Failed to sign out; UNKNOWN ERROR"
-
-        }
+        return handleError(error)
 
     }
 
@@ -107,5 +131,6 @@ export {
     signIn,
     auth,
     logOut,
-    getUserInfoFromUid
+    getUserInfo,
+    updateUserInfo
 }

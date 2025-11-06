@@ -17,7 +17,6 @@ import { useEffect } from "react";
 import { LoadScreen } from "./components/loading";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { signIn, auth, logOut } from "~/api/firebase"
-import { getUserInfoFromUid } from "~/api/firebase";
 import { AuthProvider } from "./provider/authProvider";
 
 export const links: Route.LinksFunction = () => [

@@ -7,25 +7,26 @@ import { useState } from "react"
 import { handleToast } from "~/functions/handleToast"
 import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
+import { updateUserInfo } from "~/api/firebase"
 
 type Inputs = {
     username: string
     email: string
     pronouns: string
-    status:string
+    status: string
 }
 
-const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false }:
-    { defaultValue:any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean, disabled?:boolean }) => {
+const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false, required = false }:
+    { defaultValue: any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean, disabled?: boolean, required?: boolean }) => {
     return <input className={`disabled:bg-gray-800/0 
                                         disabled:border-white/0
-                                        border border-white rounded-md p-2 bg-gray-800 transition`}
-        defaultValue={defaultValue} 
-        placeholder = "Unset"
-        disabled = {disabled}
-         {...register(value, { required: true })}
+                                        border border-white rounded-md p-1 bg-gray-800 transition`}
+        defaultValue={defaultValue}
+        placeholder="Unset"
+        disabled={disabled}
+        {...register(value, { required: required })}
 
-        />
+    />
 }
 
 export function SettingsPage() {
@@ -39,11 +40,18 @@ export function SettingsPage() {
 
     let navigate = useNavigate()
 
-    const { userInfo, setUserInfo } = useContext(AuthContext)
+    const { userInfo, refreshAuthUser } = useContext(AuthContext)
     const [isEditing, setIsEditing] = useState(false)
 
 
     const onSubmit: SubmitHandler<Inputs> = (data, e) => {
+        updateUserInfo(data).then((resp) => {
+            handleToast(resp)
+            setIsEditing(false)
+            refreshAuthUser()
+        })
+
+        
         /*signIn(data.email, data.password).then((resp) => {
             handleToast(resp)
             if (resp.toastType === "success") {
@@ -67,49 +75,53 @@ export function SettingsPage() {
                         {
                             userInfo !== null &&
                             <form onSubmit={handleSubmit(onSubmit)}
-                                className="flex flex-col space-y-4 items-center">
-                                <fieldset disabled = {!isEditing} >
+                                >
+                                <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
                                     <div>
-                                        Username: <SettingsInput 
-                                        defaultValue = {userInfo.username} 
-                                        value = "username"
-                                        register = {register}/>
+                                        Username: <SettingsInput
+                                            defaultValue={userInfo.username}
+                                            value="username"
+                                            register={register} 
+                                            required = {true}/>
                                     </div>
                                     <div>
-                                        Email: <SettingsInput 
-                                        defaultValue = {userInfo.email} 
-                                        value = "email"
-                                        register = {register}
-                                        disabled/>
+                                        Email: <SettingsInput
+                                            defaultValue={userInfo.email}
+                                            value="email"
+                                            register={register}
+                                            disabled />
                                     </div>
                                     <div>
-                                        Pronouns: <SettingsInput 
-                                        defaultValue = {userInfo.pronouns} 
-                                        value = "pronouns"
-                                        register = {register}/>
+                                        Pronouns: <SettingsInput
+                                            defaultValue={userInfo.pronouns}
+                                            value="pronouns"
+                                            register={register} />
                                     </div>
                                     <div>
-                                        Status: <SettingsInput 
-                                        defaultValue = {userInfo.status} 
-                                        value = "status"
-                                        register = {register}/>
+                                        Status: <SettingsInput
+                                            defaultValue={userInfo.status}
+                                            value="status"
+                                            register={register} />
                                     </div>
-                                    <span className = {`${isEditing ? "hidden" : "visible"} cursor-pointer 
-                                    bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                    onClick = {() => {
-                                        setIsEditing(true)
-                                        }}>
-                                        Edit
-                                    </span>
 
-                                    <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
-                                    
-                                    <input type = "reset" className = {`${isEditing ? "visible" : "hidden"} cursor-pointer 
+                                    <div className = "py-2 flex flex-row gap-x-2">
+                                        <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                    onClick = {() => {
-                                        setIsEditing(false)
-                                        reset()
-                                        }} value = "Cancel"/>
+                                            onClick={() => {
+                                                setIsEditing(true)
+                                            }}>
+                                            Edit
+                                        </span>
+
+                                        <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+
+                                        <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
+                                    bg-gray-700 hover:bg-gray-600 p-2 rounded`}
+                                            onClick={() => {
+                                                setIsEditing(false)
+                                                reset()
+                                            }} value="Cancel" />
+                                    </div>
                                 </fieldset>
                             </form>
                         }

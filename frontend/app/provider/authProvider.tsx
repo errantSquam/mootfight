@@ -2,7 +2,7 @@ import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { signIn, auth, logOut } from "~/api/firebase"
-import { getUserInfoFromUid } from "~/api/firebase";
+import { getUserInfo } from "~/api/firebase";
 
 const AuthContext = createContext<any>({ state: {}, actions: {} });
 
@@ -10,7 +10,8 @@ const AuthProvider = ({ children }: { children: any }) => {
 
     const [authLoaded, setAuthLoaded] = useState(false)
     const [userInfo, setUserInfo] = useState<any>(null)
-    const value = { userInfo, authLoaded, setUserInfo };
+
+
 
     onAuthStateChanged(auth, (user) => {
         handleAuthStateChanged(user)
@@ -19,7 +20,7 @@ const AuthProvider = ({ children }: { children: any }) => {
     function handleAuthStateChanged(user: User | null) {
         if (user) {
             if (userInfo === null) {
-                getUserInfoFromUid(user.uid).then((resp) => {
+                getUserInfo(user.uid).then((resp) => {
                     setUserInfo(resp)
                     setAuthLoaded(true)
 
@@ -29,6 +30,17 @@ const AuthProvider = ({ children }: { children: any }) => {
             setUserInfo(null)
         }
     }
+
+    const refreshAuthUser = () => {
+        getUserInfo().then((resp) =>{
+            setUserInfo(resp)
+            setAuthLoaded(true)
+
+        })
+
+    }
+
+    const value = { userInfo, authLoaded, setUserInfo, refreshAuthUser };
 
 
     return (
