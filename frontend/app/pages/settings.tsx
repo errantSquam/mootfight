@@ -9,30 +9,20 @@ import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
 import { Icon } from "@iconify/react"
-import pkg from "croppie"; //resolve this later... might be worth making a d.ts file too!
+import ReactCrop, { type Crop } from "react-image-crop"
+import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import 'react-image-crop/dist/ReactCrop.css'
 
-const { Croppie } = pkg
-
-const croppieOptions = {
-    showZoomer: true,
-    enableOrientation: true,
-    mouseWheelZoom: "ctrl",
-    viewport: {
-        width: 200,
-        height: 200,
-        type: "circle"
-    },
-    boundary: {
-        width: "50vw",
-        height: "50vh"
-    }
-};
 
 type Inputs = {
     username: string
     email: string
     pronouns: string
     status: string
+}
+
+type ImageInput = {
+    profilePicture: any //figure out the image type later...sorry i'm baby at typescript :baby:
 }
 
 const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false, required = false }:
@@ -48,6 +38,191 @@ const SettingsInput = ({ defaultValue, value, register, isPassword = false, disa
     />
 }
 
+const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
+    { isOpen: boolean, setIsOpen: any, modalImage: string, handleSubmission: any }) => {
+
+    const [crop, setCrop] = useState<Crop>()
+
+
+    return <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={() => setIsOpen(false)}>
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+                <DialogPanel
+                    transition
+                    className="w-full max-w-md rounded-xl bg-zinc-900 p-6 duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
+                >
+                    <DialogTitle as="h3" className="text-base/7 font-medium text-white">
+                        Crop
+                    </DialogTitle>
+                    <ReactCrop
+                        crop={crop}
+                        onChange={(c) => { setCrop(c) }}
+                        circularCrop
+                        aspect={1}
+                    >
+                        <img src={modalImage} />
+                    </ReactCrop>
+                    <div className="flex flex-row mt-4">
+                        <Button
+                            className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+                            onClick={() => {
+                                handleSubmission(crop)
+                                setIsOpen(false)
+                            }
+                            }
+                        >
+                            Submit
+                        </Button>
+                        <Button
+                            className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </DialogPanel>
+            </div>
+        </div>
+    </Dialog>
+}
+
+const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: SubmitHandler<Inputs>, userInfo: any }) => {
+
+    const {
+        register: registerImage,
+        handleSubmit: handleImageSubmit,
+        watch: watchImage,
+        reset: resetImage,
+        formState: { errors: errorsImage },
+    } = useForm<Inputs>()
+
+    const [isModalOpen, setModalOpen] = useState(false)
+    const [modalImage, setModalImage] = useState<any>('')
+
+    const [submittedFile, setSubmittedFile] = useState('')
+
+    const handleSubmission = async (crop: any) => {
+        console.log(crop)
+        console.log(modalImage)
+
+
+
+        const offscreen = new OffscreenCanvas(200, 200)
+        const ctx = offscreen.getContext('2d')
+        if (!ctx) {
+            throw new Error('No 2d context')
+        }
+
+        let tempImg = new Image()
+        tempImg.src = modalImage
+
+
+        const offscreen2 = new OffscreenCanvas(tempImg.width, tempImg.height)
+        const ctx2 = offscreen2.getContext('2d')
+        if (!ctx2) {
+            throw new Error('No 2d context')
+        }
+
+        let image = new Image();
+        image.onload = function () {
+            ctx2.drawImage(image, 0, 0);
+        };
+        image.src = modalImage
+
+        ctx.drawImage(
+            image,
+            crop.x, crop.y,
+            crop.width, crop.height,
+            0, 0,
+            200, 200
+        )
+
+
+
+        const blob = await offscreen.convertToBlob({
+            type: 'image/png',
+        })
+
+        let base64 = await new Promise((resolve, _) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+
+        console.log("output")
+
+        console.log(base64)
+
+        //debug
+        //okay, this works fine...
+        /*
+        const blob2 = await offscreen2.convertToBlob({
+            type: 'image/png',
+        })
+
+        let base642 = await new Promise((resolve, _) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob2);
+        });
+
+        console.log("og read")
+        console.log(base642)
+        */
+
+
+    }
+
+
+
+    function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files.length > 0) {
+            const reader = new FileReader()
+            reader.addEventListener('load', () =>
+                setModalImage(reader.result?.toString() || ''),
+            )
+            reader.readAsDataURL(e.target.files[0])
+        }
+    }
+
+    return <form onSubmit={handleImageSubmit(onImageSubmit)}>
+        <CropModal isOpen={isModalOpen} setIsOpen={(setModalOpen)}
+            modalImage={modalImage}
+            handleSubmission={handleSubmission} />
+
+        <label htmlFor="fileField">
+            <div className="w-full">
+                <div className="w-full flex items-center justify-center p-2">
+                    <div className="relative group cursor-pointer">
+                        <img src={
+                            userInfo === null ? "/assets/images/default owlcroraptor.png" :
+                                userInfo.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : userInfo.profilePicture
+                        }
+                            className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
+                        <Icon icon="lucide:edit"
+                            className={`opacity-0 group-hover:opacity-100 transition
+                                            absolute text-3xl bottom-0 right-1 bg-zinc-800 rounded p-1`} />
+
+                    </div>
+                </div>
+            </div>
+        </label>
+        <input type="file" id="fileField" accept="image/*" hidden={true}
+            onChange={(e) => {
+                if (e.target.value !== '') {
+                    setModalOpen(true)
+                    //setModalImage(e.target.value)
+                    onSelectFile(e)
+                }
+            }} />
+        <input type="file" id="submittedFile" accept="image/*" hidden={true}
+            value={submittedFile}
+        />
+    </form>
+}
+
+
+//getting long and unwieldy. consider refactoring soon...
 export function SettingsPage() {
     const {
         register,
@@ -71,10 +246,12 @@ export function SettingsPage() {
         })
 
     }
-
-    const handleImageUpload = () => {
+    const onImageSubmit: SubmitHandler<Inputs> = (data, e) => {
 
     }
+
+
+
 
     return (
         <div className="flex items-center justify-center pt-16 pb-4">
@@ -86,99 +263,70 @@ export function SettingsPage() {
                     <div className="flex justify-center items-center w-full 
                     rounded-3xl border p-6 
                     dark:border-gray-700">
-                        <label htmlFor="fileField">
-                            <div className="w-full">
-                                <div className="w-full flex items-center justify-center p-2">
-                                    <div className="relative group cursor-pointer">
-                                        <img src={
-                                            userInfo === null ? "/assets/images/default owlcroraptor.png" :
-                                            userInfo.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : userInfo.profilePicture
-                                        }
-                                            className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
-                                        <Icon icon="lucide:edit"
-                                            className={`opacity-0 group-hover:opacity-100 transition
-                                        absolute text-3xl bottom-0 right-1 bg-zinc-800 rounded p-1`} />
+                        <div className="flex flex-col">
 
-                                    </div>
-                                </div>
-                                </div>
-                        </label>
+                            <ProfilePictureComponent onImageSubmit={onImageSubmit} userInfo={userInfo} />
 
-                        {
-                            userInfo !== null &&
+                            {
+                                userInfo !== null &&
 
-                            <form onSubmit={handleSubmit(onSubmit)}
-                            >
-                                <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
-                                    <div>
-                                        Username: <SettingsInput
-                                            defaultValue={userInfo.username}
-                                            value="username"
-                                            register={register}
-                                            required={true} />
-                                    </div>
-                                    <div>
-                                        Email: <SettingsInput
-                                            defaultValue={userInfo.email}
-                                            value="email"
-                                            register={register}
-                                            disabled />
-                                    </div>
-                                    <div>
-                                        Pronouns: <SettingsInput
-                                            defaultValue={userInfo.pronouns}
-                                            value="pronouns"
-                                            register={register} />
-                                    </div>
-                                    <div>
-                                        Status: <i><SettingsInput
-                                            defaultValue={userInfo.status}
-                                            value="status"
-                                            register={register} /></i>
-                                    </div>
+                                <form onSubmit={handleSubmit(onSubmit)}
+                                >
+                                    <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
+                                        <div>
+                                            Username: <SettingsInput
+                                                defaultValue={userInfo.username}
+                                                value="username"
+                                                register={register}
+                                                required={true} />
+                                        </div>
+                                        <div>
+                                            Email: <SettingsInput
+                                                defaultValue={userInfo.email}
+                                                value="email"
+                                                register={register}
+                                                disabled />
+                                        </div>
+                                        <div>
+                                            Pronouns: <SettingsInput
+                                                defaultValue={userInfo.pronouns}
+                                                value="pronouns"
+                                                register={register} />
+                                        </div>
+                                        <div>
+                                            Status: <i><SettingsInput
+                                                defaultValue={userInfo.status}
+                                                value="status"
+                                                register={register} /></i>
+                                        </div>
 
-                                    <div className="py-2 flex flex-row gap-x-2">
-                                        <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
+                                        <div className="py-2 flex flex-row gap-x-2">
+                                            <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                            onClick={() => {
-                                                setIsEditing(true)
-                                            }}>
-                                            Edit
-                                        </span>
+                                                onClick={() => {
+                                                    setIsEditing(true)
+                                                }}>
+                                                Edit
+                                            </span>
 
-                                        <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                            <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
 
-                                        <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
+                                            <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                            onClick={() => {
-                                                setIsEditing(false)
-                                                reset()
-                                            }} value="Cancel" />
-                                    </div>
-                                </fieldset>
-                            </form>
-                        }
+                                                onClick={() => {
+                                                    setIsEditing(false)
+                                                    reset()
+                                                }} value="Cancel" />
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            }
+                        </div>
 
 
-                    {/*
-                        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4 items-center">
-                            <RequiredField title="Email"
-                                value="email" register={register} />
-
-                            {errors.email && <span>This field is required</span>}
-
-                            <RequiredField title="Password"
-                                value="password" register={register} 
-                                isPassword/>
-
-                            {errors.password && <span>This field is required</span>}
-
-                            <input type="submit" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
-                        </form>
-                        */}
+                    </div>
                 </div>
             </div>
-        </div>
         </div >
     );
 }
