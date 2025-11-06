@@ -103,41 +103,34 @@ const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: S
 
     const handleSubmission = async (crop: any) => {
         console.log(crop)
-        console.log(modalImage)
+        //console.log(modalImage)
 
-
-
-        const offscreen = new OffscreenCanvas(200, 200)
-        const ctx = offscreen.getContext('2d')
-        if (!ctx) {
-            throw new Error('No 2d context')
-        }
+        const pfpResolution = 200
 
         let tempImg = new Image()
         tempImg.src = modalImage
 
+        // This will size relative to the uploaded image
+        // size. If you want to size according to what they
+        // are looking at on screen, remove scaleX + scaleY
+        const scaleX = tempImg.naturalWidth / tempImg.width
+        const scaleY = tempImg.naturalHeight / tempImg.height
 
-        const offscreen2 = new OffscreenCanvas(tempImg.width, tempImg.height)
-        const ctx2 = offscreen2.getContext('2d')
-        if (!ctx2) {
-            throw new Error('No 2d context')
-        }
-
-        let image = new Image();
-        image.onload = function () {
-            ctx2.drawImage(image, 0, 0);
-        };
-        image.src = modalImage
-
-        ctx.drawImage(
-            image,
-            crop.x, crop.y,
-            crop.width, crop.height,
-            0, 0,
+        const offscreen = new OffscreenCanvas(
             200, 200
         )
+        const ctx = offscreen.getContext('2d')
+        if (!ctx) {
+            throw new Error('No 2d context')
+        }
+        let image = new Image();
+        image.src = modalImage
 
+        ctx.translate(-crop.x, -crop.y)
 
+        ctx.drawImage(
+            image, 0, 0, crop.width, crop.height
+        )
 
         const blob = await offscreen.convertToBlob({
             type: 'image/png',
@@ -153,9 +146,12 @@ const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: S
 
         console.log(base64)
 
+
+
         //debug
-        //okay, this works fine...
         /*
+        //okay, this works fine...
+
         const blob2 = await offscreen2.convertToBlob({
             type: 'image/png',
         })
@@ -169,6 +165,7 @@ const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: S
         console.log("og read")
         console.log(base642)
         */
+
 
 
     }
