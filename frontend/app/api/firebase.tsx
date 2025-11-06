@@ -129,6 +129,7 @@ const logOut = async () => {
 }
 
 const getUsers = async (limitAmount:number = 3) => {
+    //possible issue. it DOES include the emails as well, which might be a privacy issue...
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), limit(limitAmount));
     const querySnapshot = await getDocs(q);
