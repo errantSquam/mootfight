@@ -62,7 +62,9 @@ export function Navbar() {
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <div>{userInfo!== null && <img src = {userInfo.profilePicture} className = "h-10"/> }</div>
+                <div>{userInfo!== null && <img src = {userInfo.profilePicture === undefined ? 
+                    "/assets/images/default owlcroraptor.png" : 
+                    userInfo.profilePicture } className = "h-10"/> }</div>
                 <div>{userInfo !== null && <UserDropdown userInfo= {userInfo}/>}</div>
             </div>
         </div>
