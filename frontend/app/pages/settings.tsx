@@ -8,6 +8,25 @@ import { handleToast } from "~/functions/handleToast"
 import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
+import { Icon } from "@iconify/react"
+import pkg from "croppie"; //resolve this later... might be worth making a d.ts file too!
+
+const { Croppie } = pkg
+
+const croppieOptions = {
+    showZoomer: true,
+    enableOrientation: true,
+    mouseWheelZoom: "ctrl",
+    viewport: {
+        width: 200,
+        height: 200,
+        type: "circle"
+    },
+    boundary: {
+        width: "50vw",
+        height: "50vh"
+    }
+};
 
 type Inputs = {
     username: string
@@ -51,79 +70,88 @@ export function SettingsPage() {
             refreshAuthUser()
         })
 
+    }
+
+    const handleImageUpload = () => {
         
-        /*signIn(data.email, data.password).then((resp) => {
-            handleToast(resp)
-            if (resp.toastType === "success") {
-                navigate('/')
-
-            }
-        })*/
-
     }
 
     return (
         <div className="flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-4 min-h-0">
-                <header className="flex flex-col items-center text-xl">
+                <div className="flex flex-col items-center text-xl">
                     Settings
-                </header>
+                </div>
                 <div className="space-y-6 px-4">
                     <div className="flex justify-center items-center w-full 
                     rounded-3xl border p-6 
                     dark:border-gray-700">
                         {
                             userInfo !== null &&
-                            <form onSubmit={handleSubmit(onSubmit)}
+                            <div className="w-full">
+                                <div className="w-full flex items-center justify-center p-2">
+                                    <div className="relative group cursor-pointer">
+                                        <img src={
+                                            userInfo.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : userInfo.profilePicture
+                                        }
+                                            className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
+                                        <Icon icon = "lucide:edit" 
+                                        className = {`opacity-0 group-hover:opacity-100 transition
+                                        absolute text-3xl bottom-0 right-1 bg-zinc-800 rounded p-1`}/>
+                                        
+                                    </div>
+                                </div>
+                                <form onSubmit={handleSubmit(onSubmit)}
                                 >
-                                <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
-                                    <div>
-                                        Username: <SettingsInput
-                                            defaultValue={userInfo.username}
-                                            value="username"
-                                            register={register} 
-                                            required = {true}/>
-                                    </div>
-                                    <div>
-                                        Email: <SettingsInput
-                                            defaultValue={userInfo.email}
-                                            value="email"
-                                            register={register}
-                                            disabled />
-                                    </div>
-                                    <div>
-                                        Pronouns: <SettingsInput
-                                            defaultValue={userInfo.pronouns}
-                                            value="pronouns"
-                                            register={register} />
-                                    </div>
-                                    <div>
-                                        Status: <SettingsInput
-                                            defaultValue={userInfo.status}
-                                            value="status"
-                                            register={register} />
-                                    </div>
+                                    <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
+                                        <div>
+                                            Username: <SettingsInput
+                                                defaultValue={userInfo.username}
+                                                value="username"
+                                                register={register}
+                                                required={true} />
+                                        </div>
+                                        <div>
+                                            Email: <SettingsInput
+                                                defaultValue={userInfo.email}
+                                                value="email"
+                                                register={register}
+                                                disabled />
+                                        </div>
+                                        <div>
+                                            Pronouns: <SettingsInput
+                                                defaultValue={userInfo.pronouns}
+                                                value="pronouns"
+                                                register={register} />
+                                        </div>
+                                        <div>
+                                            Status: <i><SettingsInput
+                                                defaultValue={userInfo.status}
+                                                value="status"
+                                                register={register} /></i>
+                                        </div>
 
-                                    <div className = "py-2 flex flex-row gap-x-2">
-                                        <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
+                                        <div className="py-2 flex flex-row gap-x-2">
+                                            <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                            onClick={() => {
-                                                setIsEditing(true)
-                                            }}>
-                                            Edit
-                                        </span>
+                                                onClick={() => {
+                                                    setIsEditing(true)
+                                                }}>
+                                                Edit
+                                            </span>
 
-                                        <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                            <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
 
-                                        <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
+                                            <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
-                                            onClick={() => {
-                                                setIsEditing(false)
-                                                reset()
-                                            }} value="Cancel" />
-                                    </div>
-                                </fieldset>
-                            </form>
+                                                onClick={() => {
+                                                    setIsEditing(false)
+                                                    reset()
+                                                }} value="Cancel" />
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
                         }
 
 

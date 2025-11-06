@@ -46,9 +46,9 @@ export function Login() {
     return (
         <div className="flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-4 min-h-0">
-                <header className="flex flex-col items-center text-xl">
+                <div className="flex flex-col items-center text-xl">
                     Login
-                </header>
+                </div>
                 <div className="space-y-6 px-4">
                     <div className="flex justify-center items-center w-full 
                     rounded-3xl border p-6 
