@@ -33,8 +33,6 @@ export function Login() {
     let navigate = useNavigate()
 
     const onSubmit: SubmitHandler<Inputs> = (data, e) => {
-        console.log(data)
-
         signIn(data.email, data.password).then((resp) => {
             handleToast(resp)
             if (resp.toastType === "success") {

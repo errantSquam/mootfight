@@ -14,6 +14,7 @@ import "./app.css";
 import { ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 import { useEffect } from "react";
+import { LoadScreen } from "./components/loading";
 
 
 export const links: Route.LinksFunction = () => [
@@ -52,7 +53,7 @@ export default function App() {
 
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
   return <div>
-    {/*i swear there's a better way to handle this lol*/}
+    <LoadScreen/>
     <Navbar/>
     <div className="pt-10">
       <Outlet/>
