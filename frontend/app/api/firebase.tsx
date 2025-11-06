@@ -10,7 +10,7 @@ import { collection } from "firebase/firestore";
 import { doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { onAuthStateChanged } from "firebase/auth";
-import { query, orderBy, limit } from "firebase/firestore";
+import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
@@ -21,7 +21,8 @@ var db = getFirestore(app)
 
 type ToastResponse = {
     toastType: string,
-    message: string
+    message: string,
+    data?: any
 }
 
 const handleError = (error: unknown) => {
@@ -47,7 +48,9 @@ const handleError = (error: unknown) => {
 }
 
 const getUserInfo = async (uid?: string) => {
-    if (auth.currentUser === null){
+    console.log(auth)
+
+    if (auth.currentUser === null) {
         return null
     }
     if (uid === undefined) {
@@ -59,7 +62,7 @@ const getUserInfo = async (uid?: string) => {
 }
 
 const updateUserInfo = async (toUpdate: any) => {
-    if (auth.currentUser === null){
+    if (auth.currentUser === null) {
         return {
             toastType: "error",
             message: "Not logged in!"
@@ -90,11 +93,12 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
     try {
         let userCredential = await signInWithEmailAndPassword(auth, email, password)
         let userUid = userCredential.user.uid;
-        let docRef = doc(db, "users", userUid)
 
-        let docSnap = await getDoc(docRef)
-        if (!docSnap.exists()) {
-
+        const snap = await getCountFromServer(query(
+            collection(db, 'users'), where(documentId(), '==', userUid)
+        ))
+        if (snap.data().count === 0) {
+            let docRef = doc(db, "users", userUid)
             setDoc(docRef, {
                 email: email,
                 username: `User #${Math.floor(Math.random() * 100)}`,
@@ -128,7 +132,7 @@ const logOut = async () => {
 
 }
 
-const getUsers = async (limitAmount:number = 3) => {
+const getUsers = async (limitAmount: number = 3) => {
     //possible issue. it DOES include the emails as well, which might be a privacy issue...
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), limit(limitAmount));
