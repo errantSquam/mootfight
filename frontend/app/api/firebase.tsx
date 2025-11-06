@@ -7,7 +7,7 @@ import { getAuth } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
 import { collection } from "firebase/firestore";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -68,7 +68,7 @@ const updateUserInfo = async (toUpdate: any) => {
     let docRef = doc(db, "users", auth.currentUser.uid)
     let docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
-        setDoc(docRef, toUpdate);
+        updateDoc(docRef, toUpdate);
 
         return {
             toastType: "success",

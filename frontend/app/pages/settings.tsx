@@ -108,7 +108,8 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
 }
 
 
-const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: SubmitHandler<Inputs>, userInfo: any }) => {
+const ProfilePictureComponent = ({ onImageSubmit }: 
+    { onImageSubmit: SubmitHandler<Inputs>}) => {
 
     const {
         register: registerImage,
@@ -123,13 +124,15 @@ const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: S
 
     const [submittedFile, setSubmittedFile] = useState('')
 
+    const { userInfo, refreshAuthUser } = useContext(AuthContext)
+
+
     const handleSubmission = async (cropResult: any) => {
         let base64 = await getCroppedImg(modalImage, cropResult[1])
-
-        console.log(base64)
-        
-
-
+        updateUserInfo({profilePicture: base64}).then((resp) => {
+            handleToast(resp)
+            refreshAuthUser()
+        })
     }
 
 
@@ -173,7 +176,8 @@ const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: S
                     //setModalImage(e.target.value)
                     onSelectFile(e)
                 }
-            }} />
+            }} 
+            />
         <input type="file" id="submittedFile" accept="image/*" hidden={true}
             value={submittedFile}
         />
@@ -224,7 +228,7 @@ export function SettingsPage() {
                     dark:border-gray-700">
                         <div className="flex flex-col">
 
-                            <ProfilePictureComponent onImageSubmit={onImageSubmit} userInfo={userInfo} />
+                            <ProfilePictureComponent onImageSubmit={onImageSubmit} />
 
                             {
                                 userInfo !== null &&
