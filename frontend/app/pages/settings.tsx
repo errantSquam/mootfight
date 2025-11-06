@@ -58,7 +58,7 @@ export function SettingsPage() {
                 <header className="flex flex-col items-center text-xl">
                     Settings
                 </header>
-                <div className="w-1/3 space-y-6 px-4">
+                <div className="space-y-6 px-4">
                     <div className="flex justify-center items-center w-full 
                     rounded-3xl border p-6 
                     dark:border-gray-700">
