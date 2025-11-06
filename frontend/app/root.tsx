@@ -49,20 +49,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState(null)
 
-  useEffect(() => {
-    let userJson = localStorage.getItem('authUser')
-    if (userJson !== null ) {
-      setCurrentUser(JSON.parse(userJson))
-    }
-  }, []
-  )
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
   return <div>
-    <Navbar currentUser = {currentUser}/>
+    {/*i swear there's a better way to handle this lol*/}
+    <Navbar/>
     <div className="pt-10">
-      <Outlet context = {[currentUser, setCurrentUser]} />
+      <Outlet/>
     </div>
     <ToastContainer />
   </div>

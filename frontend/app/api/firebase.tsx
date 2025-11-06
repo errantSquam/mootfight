@@ -2,12 +2,14 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
+import { onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
@@ -21,6 +23,7 @@ type ToastResponse = {
     message: string
 }
 
+
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
         let userCredential = await signInWithEmailAndPassword(auth, email, password)
@@ -32,13 +35,10 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
             setDoc(docRef, {
                 email: email,
-                username: `User #${Math.random()*100}`,
+                username: `User #${Math.random() * 100}`,
 
             });
         }
-
-        localStorage.setItem('authUser', JSON.stringify(auth.currentUser))
-
         return {
             toastType: "success",
             message: "Successfully logged in!"
@@ -68,7 +68,38 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
 }
 
+const logOut = async () => {
+    try {
+        await signOut(auth)
+        return {
+            toastType: "success",
+            message: "Successfully signed out!"
+        }
+
+    }
+    catch (error: unknown) {
+        if (error instanceof FirebaseError) {
+            console.log(`GOT ERROR: ` + error.code)
+
+            let errorMessage = "ERROR: " + error.code
+
+            return {
+                toastType: "error",
+                message: errorMessage
+            }
+        }
+        return {
+            toastType: "error",
+            message: "Failed to sign out; UNKNOWN ERROR"
+
+        }
+
+    }
+
+}
+
 export {
     signIn,
-    auth
+    auth,
+    logOut
 }

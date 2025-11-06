@@ -3,6 +3,9 @@ import { type UseFormRegister } from "react-hook-form"
 import { toast } from "react-toastify"
 import { signIn } from "~/api/firebase"
 import { useNavigate } from "react-router"
+import { useState } from "react"
+import { handleToast } from "~/functions/handleToast"
+import { useOutletContext } from "react-router"
 
 type Inputs = {
     email: string
@@ -33,13 +36,11 @@ export function Login() {
         console.log(data)
 
         signIn(data.email, data.password).then((resp) => {
+            handleToast(resp)
             if (resp.toastType === "success") {
-                toast.success(resp.message)
                 navigate('/')
                 
-            } else if (resp.toastType === "error") {
-                toast.error(resp.message)
-            }
+            } 
         })
 
     }
