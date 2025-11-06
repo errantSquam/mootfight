@@ -25,14 +25,14 @@ export function Welcome() {
         <div className="flex flex-col items-center gap-9 text-xl">
           Welcome to Mootfight!
         </div>
-        <div className="max-w-[300px] w-full space-y-6 px-4">
+        <div className="w-2/3 space-y-6 px-4">
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
             <div>
               <b>First Three Users</b>
-              <div key = {userList} className = "flex flex-row">
+              <div key = {userList} className = "flex flex-row gap-x-2">
               {userList.map((user: any) => {
                 return <div className = "flex flex-col items-center">
-                  <img src = {user.profilePicture} className = "w-20"/>
+                  <img src = {user.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : user.profilePicture} className = "w-20"/>
                   <span>{user.username}</span>
                   </div>
 
