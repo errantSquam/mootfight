@@ -15,14 +15,16 @@ type Inputs = {
     status:string
 }
 
-const SettingsInput = ({ defaultValue, value, register, isPassword = false }:
-    { defaultValue:any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean }) => {
+const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false }:
+    { defaultValue:any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean, disabled?:boolean }) => {
     return <input className={`disabled:bg-gray-800/0 
                                         disabled:border-white/0
                                         border border-white rounded-md p-2 bg-gray-800 transition`}
         defaultValue={defaultValue} 
         placeholder = "Unset"
+        disabled = {disabled}
          {...register(value, { required: true })}
+
         />
 }
 
@@ -77,7 +79,8 @@ export function SettingsPage() {
                                         Email: <SettingsInput 
                                         defaultValue = {userInfo.email} 
                                         value = "email"
-                                        register = {register}/>
+                                        register = {register}
+                                        disabled/>
                                     </div>
                                     <div>
                                         Pronouns: <SettingsInput 
