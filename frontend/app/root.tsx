@@ -15,7 +15,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 import { useEffect } from "react";
 import { LoadScreen } from "./components/loading";
-
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { signIn, auth, logOut } from "~/api/firebase"
+import { getUserInfoFromUid } from "~/api/firebase";
+import { AuthProvider } from "./provider/authProvider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -52,14 +55,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
-  return <div>
-    <LoadScreen/>
-    <Navbar/>
+  return <AuthProvider>
+    <LoadScreen />
+    <Navbar />
     <div className="pt-10">
-      <Outlet/>
+      <Outlet />
     </div>
     <ToastContainer />
-  </div>
+  </AuthProvider>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

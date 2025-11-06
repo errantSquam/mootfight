@@ -23,6 +23,12 @@ type ToastResponse = {
     message: string
 }
 
+const getUserInfoFromUid = async (uid: string) => {
+    let docRef = doc(db, "users", uid)
+    let docSnap = await getDoc(docRef)
+    console.log(docSnap.data())
+    return docSnap.data()
+}
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
@@ -101,5 +107,6 @@ const logOut = async () => {
 export {
     signIn,
     auth,
-    logOut
+    logOut,
+    getUserInfoFromUid
 }

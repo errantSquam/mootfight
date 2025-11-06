@@ -5,18 +5,12 @@ import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"
 import { onAuthStateChanged } from "firebase/auth"
 import { useState } from "react"
+import { AuthContext } from "~/provider/authProvider"
+import { useContext } from "react"
 
 export function Navbar() {
-    const [isSignedIn, setSignedIn] = useState(false)
-
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            setSignedIn(true)
-        } else {
-            setSignedIn(false)
-        }
-    });
-
+    const {userInfo, setUserInfo} = useContext(AuthContext)
+    
     let navigate = useNavigate()
 
     const handleLogout = async () => {
@@ -33,12 +27,12 @@ export function Navbar() {
         <div className = "flex flex-row text-white gap-x-4 justify-between w-full">
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
-                {auth.currentUser === null && <div><Link to="login">Login </Link></div>}
-                {auth.currentUser !== null && <div><Link to="submit/attack">Submit Attack</Link></div>}
-                {auth.currentUser !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
+                {userInfo === null && <div><Link to="login">Login </Link></div>}
+                {userInfo !== null && <div><Link to="submit/attack">Submit Attack</Link></div>}
+                {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <div>{auth.currentUser !== null && <span>Welcome {auth.currentUser.displayName}</span>}</div>
+                <div>{userInfo !== null && <span>Welcome {userInfo.username}</span>}</div>
             </div>
         </div>
 
