@@ -8,7 +8,7 @@ import { getFirestore } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
-const firebaseConfig = JSON.parse(process.env.REACT_APP_FIREBASE_KEY as string)
+const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth()
