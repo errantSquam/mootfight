@@ -54,7 +54,7 @@ export function Navbar() {
 
 
     return <div className="fixed w-screen h-10 p-4 px-10 bg-zinc-900 flex items-center">
-        <div className = "flex flex-row text-white gap-x-4 justify-between w-full">
+        <div className = "flex flex-row text-white gap-x-4 justify-between w-full items-center">
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
                 {userInfo === null && <div><Link to="login">Login </Link></div>}
@@ -62,6 +62,7 @@ export function Navbar() {
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
+                <div>{userInfo!== null && <img src = {userInfo.profilePicture} className = "h-10"/> }</div>
                 <div>{userInfo !== null && <UserDropdown userInfo= {userInfo}/>}</div>
             </div>
         </div>
