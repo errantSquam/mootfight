@@ -9,9 +9,11 @@ import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
 import { Icon } from "@iconify/react"
-import ReactCrop, { type Crop } from "react-image-crop"
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
-import 'react-image-crop/dist/ReactCrop.css'
+import React, { useRef } from "react";
+import Cropper from 'react-easy-crop'
+import 'react-easy-crop/react-easy-crop.css'
+import getCroppedImg from "~/functions/crop"
 
 
 type Inputs = {
@@ -41,7 +43,15 @@ const SettingsInput = ({ defaultValue, value, register, isPassword = false, disa
 const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
     { isOpen: boolean, setIsOpen: any, modalImage: string, handleSubmission: any }) => {
 
-    const [crop, setCrop] = useState<Crop>()
+    const [crop, setCrop] = useState({ x: 0, y: 0 })
+    const [zoom, setZoom] = useState(1)
+
+    const [result, setResult] = useState({})
+
+    const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+        console.log(croppedArea, croppedAreaPixels)
+        setResult([croppedArea, croppedAreaPixels])
+    }
 
 
     return <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={() => setIsOpen(false)}>
@@ -54,19 +64,30 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
                     <DialogTitle as="h3" className="text-base/7 font-medium text-white">
                         Crop
                     </DialogTitle>
-                    <ReactCrop
-                        crop={crop}
-                        onChange={(c) => { setCrop(c) }}
-                        circularCrop
-                        aspect={1}
-                    >
-                        <img src={modalImage} />
-                    </ReactCrop>
+                    <div className="relative h-[400px] w-[400px]">
+                        <Cropper
+                            image={modalImage}
+                            aspect={1}
+                            crop={crop}
+                            zoom={zoom}
+                            onCropComplete = {onCropComplete}
+                            onCropChange={setCrop}
+                            onZoomChange={setZoom}
+                            cropShape='round'
+                        />
+                    </div>
+                    <input type="range" value={zoom}
+                        min={1}
+                        max={3}
+                        step={0.1}
+                        onChange={(e) => {
+                            setZoom(Number(e.target.value))
+                        }} />
                     <div className="flex flex-row mt-4">
                         <Button
                             className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
                             onClick={() => {
-                                handleSubmission(crop)
+                                handleSubmission(result)
                                 setIsOpen(false)
                             }
                             }
@@ -86,6 +107,7 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission }:
     </Dialog>
 }
 
+
 const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: SubmitHandler<Inputs>, userInfo: any }) => {
 
     const {
@@ -101,71 +123,11 @@ const ProfilePictureComponent = ({ onImageSubmit, userInfo }: { onImageSubmit: S
 
     const [submittedFile, setSubmittedFile] = useState('')
 
-    const handleSubmission = async (crop: any) => {
-        console.log(crop)
-        //console.log(modalImage)
-
-        const pfpResolution = 200
-
-        let tempImg = new Image()
-        tempImg.src = modalImage
-
-        // This will size relative to the uploaded image
-        // size. If you want to size according to what they
-        // are looking at on screen, remove scaleX + scaleY
-        const scaleX = tempImg.naturalWidth / tempImg.width
-        const scaleY = tempImg.naturalHeight / tempImg.height
-
-        const offscreen = new OffscreenCanvas(
-            200, 200
-        )
-        const ctx = offscreen.getContext('2d')
-        if (!ctx) {
-            throw new Error('No 2d context')
-        }
-        let image = new Image();
-        image.src = modalImage
-
-        ctx.translate(-crop.x, -crop.y)
-
-        ctx.drawImage(
-            image, 0, 0, crop.width, crop.height
-        )
-
-        const blob = await offscreen.convertToBlob({
-            type: 'image/png',
-        })
-
-        let base64 = await new Promise((resolve, _) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob);
-        });
-
-        console.log("output")
+    const handleSubmission = async (cropResult: any) => {
+        let base64 = await getCroppedImg(modalImage, cropResult[1])
 
         console.log(base64)
-
-
-
-        //debug
-        /*
-        //okay, this works fine...
-
-        const blob2 = await offscreen2.convertToBlob({
-            type: 'image/png',
-        })
-
-        let base642 = await new Promise((resolve, _) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.readAsDataURL(blob2);
-        });
-
-        console.log("og read")
-        console.log(base642)
-        */
-
+        
 
 
     }
