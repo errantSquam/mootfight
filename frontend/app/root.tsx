@@ -11,6 +11,12 @@ import { Navbar } from "./components/navbar";
 import type { Route } from "./+types/root";
 import "./app.css";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
+
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -49,7 +55,10 @@ export default function App() {
     <Navbar />
     <div className="pt-10">
       <Outlet />
+      
+        <ToastContainer/>
     </div>
+
   </>
 }
 

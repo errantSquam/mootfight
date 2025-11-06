@@ -7,6 +7,7 @@ import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
 import { collection } from "firebase/firestore";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { FirebaseError } from "firebase/app";
 
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
@@ -15,32 +16,52 @@ const auth = getAuth()
 
 var db = getFirestore(app)
 
+type ToastResponse = {
+    toastType: string,
+    message: string
+}
 
-const signIn = (email: string, password: string) => {
-    var promise = signInWithEmailAndPassword(auth, email, password)
+const signIn = async (email: string, password: string): Promise<ToastResponse> => {
+    try {
+        let userCredential = await signInWithEmailAndPassword(auth, email, password)
+        let userUid = userCredential.user.uid;
+        let docRef = doc(db, "users", userUid)
 
-    promise.catch(function (error) {
-          var errorCode = error.code;
-          console.log(`GOT ERROR: ` + errorCode)
-          //catch errors, check docs and put actual errors here later. these are for creation
-          if (errorCode == 'auth/weak-password') return 
-          if (errorCode == 'auth/email-already-in-use') return 
-      });
+        let docSnap = await getDoc(docRef)
+        if (!docSnap.exists()) {
 
-    promise.then(async function (userCredential) {
-          var userUid = userCredential.user.uid;
-          var docRef = doc(db, "users", userUid)
-
-          var docSnap = await getDoc(docRef)
-          if (!docSnap.exists()) {
-            
             setDoc(docRef, {
                 email: email,
                 username: email,
 
             });
         }
-       });  
+        return {
+            toastType: "success",
+            message: "Successfully logged in!"
+        }
+    } catch (error: unknown) {
+        if (error instanceof FirebaseError) {
+            console.log(`GOT ERROR: ` + error.code)
+
+            let errorMessage = "ERROR:" + error.code
+            if (error.code === "auth/invalid-credential") {
+                errorMessage = "Invalid email or password."
+            }
+
+            return {
+                toastType: "error",
+                message: errorMessage
+            }
+        } else {
+            return {
+                toastType: "error",
+                message: "UNKNOWN ERROR"
+
+            }
+        }
+    }
+
 
 }
 

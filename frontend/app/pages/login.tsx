@@ -1,15 +1,19 @@
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { type UseFormRegister } from "react-hook-form"
+import { toast } from "react-toastify"
+import { signIn } from "~/api/firebase"
 
 type Inputs = {
     email: string
     password: string
 }
 
-const RequiredField = ({ title, value, register }: { title: string, value: any, register: UseFormRegister<Inputs> }) => {
+const RequiredField = ({ title, value, register, isPassword = false }: 
+    { title: string, value: any, register: UseFormRegister<Inputs>, isPassword?:boolean }) => {
     return <div>
         <div>{title}</div>
         <input className="border border-white rounded-md p-2 bg-gray-800"
+            type = {isPassword ? "password" : "input"}
             {...register(value, { required: true })} />
     </div>
 }
@@ -22,8 +26,16 @@ export function Login() {
         formState: { errors },
     } = useForm<Inputs>()
 
-    const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const onSubmit: SubmitHandler<Inputs> = (data, e) => {
         console.log(data)
+
+        signIn(data.email, data.password).then((resp) => {
+            if (resp.toastType === "success") {
+                toast.success(resp.message)
+            } else if (resp.toastType === "error") {
+                toast.error(resp.message)
+            }
+        })
 
     }
 
@@ -34,23 +46,24 @@ export function Login() {
                     Login
                 </header>
                 <div className="w-1/3 space-y-6 px-4">
-                    <nav className="flex justify-center items-center w-full 
+                    <div className="flex justify-center items-center w-full 
                     rounded-3xl border p-6 
                     dark:border-gray-700">
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col space-y-4 items-center">
                             <RequiredField title="Email"
                                 value="email" register={register} />
-                            
+
                             {errors.email && <span>This field is required</span>}
 
                             <RequiredField title="Password"
-                                value="password" register={register} />
+                                value="password" register={register} 
+                                isPassword/>
 
                             {errors.password && <span>This field is required</span>}
 
                             <input type="submit" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
                         </form>
-                    </nav>
+                    </div>
                 </div>
             </div>
         </main>
