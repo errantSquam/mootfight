@@ -9,6 +9,8 @@ import { AuthContext } from "~/provider/authProvider"
 import { useContext } from "react"
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Icon } from "@iconify/react";
+import { getPfp } from "~/functions/helper"
+
 
 const UserDropdown = ({ userInfo }: { userInfo: any }) => {
     return <Menu>
@@ -23,7 +25,7 @@ const UserDropdown = ({ userInfo }: { userInfo: any }) => {
             className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
             <MenuItem>
-                <Link to={`/user/profile/${userInfo.uid}`} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                <Link to={`/user/profile/${encodeURIComponent(userInfo.username)}`} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
                     Profile
                 </Link>
             </MenuItem>
@@ -65,9 +67,7 @@ export function Navbar() {
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <div>{userInfo !== null && <img src={userInfo.profilePicture === undefined ?
-                    "/assets/images/default owlcroraptor.png" :
-                    userInfo.profilePicture} className="h-10" />}</div>
+                <div>{userInfo !== null && <img src={getPfp(userInfo?.profilePicture)} className="h-10" />}</div>
                 <div>{userInfo !== null && <UserDropdown userInfo={userInfo} />}</div>
             </div>
         </div>

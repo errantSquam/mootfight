@@ -3,6 +3,7 @@ import { getUsers, getUsersHook } from "~/api/firebase";
 import { useState, useEffect } from "react";
 import { QuerySnapshot } from "firebase/firestore";
 import { Link } from "react-router";
+import { getPfp } from "~/functions/helper";
 
 
 export function Welcome() {
@@ -30,8 +31,8 @@ export function Welcome() {
               <b>First Three Users</b>
               <div className = "flex flex-row gap-x-2">
               {!loading && transformSnapshot(snapshot).map((user) => {
-                return <Link to = {`user/profile/${user.username}`}><div className = "flex flex-col items-center" key = {user.username}>
-                  <img src = {user.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : user.profilePicture} className = "w-20"/>
+                return <Link to = {`user/profile/${encodeURIComponent(user.username)}`}><div className = "flex flex-col items-center" key = {user.username}>
+                  <img src = {getPfp(user.profilePicture)} className = "w-20"/>
                   <span>{user.username}</span>
                   </div></Link>
               })}

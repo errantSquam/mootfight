@@ -80,14 +80,23 @@ const getUserInfoHook = (uid?: string) => {
 
 }
 
+const getUserInfoByUsername = async (username: string | undefined) => {
+    if (username === undefined) {
+        return [undefined, true, undefined]
+    }
+    let usersRef = collection(db, "users")
+    const q = query(usersRef, orderBy("username"), where('username', '==', username));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot
+
+}
+
 const getUserInfoByUsernameHook = (username: string | undefined) => {
     if (username === undefined) {
         return [undefined, true, undefined]
     }
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), where('username', '==', username));
-
-    //query.docs[0].data()
     return useCollection(q)
 }
 
