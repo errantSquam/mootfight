@@ -59,7 +59,7 @@ const getUserInfo = async (uid?: string) => {
     return docSnap.data()
 }
 
-const getUserInfoHook = async (uid?: string) => {
+const getUserInfoHook = (uid?: string) => {
     if (auth.currentUser === null) {
         return null
     }
