@@ -1,5 +1,5 @@
 import type { Route } from "../+types/home";
-import { SettingsPage } from "~/pages/settings";
+import { SettingsPage } from "~/pages/settings/settings";
 
 export function meta({}: Route.MetaArgs) {
   return [

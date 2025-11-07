@@ -137,6 +137,10 @@ export function SettingsPage() {
 
                     </div>
                 </div>
+
+                <div className = "cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded"> 
+                    Edit Bio
+                    </div>
             </div>
         </div >
     );

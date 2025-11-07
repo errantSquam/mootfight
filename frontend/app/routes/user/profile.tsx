@@ -1,5 +1,6 @@
 import type { Route } from "../+types/home";
-import { ProfilePage } from "~/pages/profile";
+import { ProfilePage } from "~/pages/profile/profile";
+import { getUserInfoHook } from "~/api/firebase";
 
 export function meta({}: Route.MetaArgs) {
   return [

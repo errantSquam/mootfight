@@ -30,7 +30,11 @@ const AuthProvider = ({ children }: { children: any }) => {
 
         let tempInfo = newInfo 
         if (tempInfo !== null && (uid !== null || uid !== undefined)) {
-            tempInfo['uid'] = uid
+            if (userInfo !== null) {
+                tempInfo['uid'] = userInfo.uid
+            } else {
+                tempInfo['uid'] = uid
+            }
         }
         setUserInfo(newInfo)
         setAuthLoaded(true)
