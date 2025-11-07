@@ -8,6 +8,7 @@ import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
 import 'react-easy-crop/react-easy-crop.css'
 import {ProfilePictureComponent} from "~/components/settings/cropComponents"
+import { Link } from "react-router"
 
 
 type Inputs = {
@@ -138,9 +139,9 @@ export function SettingsPage() {
                     </div>
                 </div>
 
-                <div className = "cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded"> 
+                <Link to = "/user/settings/bio" className = "cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded"> 
                     Edit Bio
-                    </div>
+                    </Link>
             </div>
         </div >
     );
