@@ -12,6 +12,7 @@ import {
     diffSourcePlugin,
     DiffSourceToggleWrapper,
     quotePlugin,
+    tablePlugin,
     InsertThematicBreak,
 
     thematicBreakPlugin,
@@ -30,6 +31,7 @@ export function BioEditPage() {
                 plugins={[
                     headingsPlugin(),
                     thematicBreakPlugin(),
+                    tablePlugin(),
                     //quotePlugin(), need to style before we think about this...
                     diffSourcePlugin({viewMode: 'rich-text'}),
                     toolbarPlugin({
