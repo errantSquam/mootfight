@@ -64,7 +64,7 @@ export function ProfileRedirectPage() {
     {(!loading && hasDuplicate) && 
         <div className = "flex flex-col items-center space-y-2"> 
             <div>Who are you looking for?</div>
-            <div className = "flex flex-row space-x-4">
+            <div className = "grid grid-cols-2 space-x-4">
             {getAlternateProfileData(profileData)?.map(
                 (user) => {
                     return <Link to = {`/user/profile/${encodeURIComponent(user.username)}/${user.uid}`}><div className = "flex flex-col items-center">
