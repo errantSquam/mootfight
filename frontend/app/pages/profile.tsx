@@ -1,12 +1,25 @@
+import type { DocumentData, QuerySnapshot } from "firebase/firestore";
 import { useParams } from "react-router";
 import { getUserInfoHook } from "~/api/firebase";
+import { getUserInfoByUsernameHook } from "~/api/firebase";
 
 
 export function ProfilePage() {
     let params = useParams();
     //params.userId
 
-    const [profileData, loading, error] = getUserInfoHook(params.userId)
+    const [profileData, loading, error] = getUserInfoByUsernameHook(params.username)
+
+    function getProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined ) {
+        if (typeof profileData === "boolean" || profileData === undefined) {
+            return undefined
+        } 
+        return profileData.docs[0].data()
+        
+        
+
+
+    }
 
 
 
@@ -16,14 +29,19 @@ export function ProfilePage() {
                 <div className="flex flex-col items-center gap-9">
                     {
                         (!loading) && <div className="flex flex-row items-center gap-x-2">
-                            <img src={profileData?.data()?.profilePicture === undefined ?
+                            <img src={getProfileData(profileData)?.profilePicture === undefined ?
                                 "/assets/images/default owlcroraptor.png" :
-                                profileData?.data()?.profilePicture
+                                getProfileData(profileData)?.profilePicture
 
                             } className="h-20" />
                             <div className="flex flex-col">
-                                <div>{profileData?.data()?.username} {profileData?.data()?.pronouns && <i className="opacity-70">({profileData?.data()?.pronouns})</i>}</div>
-                                <div className="opacity-70 text-sm"><i>{profileData?.data()?.status}</i></div>
+                                <div className = "flex flex-row gap-x-2">
+                                    <div>{getProfileData(profileData)?.username} </div>
+                                    <div>{getProfileData(profileData)?.pronouns && 
+                                    <i className="opacity-70">({getProfileData(profileData)?.pronouns})</i>}
+                                    </div>
+                                </div>
+                                <div className="opacity-70 text-sm"><i>{getProfileData(profileData)?.status}</i></div>
                             </div>
                         </div>
                     }
@@ -34,7 +52,7 @@ export function ProfilePage() {
                             {
                                 (!loading) &&
                                 <div>
-                                    <div>{profileData?.data()?.username}</div>
+                                    <div>{getProfileData(profileData)?.username}</div>
                                 </div>
                             }
                         </div>

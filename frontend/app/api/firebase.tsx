@@ -80,6 +80,17 @@ const getUserInfoHook = (uid?: string) => {
 
 }
 
+const getUserInfoByUsernameHook = (username: string | undefined) => {
+    if (username === undefined) {
+        return [undefined, true, undefined]
+    }
+    let usersRef = collection(db, "users")
+    const q = query(usersRef, orderBy("username"), where('username', '==', username));
+
+    //query.docs[0].data()
+    return useCollection(q)
+}
+
 const getUsers = async (limitAmount: number = 3) => {
     //possible issue. it DOES include the emails as well, which might be a privacy issue...
     let usersRef = collection(db, "users")
@@ -91,9 +102,9 @@ const getUsers = async (limitAmount: number = 3) => {
 const getUsersHook = (limitAmount: number = 3) => {
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), limit(limitAmount));
-    const [snapshot, loading, error] = useCollection(q)
-    return [snapshot, loading, error]
+    return useCollection(q)
 }
+
 
 const updateUserInfo = async (toUpdate: any) => {
     if (auth.currentUser === null) {
@@ -174,6 +185,7 @@ export {
     logOut,
     getUserInfo,
     getUserInfoHook,
+    getUserInfoByUsernameHook,
     getUsers,
     getUsersHook,
     updateUserInfo

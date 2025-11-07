@@ -8,7 +8,7 @@ export default [
     ]),
     ...prefix("user",[
         route("settings", "routes/user/settings.tsx"),
-        route("profile/:userId", "routes/user/profile.tsx")
+        route("profile/:username", "routes/user/profile.tsx")
     ],
     
 

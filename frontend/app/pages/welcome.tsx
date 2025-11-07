@@ -30,7 +30,7 @@ export function Welcome() {
               <b>First Three Users</b>
               <div className = "flex flex-row gap-x-2">
               {!loading && transformSnapshot(snapshot).map((user) => {
-                return <Link to = {`user/profile/${user.uid}`}><div className = "flex flex-col items-center" key = {user.username}>
+                return <Link to = {`user/profile/${user.username}`}><div className = "flex flex-col items-center" key = {user.username}>
                   <img src = {user.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : user.profilePicture} className = "w-20"/>
                   <span>{user.username}</span>
                   </div></Link>
