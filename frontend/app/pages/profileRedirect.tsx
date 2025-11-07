@@ -8,6 +8,7 @@ import { ProfileLayout } from "~/components/profile/profileLayout";
 import { getPfp } from "~/functions/helper";
 import { useState } from "react";
 import { Link } from "react-router";
+import { getProfileLink } from "~/functions/helper";
 
 export function ProfileRedirectPage() {
     let params = useParams();
@@ -67,7 +68,7 @@ export function ProfileRedirectPage() {
             <div className = "grid grid-cols-2 space-x-4">
             {getAlternateProfileData(profileData)?.map(
                 (user) => {
-                    return <Link to = {`/user/profile/${encodeURIComponent(user.username)}/${user.uid}`}><div className = "flex flex-col items-center">
+                    return <Link to = {getProfileLink(user.username, user.uid)}><div className = "flex flex-col items-center">
                                 <img src = {getPfp(user.profilePicture)} className = "h-20 w-20"/>
                                 <div>{user.username}</div>
                                 <div className = "text-xs opacity-60 italic">ID: {user.uid}</div>

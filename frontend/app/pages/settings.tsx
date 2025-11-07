@@ -11,6 +11,7 @@ import {ProfilePictureComponent} from "~/components/settings/cropComponents"
 
 
 type Inputs = {
+    uid: string
     username: string
     email: string
     pronouns: string
@@ -76,6 +77,13 @@ export function SettingsPage() {
                                 <form onSubmit={handleSubmit(onSubmit)}
                                 >
                                     <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
+                                        <div>
+                                            User ID: <span className = "italic opacity-70"><SettingsInput
+                                                defaultValue={userInfo.uid}
+                                                value="uid"
+                                                register={register}
+                                                disabled /></span>
+                                        </div>
                                         <div>
                                             Username: <SettingsInput
                                                 defaultValue={userInfo.username}

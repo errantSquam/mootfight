@@ -3,7 +3,7 @@ import { getPfp } from "~/functions/helper"
 
 
 export function ProfileLayout({children, loading, profileData, hasDuplicate = false} : 
-    {children?: any, loading: boolean | undefined, profileData: any, hasDuplicate : boolean}) {
+    {children?: any, loading: boolean | undefined, profileData: any, hasDuplicate? : boolean}) {
     return <div className="flex items-center justify-center pt-16 pb-4">
             <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
                             <div>{children}</div>
