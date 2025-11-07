@@ -11,13 +11,12 @@ import { Navbar } from "./components/navbar";
 import type { Route } from "./+types/root";
 import "./app.css";
 
-import { ToastContainer, toast } from 'react-toastify';
-import { useState } from "react";
-import { useEffect } from "react";
+import { ToastContainer, toast } from 'react-toastify/unstyled';
 import { LoadScreen } from "./components/loading";
-import { onAuthStateChanged, type User } from "firebase/auth";
-import { signIn, auth, logOut } from "~/api/firebase"
 import { AuthProvider } from "./provider/authProvider";
+import 'react-toastify/ReactToastify.css';
+
+
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
