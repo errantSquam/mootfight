@@ -7,8 +7,10 @@ export default [
         route("attack", "routes/submit/submit_attack.tsx")
     ]),
     ...prefix("user",[
-        route("settings", "routes/user/settings.tsx")
-    ]
+        route("settings", "routes/user/settings.tsx"),
+        route("profile/:userId", "routes/user/profile.tsx")
+    ],
+    
 
     )
 

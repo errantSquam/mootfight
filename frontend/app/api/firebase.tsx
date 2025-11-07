@@ -7,13 +7,15 @@ import { getFirestore } from "firebase/firestore";
 import { collection, doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import {useDocument, useCollection} from 'react-firebase-hooks/firestore'
+import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth()
+
 
 
 var db = getFirestore(app)
@@ -48,11 +50,16 @@ const handleError = (error: unknown) => {
 
 const getUserInfo = async (uid?: string) => {
 
-    if (auth.currentUser === null) {
+    /*if (auth.currentUser === null) {
         return null
-    }
+    }*/
     if (uid === undefined) {
-        uid = auth.currentUser.uid
+        if (auth.currentUser !== null) {
+            uid = auth.currentUser.uid
+        }
+        else {
+            return {}
+        }
     }
     let docRef = doc(db, "users", uid)
     let docSnap = await getDoc(docRef)
@@ -60,15 +67,17 @@ const getUserInfo = async (uid?: string) => {
 }
 
 const getUserInfoHook = (uid?: string) => {
-    if (auth.currentUser === null) {
-        return null
-    }
     if (uid === undefined) {
-        uid = auth.currentUser.uid
+        if (auth.currentUser !== null) {
+            uid = auth.currentUser.uid
+        }
+        else {
+            uid = ''
+        }
     }
 
-    return useDocument(doc(getFirestore(app), 'users', uid)
-  )
+    return useDocument(doc(getFirestore(app), 'users', uid))
+
 }
 
 const getUsers = async (limitAmount: number = 3) => {
@@ -127,6 +136,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
             setDoc(docRef, {
                 email: email,
                 username: `User #${Math.floor(Math.random() * 100)}`,
+                uid: userUid
 
             });
         }

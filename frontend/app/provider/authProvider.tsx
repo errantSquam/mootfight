@@ -9,7 +9,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 const AuthContext = createContext<any>({ state: {}, actions: {} });
 
 const AuthProvider = ({ children }: { children: any }) => {
-    const [authUser, loading, error] = useAuthState(auth);
 
     const [authLoaded, setAuthLoaded] = useState(false)
     const [userInfo, setUserInfo] = useState<any>(null)
@@ -20,8 +19,6 @@ const AuthProvider = ({ children }: { children: any }) => {
             setUserInfo(JSON.parse(localInfo))
             setAuthLoaded(true)
         }
-
-
     }, [])
 
 
@@ -29,9 +26,13 @@ const AuthProvider = ({ children }: { children: any }) => {
         handleAuthStateChanged(user)
     });
 
-    function updateUserInfo(newInfo: any) {
-        setUserInfo(newInfo)
+    function updateUserInfo(newInfo: any, uid?:string) {
 
+        let tempInfo = newInfo 
+        if (tempInfo !== null && (uid !== null || uid !== undefined)) {
+            tempInfo['uid'] = uid
+        }
+        setUserInfo(newInfo)
         setAuthLoaded(true)
         try {
             if (newInfo === null) {
@@ -41,16 +42,14 @@ const AuthProvider = ({ children }: { children: any }) => {
             }
 
         } catch (e: unknown) {
-
         }
-
     }
 
     function handleAuthStateChanged(user: User | null) {
         if (user) {
             if (userInfo === null) {
                 getUserInfo(user.uid).then((resp) => {
-                    updateUserInfo(resp)
+                    updateUserInfo(resp, user.uid)
 
                 })
             }
@@ -62,9 +61,7 @@ const AuthProvider = ({ children }: { children: any }) => {
     const refreshAuthUser = () => {
         getUserInfo().then((resp) => {
             updateUserInfo(resp)
-
         })
-
     }
 
     const value = { userInfo, authLoaded, setUserInfo, refreshAuthUser };

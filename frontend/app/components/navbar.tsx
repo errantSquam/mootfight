@@ -10,37 +10,40 @@ import { useContext } from "react"
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Icon } from "@iconify/react";
 
-const UserDropdown = ({userInfo}: {userInfo: any}) => {
+const UserDropdown = ({ userInfo }: { userInfo: any }) => {
     return <Menu>
         <MenuButton className="font-semibold text-white hover:cursor-pointer">
-          {userInfo.username}
-          {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
+            {userInfo.username}
+            {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
         </MenuButton>
 
         <MenuItems
-          transition
-          anchor="bottom end"
-          className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+            transition
+            anchor="bottom end"
+            className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
-          <MenuItem>
-            <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
-              {/*<PencilIcon className="size-4 fill-white/30" />*/}
-              Profile
-            </button>
-          </MenuItem>
-          <MenuItem>
-            <Link to = '/user/settings' className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
-              {/*<Square2StackIcon className="size-4 fill-white/30" />*/}
-              Settings
-            </Link>
-          </MenuItem>
+            <MenuItem>
+                <Link to={`/user/profile/${userInfo.uid}`} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                    Profile
+                </Link>
+            </MenuItem>
+            <MenuItem>
+                <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                    Notifications
+                </button>
+            </MenuItem>
+            <MenuItem>
+                <Link to='/user/settings' className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                    Settings
+                </Link>
+            </MenuItem>
         </MenuItems>
-      </Menu>
+    </Menu>
 }
 
 export function Navbar() {
-    const {userInfo, setUserInfo} = useContext(AuthContext)
-    
+    const { userInfo, setUserInfo } = useContext(AuthContext)
+
     let navigate = useNavigate()
 
     const handleLogout = async () => {
@@ -54,7 +57,7 @@ export function Navbar() {
 
 
     return <div className="fixed w-screen h-10 p-4 px-10 bg-zinc-900 flex items-center">
-        <div className = "flex flex-row text-white gap-x-4 justify-between w-full items-center">
+        <div className="flex flex-row text-white gap-x-4 justify-between w-full items-center">
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
                 {userInfo === null && <div><Link to="login">Login </Link></div>}
@@ -62,10 +65,10 @@ export function Navbar() {
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <div>{userInfo!== null && <img src = {userInfo.profilePicture === undefined ? 
-                    "/assets/images/default owlcroraptor.png" : 
-                    userInfo.profilePicture } className = "h-10"/> }</div>
-                <div>{userInfo !== null && <UserDropdown userInfo= {userInfo}/>}</div>
+                <div>{userInfo !== null && <img src={userInfo.profilePicture === undefined ?
+                    "/assets/images/default owlcroraptor.png" :
+                    userInfo.profilePicture} className="h-10" />}</div>
+                <div>{userInfo !== null && <UserDropdown userInfo={userInfo} />}</div>
             </div>
         </div>
 
