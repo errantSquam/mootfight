@@ -11,28 +11,52 @@ const AuthProvider = ({ children }: { children: any }) => {
     const [authLoaded, setAuthLoaded] = useState(false)
     const [userInfo, setUserInfo] = useState<any>(null)
 
+    useEffect(() => {
+        let localInfo = localStorage.getItem('userInfo')
+        if (localInfo !== null) {
+            setUserInfo(JSON.parse(localInfo))
+            setAuthLoaded(true)
+        }
+
+
+    }, [])
 
 
     onAuthStateChanged(auth, (user) => {
         handleAuthStateChanged(user)
     });
 
+    function updateUserInfo(newInfo: any) {
+        setUserInfo(newInfo)
+        try {
+            if (newInfo === null) {
+                localStorage.removeItem('userInfo')
+            } else {
+                localStorage.setItem('userInfo', JSON.stringify(newInfo))
+            }
+        } catch (e: unknown) {
+
+        }
+
+    }
+
     function handleAuthStateChanged(user: User | null) {
         if (user) {
             if (userInfo === null) {
                 getUserInfo(user.uid).then((resp) => {
-                    setUserInfo(resp)
+                    updateUserInfo(resp)
                     setAuthLoaded(true)
 
                 })
             }
         } else {
-            setUserInfo(null)
+            updateUserInfo(null)
+            setAuthLoaded(true)
         }
     }
 
     const refreshAuthUser = () => {
-        getUserInfo().then((resp) =>{
+        getUserInfo().then((resp) => {
             setUserInfo(resp)
             setAuthLoaded(true)
 
