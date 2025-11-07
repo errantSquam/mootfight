@@ -1,23 +1,21 @@
 
-import { getUsers } from "~/api/firebase";
+import { getUsers, getUsersHook } from "~/api/firebase";
 import { useState, useEffect } from "react";
+import { QuerySnapshot } from "firebase/firestore";
+
 
 export function Welcome() {
 
-  //mostly a placeholder for now to test functionality
-  const [userList, setUserlist] = useState<any>([])
+  const [snapshot, loading, error] = getUsersHook();
 
-  //perhaps worth react querying these sorts of calls?
-  useEffect(()=> {
-    getUsers().then((resp) => {
-      let tempArray: any[] = []
-      resp.forEach((user) => {
+  function transformSnapshot(snapshotData: any) {
+    let tempArray: any[] = []
+      snapshotData.forEach((user: any) => {
         tempArray = [...tempArray, user.data()]
       })
-      setUserlist(tempArray)
-    })
+    return tempArray
 
-  }, [])
+  }
 
   return (
     <div className="flex items-center justify-center pt-16 pb-4">
@@ -29,13 +27,12 @@ export function Welcome() {
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
             <div>
               <b>First Three Users</b>
-              <div key = {userList} className = "flex flex-row gap-x-2">
-              {userList.map((user: any) => {
-                return <div className = "flex flex-col items-center">
+              <div className = "flex flex-row gap-x-2">
+              {!loading && transformSnapshot(snapshot).map((user) => {
+                return <div className = "flex flex-col items-center" key = {user.username}>
                   <img src = {user.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : user.profilePicture} className = "w-20"/>
                   <span>{user.username}</span>
                   </div>
-
               })}
               </div>
             </div>

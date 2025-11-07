@@ -3,10 +3,13 @@ import { useEffect } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { signIn, auth, logOut } from "~/api/firebase"
 import { getUserInfo } from "~/api/firebase";
+import { useAuthState } from 'react-firebase-hooks/auth';
+
 
 const AuthContext = createContext<any>({ state: {}, actions: {} });
 
 const AuthProvider = ({ children }: { children: any }) => {
+    const [authUser, loading, error] = useAuthState(auth);
 
     const [authLoaded, setAuthLoaded] = useState(false)
     const [userInfo, setUserInfo] = useState<any>(null)
@@ -28,12 +31,15 @@ const AuthProvider = ({ children }: { children: any }) => {
 
     function updateUserInfo(newInfo: any) {
         setUserInfo(newInfo)
+
+        setAuthLoaded(true)
         try {
             if (newInfo === null) {
                 localStorage.removeItem('userInfo')
             } else {
                 localStorage.setItem('userInfo', JSON.stringify(newInfo))
             }
+
         } catch (e: unknown) {
 
         }
@@ -45,20 +51,17 @@ const AuthProvider = ({ children }: { children: any }) => {
             if (userInfo === null) {
                 getUserInfo(user.uid).then((resp) => {
                     updateUserInfo(resp)
-                    setAuthLoaded(true)
 
                 })
             }
         } else {
             updateUserInfo(null)
-            setAuthLoaded(true)
         }
     }
 
     const refreshAuthUser = () => {
         getUserInfo().then((resp) => {
-            setUserInfo(resp)
-            setAuthLoaded(true)
+            updateUserInfo(resp)
 
         })
 

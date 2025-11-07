@@ -1,21 +1,20 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { getAuth } from "firebase/auth";
-import firebase from "firebase/compat/app";
 import { getFirestore } from "firebase/firestore";
-import { collection } from "firebase/firestore";
-import { doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
-import { onAuthStateChanged } from "firebase/auth";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
+import {useDocument, useCollection} from 'react-firebase-hooks/firestore'
+
 
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth()
+
 
 var db = getFirestore(app)
 
@@ -48,7 +47,6 @@ const handleError = (error: unknown) => {
 }
 
 const getUserInfo = async (uid?: string) => {
-    console.log(auth)
 
     if (auth.currentUser === null) {
         return null
@@ -59,6 +57,33 @@ const getUserInfo = async (uid?: string) => {
     let docRef = doc(db, "users", uid)
     let docSnap = await getDoc(docRef)
     return docSnap.data()
+}
+
+const getUserInfoHook = async (uid?: string) => {
+    if (auth.currentUser === null) {
+        return null
+    }
+    if (uid === undefined) {
+        uid = auth.currentUser.uid
+    }
+
+    return useDocument(doc(getFirestore(app), 'users', uid)
+  )
+}
+
+const getUsers = async (limitAmount: number = 3) => {
+    //possible issue. it DOES include the emails as well, which might be a privacy issue...
+    let usersRef = collection(db, "users")
+    const q = query(usersRef, orderBy("username"), limit(limitAmount));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot
+}
+
+const getUsersHook = (limitAmount: number = 3) => {
+    let usersRef = collection(db, "users")
+    const q = query(usersRef, orderBy("username"), limit(limitAmount));
+    const [snapshot, loading, error] = useCollection(q)
+    return [snapshot, loading, error]
 }
 
 const updateUserInfo = async (toUpdate: any) => {
@@ -132,21 +157,14 @@ const logOut = async () => {
 
 }
 
-const getUsers = async (limitAmount: number = 3) => {
-    //possible issue. it DOES include the emails as well, which might be a privacy issue...
-    let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), limit(limitAmount));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot
-
-
-}
 
 export {
     signIn,
     auth,
     logOut,
     getUserInfo,
+    getUserInfoHook,
     getUsers,
+    getUsersHook,
     updateUserInfo
 }
