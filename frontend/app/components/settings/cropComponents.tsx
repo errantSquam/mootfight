@@ -12,6 +12,7 @@ import Cropper, { type Area } from 'react-easy-crop'
 import 'react-easy-crop/react-easy-crop.css'
 import getCroppedImg from "~/functions/crop"
 import { updateUserSettings } from "~/functions/apiHandlers"
+import { getPfp } from "~/functions/helper"
 
 
 type Inputs = {
@@ -27,9 +28,11 @@ type ImageInput = {
 
 
 const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmission }:
-    { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, 
-        modalImage: string, handleSubmission: (cropResult: Array<Area>) => Promise<void>, 
-        resetSubmission: () => void }) => {
+    {
+        isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+        modalImage: string, handleSubmission: (cropResult: Array<Area>) => Promise<void>,
+        resetSubmission: () => void
+    }) => {
 
     const [crop, setCrop] = useState({ x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
@@ -121,7 +124,7 @@ export const ProfilePictureComponent = () => {
 
     const handleSubmission = async (cropResult: Array<Area>) => {
         let base64 = await getCroppedImg(modalImage, cropResult[1])
-        if (base64 === null){
+        if (base64 === null) {
             //error?
             console.log("pfp crop error")
             return
@@ -155,20 +158,15 @@ export const ProfilePictureComponent = () => {
             resetSubmission={resetSubmission} />
 
         <label htmlFor="fileField">
-            <div className="w-full">
-                <div className="w-full flex items-center justify-center p-2">
-                    <div className="relative group cursor-pointer">
-                        <img src={
-                            userInfo === null ? "/assets/images/default owlcroraptor.png" :
-                                userInfo.profilePicture === undefined ? "/assets/images/default owlcroraptor.png" : userInfo.profilePicture
-                        }
-                            className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
-                        <Icon icon="lucide:edit"
-                            className={`opacity-0 group-hover:opacity-100 transition
+            <div className="relative group cursor-pointer">
+                <img src={
+                    getPfp(userInfo.profilePicture)
+                }
+                    className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
+                <Icon icon="lucide:edit"
+                    className={`opacity-0 group-hover:opacity-100 transition
                                             absolute text-3xl bottom-0 right-1 bg-zinc-800 rounded p-1`} />
 
-                    </div>
-                </div>
             </div>
         </label>
         <input type="file" id="fileField" accept="image/*" hidden={true}

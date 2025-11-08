@@ -46,8 +46,13 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
         <div className="w-full h-full flex flex-col items-start gap-y-2 flex-3 px-4">
             <div className="flex flex-col items-start justify-center w-full">
                 <div className="flex flex-row items-center gap-x-2 w-full">
-                    {/* <img src={getPfp(profileData?.profilePicture)} className="h-20" /> */}
-                    <ProfilePictureComponent />
+                    <div className = "p-2">
+                        <img src={getPfp(profileData?.profilePicture)} className="w-30 rounded-full" /> 
+                        {/*
+                        Put pfp component here if user is editing...
+                        <ProfilePictureComponent />
+                        */}
+                    </div>
                     <div className="flex flex-col space-y-2 w-full grow">
                         <div className="flex flex-col grow items-start">
                             <div className="flex flex-row gap-x-2 items-center justify-center">

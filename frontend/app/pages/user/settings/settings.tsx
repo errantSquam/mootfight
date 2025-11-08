@@ -7,7 +7,7 @@ import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
 import 'react-easy-crop/react-easy-crop.css'
-import {ProfilePictureComponent} from "~/components/settings/cropComponents"
+import { ProfilePictureComponent } from "~/components/settings/cropComponents"
 import { Link } from "react-router"
 import { updateUserSettings } from "~/functions/apiHandlers"
 
@@ -69,7 +69,11 @@ export function SettingsPage() {
                     dark:border-gray-700">
                         <div className="flex flex-col">
 
-                            <ProfilePictureComponent />
+                            <div className="w-full">
+                                <div className="w-full flex items-center justify-center p-2">
+                                    <ProfilePictureComponent />
+                                </div>
+                            </div>
 
                             {
                                 userInfo !== null &&
@@ -78,7 +82,7 @@ export function SettingsPage() {
                                 >
                                     <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
                                         <div>
-                                            User ID: <span className = "italic opacity-70"><SettingsInput
+                                            User ID: <span className="italic opacity-70"><SettingsInput
                                                 defaultValue={userInfo.uid}
                                                 value="uid"
                                                 register={register}
@@ -138,9 +142,9 @@ export function SettingsPage() {
                     </div>
                 </div>
 
-                <Link to = "/user/settings/bio" className = "cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded"> 
+                <Link to="/user/settings/bio" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded">
                     Edit Bio
-                    </Link>
+                </Link>
             </div>
         </div >
     );
