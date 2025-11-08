@@ -79,7 +79,7 @@ export function BioEditPage() {
                     >{
                             sanitize(markdown,
                                 {
-                                    allowedTags: ['u'],
+                                    allowedTags: ['u', 'img'],
                                     allowedAttributes: {
                                         img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading']
                                     },
