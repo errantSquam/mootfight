@@ -121,6 +121,11 @@ export const ProfilePictureComponent = () => {
 
     const handleSubmission = async (cropResult: Array<Area>) => {
         let base64 = await getCroppedImg(modalImage, cropResult[1])
+        if (base64 === null){
+            //error?
+            console.log("pfp crop error")
+            return
+        }
 
         updateUserSettings({ profilePicture: base64 }, refreshAuthUser).then((resp) => {
             resetImage()

@@ -1,6 +1,6 @@
 import { toast } from "react-toastify/unstyled"
 
-export function handleToast(resp: any): void {
+export function handleToast(resp: ToastResponse): void {
     if (resp.toastType === "success") {
         toast.success(resp.message)
 

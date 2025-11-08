@@ -18,3 +18,10 @@ interface UserAmbiguousSchema extends UserSchema {
 interface BioUserSchema extends UserSchema {
     bio: string
 }
+
+
+type ToastResponse = {
+    toastType: string,
+    message: string,
+    data?: any
+}
