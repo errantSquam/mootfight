@@ -4,7 +4,7 @@ import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"
 import { AuthContext } from "~/provider/authProvider"
 import { useContext } from "react"
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+import { Button, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { getPfp } from "~/functions/helper"
 import { getProfileLink } from "~/functions/helper"
 
@@ -36,9 +36,19 @@ const SubmitDropdown = () => {
     </Menu>
 }
 
-const UserDropdown = ({ userInfo }: { userInfo: any }) => {
+const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string }) => {
+    let navigate = useNavigate()
+    const handleLogout = async () => {
+        let resp = await logOut()
+        handleToast(resp)
+        if (resp.toastType === "success") {
+            navigate("/")
+        }
+    }
+
     return <Menu>
-        <MenuButton className="font-semibold text-white hover:cursor-pointer">
+        <MenuButton className="flex flex-row gap-x-4 items-center justify-center font-semibold text-white hover:cursor-pointer">
+            <img src={userPfp} className="h-10" />
             {userInfo.username}
             {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
         </MenuButton>
@@ -63,6 +73,13 @@ const UserDropdown = ({ userInfo }: { userInfo: any }) => {
                     Settings
                 </Link>
             </MenuItem>
+            {userInfo !== null &&
+                <MenuItem>
+                    <Button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10" onClick={() => handleLogout()}>
+                        Logout
+                    </Button>
+                </MenuItem>
+            }
         </MenuItems>
     </Menu>
 }
@@ -70,29 +87,17 @@ const UserDropdown = ({ userInfo }: { userInfo: any }) => {
 export function Navbar() {
     const { userInfo, setUserInfo } = useContext(AuthContext)
 
-    let navigate = useNavigate()
-
-    const handleLogout = async () => {
-        let resp = await logOut()
-        handleToast(resp)
-        if (resp.toastType === "success") {
-            navigate("/")
-
-        }
-    }
-
-
     return <div className="fixed w-screen h-10 p-4 px-10 bg-zinc-900 flex items-center">
         <div className="flex flex-row text-white gap-x-4 justify-between w-full items-center">
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
-                {userInfo === null && <div><Link to="login">Login </Link></div>}
-                {userInfo !== null && <div><SubmitDropdown/></div>}
-                {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
+                {userInfo !== null && <div><SubmitDropdown /></div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <div>{userInfo !== null && <img src={getPfp(userInfo?.profilePicture)} className="h-10" />}</div>
-                <div>{userInfo !== null && <UserDropdown userInfo={userInfo} />}</div>
+                {userInfo === null && <div><Link to="login">Login </Link></div>}
+                <div>
+                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profilePicture)} />}
+                </div>
             </div>
         </div>
 
