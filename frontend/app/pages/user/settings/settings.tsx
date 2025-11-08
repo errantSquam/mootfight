@@ -9,6 +9,7 @@ import { updateUserInfo } from "~/api/firebase"
 import 'react-easy-crop/react-easy-crop.css'
 import {ProfilePictureComponent} from "~/components/settings/cropComponents"
 import { Link } from "react-router"
+import { updateUserSettings } from "~/functions/apiHandlers"
 
 
 type Inputs = {
@@ -50,10 +51,8 @@ export function SettingsPage() {
 
 
     const onSubmit: SubmitHandler<Inputs> = (data, e) => {
-        updateUserInfo(data).then((resp) => {
-            handleToast(resp)
+        updateUserSettings(data, refreshAuthUser).then(() => {
             setIsEditing(false)
-            refreshAuthUser()
         })
 
     }

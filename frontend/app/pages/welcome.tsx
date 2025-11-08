@@ -7,7 +7,7 @@ import { getProfileLink } from "~/functions/helper";
 
 export function Welcome() {
 
-  const [snapshot, loading, error] = getUsersHook();
+  const [snapshot, loading, error] = getUsersHook(99);
 
   function transformSnapshot(snapshotData: any) {
     let tempArray: any[] = []
@@ -27,7 +27,7 @@ export function Welcome() {
         <div className="w-2/3 space-y-6 px-4">
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
             <div>
-              <b>First Three Users</b>
+              <b>Active Users</b>
               <div className = "flex flex-row gap-x-2">
               {!loading && transformSnapshot(snapshot).map((user) => {
                 return <Link to = {getProfileLink(user.username, user.uid)}>
