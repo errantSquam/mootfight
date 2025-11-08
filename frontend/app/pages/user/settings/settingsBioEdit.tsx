@@ -35,7 +35,7 @@ import sanitize from 'sanitize-html'
 import rehypeExternalLinks from 'rehype-external-links'
 import { updateUserInfo } from '~/api/firebase';
 import { handleToast } from '~/functions/handleToast';
-import { SanitizedMarkdown } from '~/components/profile/bio';
+import { SanitizedMarkdown } from '~/components/profile/sanitizedMarkdown';
 
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)

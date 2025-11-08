@@ -37,9 +37,6 @@ service cloud.firestore {
       allow update, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null;
     }
-    match /users/{username} {
-    	allow update: if !exists(/databases/{database}/documents/users/{username})
-    }
   }
 }
 ```

@@ -1,7 +1,7 @@
 
 import { getPfp } from "~/functions/helper"
 
-import { SanitizedMarkdown } from "./bio"
+import { SanitizedMarkdown } from "./sanitizedMarkdown"
 
 export function ProfileLayout({children, loading, profileData, hasDuplicate = false} : 
     {children?: any, loading: boolean | undefined, profileData: any, hasDuplicate? : boolean}) {

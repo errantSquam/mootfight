@@ -62,5 +62,10 @@ body {
     list-style-type: none;
   }
 
+  a {
+    text-decoration: underline;
+    color: var(--color-blue-200);
+  }
+
 
 }
