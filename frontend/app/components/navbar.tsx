@@ -82,6 +82,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
             }
         </MenuItems>
     </Menu>
+
 }
 
 export function Navbar() {

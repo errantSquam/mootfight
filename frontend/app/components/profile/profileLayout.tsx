@@ -39,6 +39,7 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
     //maybe framer motion these tabs later
 
 
+
     return !loading && <div className="w-full h-full flex flex-col sm:flex-row">
         <div className="w-full h-screen bg-gray-500 flex-1 text-center text-gray-400">
             Featured Character WIP

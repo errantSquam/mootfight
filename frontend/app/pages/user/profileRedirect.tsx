@@ -19,7 +19,7 @@ export function ProfileRedirectPage() {
 
     function getProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined ) {
         if (typeof profileData === "boolean" || profileData === undefined) {
-            return undefined
+            return {}
         } 
         return profileData.docs[0].data()
     }
@@ -28,7 +28,7 @@ export function ProfileRedirectPage() {
         if (typeof profileData === "boolean" || profileData === undefined) {
             return undefined
         } 
-        let tempArray: any[] = []
+        let tempArray: DocumentData[] = []
         profileData.forEach((user) => {
             tempArray.push(user.data())
         })
@@ -46,7 +46,7 @@ export function ProfileRedirectPage() {
         let profileCount = checkProfileData(profileData)
         if (profileCount !== undefined) {
             if (profileCount <= 1) {
-                let data = getProfileData(profileData) as any
+                let data = getProfileData(profileData) 
                 navigate(`/user/profile/${encodeURIComponent(data.username)}/${data.uid}`)
             } else {
                 setHasDuplicate(true)

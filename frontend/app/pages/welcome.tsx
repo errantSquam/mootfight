@@ -3,15 +3,19 @@ import { getUsersHook } from "~/api/firebase";
 import { Link } from "react-router";
 import { getPfp } from "~/functions/helper";
 import { getProfileLink } from "~/functions/helper";
+import type { DocumentData, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
 
 
 export function Welcome() {
 
   const [snapshot, loading, error] = getUsersHook(99);
 
-  function transformSnapshot(snapshotData: any) {
-    let tempArray: any[] = []
-      snapshotData.forEach((user: any) => {
+  function transformSnapshot(snapshotData: QuerySnapshot<DocumentData, DocumentData> | undefined) {
+    if (snapshotData === undefined) {
+      return []
+    }
+    let tempArray: DocumentData[] = []
+      snapshotData.forEach((user: QueryDocumentSnapshot<DocumentData, DocumentData>) => {
         tempArray = [...tempArray, user.data()]
       })
     return tempArray

@@ -8,9 +8,10 @@ import { updateUserInfo } from "~/api/firebase"
 import { Icon } from "@iconify/react"
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import React, { useRef } from "react";
-import Cropper from 'react-easy-crop'
+import Cropper, { type Area } from 'react-easy-crop'
 import 'react-easy-crop/react-easy-crop.css'
 import getCroppedImg from "~/functions/crop"
+import { updateUserSettings } from "~/functions/apiHandlers"
 
 
 type Inputs = {
@@ -21,19 +22,21 @@ type Inputs = {
 }
 
 type ImageInput = {
-    profilePicture: any //figure out the image type later...sorry i'm baby at typescript :baby:
+    profilePicture: File
 }
 
 
 const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmission }:
-    { isOpen: boolean, setIsOpen: any, modalImage: string, handleSubmission: any, resetSubmission: any }) => {
+    { isOpen: boolean, setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, 
+        modalImage: string, handleSubmission: (cropResult: Array<Area>) => Promise<void>, 
+        resetSubmission: () => void }) => {
 
     const [crop, setCrop] = useState({ x: 0, y: 0 })
     const [zoom, setZoom] = useState(1)
 
-    const [result, setResult] = useState({})
+    const [result, setResult] = useState<Array<Area>>([])
 
-    const onCropComplete = (croppedArea: any, croppedAreaPixels: any) => {
+    const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
         setResult([croppedArea, croppedAreaPixels])
     }
 
@@ -98,19 +101,6 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmi
     </Dialog>
 }
 
-
-const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false, required = false }:
-    { defaultValue: any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean, disabled?: boolean, required?: boolean }) => {
-    return <input className={`disabled:bg-gray-800/0 
-                                        disabled:border-white/0
-                                        border border-white rounded-md p-1 bg-gray-800 transition`}
-        defaultValue={defaultValue}
-        placeholder="Unset"
-        disabled={disabled}
-        {...register(value, { required: required })}
-
-    />
-}
 export const ProfilePictureComponent = () => {
 
     const {
@@ -122,18 +112,22 @@ export const ProfilePictureComponent = () => {
     } = useForm<ImageInput>()
 
     const [isModalOpen, setModalOpen] = useState(false)
-    const [modalImage, setModalImage] = useState<any>('')
+    const [modalImage, setModalImage] = useState<string>('')
 
     const [submittedFile, setSubmittedFile] = useState('')
 
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
 
 
-    const handleSubmission = async (cropResult: any) => {
+    const handleSubmission = async (cropResult: Array<Area>) => {
         let base64 = await getCroppedImg(modalImage, cropResult[1])
-        updateUserInfo({ profilePicture: base64 }).then((resp) => {
-            handleToast(resp)
-            refreshAuthUser()
+        if (base64 === null){
+            //error?
+            console.log("pfp crop error")
+            return
+        }
+
+        updateUserSettings({ profilePicture: base64 }, refreshAuthUser).then((resp) => {
             resetImage()
         })
     }
