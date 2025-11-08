@@ -60,7 +60,7 @@ export default function App() {
         <div className="basis-auto grow-0 shrink-1">
           <Navbar />
         </div>
-        <div className="basis-auto grow-1 shrink-1">
+        <div className="basis-auto grow-1 shrink-1 overflow-scroll">
           <Outlet />
         </div>
       </div>
