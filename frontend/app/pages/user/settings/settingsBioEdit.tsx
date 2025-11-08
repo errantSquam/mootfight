@@ -11,7 +11,6 @@ import {
     ListsToggle,
     diffSourcePlugin,
     DiffSourceToggleWrapper,
-    quotePlugin,
     tablePlugin,
     InsertThematicBreak,
     linkDialogPlugin,
@@ -36,6 +35,7 @@ import rehypeExternalLinks from 'rehype-external-links'
 import { updateUserInfo } from '~/api/firebase';
 import { handleToast } from '~/functions/handleToast';
 import { SanitizedMarkdown } from '~/components/profile/sanitizedMarkdown';
+import { updateUserSettings } from '~/functions/apiHandlers';
 
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
@@ -71,10 +71,8 @@ export function BioEditPage() {
                             )
 
             
-        updateUserInfo({bio: mdData}).then((resp) => {
-            handleToast(resp)
-            refreshAuthUser()
-        })
+
+        updateUserSettings({bio: mdData}, refreshAuthUser)
 
     }
 
