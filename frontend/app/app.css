@@ -15,6 +15,11 @@ body {
 }
 
 @layer base {
+  table th, td{
+    border: 1px solid;
+    padding: calc(var(--spacing) *2);
+
+  }
   h1 {
     font-size: var(--text-4xl);
     font-weight: bold
@@ -30,7 +35,6 @@ body {
   h4 {
     font-size: var(--text-xl);
     font-weight: bold
-
   }
   h5 {
     font-size: var(--text-lg);
@@ -39,6 +43,24 @@ body {
   }
   h6{
     font-weight: bold
-    
   }
+
+  ul {
+    list-style-type: circle
+  }
+
+  ol {
+    list-style-type: decimal
+  }
+
+  li {
+    list-style-position: inside;
+  }
+
+  li .task-list-item {
+    list-style-position: inside;
+    list-style-type: none;
+  }
+
+
 }
