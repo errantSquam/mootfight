@@ -1,7 +1,7 @@
 
 import { getPfp } from "~/functions/helper"
 
-import { BioMarkdown } from "./bio"
+import { SanitizedMarkdown } from "./bio"
 
 export function ProfileLayout({children, loading, profileData, hasDuplicate = false} : 
     {children?: any, loading: boolean | undefined, profileData: any, hasDuplicate? : boolean}) {
@@ -35,7 +35,7 @@ export function ProfileLayout({children, loading, profileData, hasDuplicate = fa
                             {
                                 (!loading) &&
                                 <div>
-                                    <div><BioMarkdown markdown = {profileData?.bio}/></div>
+                                    <div><SanitizedMarkdown markdown = {profileData?.bio}/></div>
                                 </div>
                             }
                         </div>

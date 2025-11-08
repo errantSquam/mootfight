@@ -1,5 +1,5 @@
 import type { Route } from "../+types/home";
-import { BioEditPage } from "~/pages/settings/settingsBioEdit";
+import { BioEditPage } from "~/pages/user/settings/settingsBioEdit";
 
 export function meta({}: Route.MetaArgs) {
   return [

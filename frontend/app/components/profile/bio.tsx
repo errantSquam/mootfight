@@ -4,7 +4,7 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import sanitize from 'sanitize-html'
 
-export function BioMarkdown({markdown}:{markdown: string}) {
+export function SanitizedMarkdown({markdown}:{markdown: string}) {
     return <Markdown remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw,
         ]}

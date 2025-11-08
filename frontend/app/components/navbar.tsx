@@ -13,6 +13,33 @@ import { getPfp } from "~/functions/helper"
 import { getProfileLink } from "~/functions/helper"
 
 
+
+const SubmitDropdown = () => {
+    return <Menu>
+        <MenuButton className="text-white hover:cursor-pointer">
+            Submit
+            {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
+        </MenuButton>
+
+        <MenuItems
+            transition
+            anchor="bottom start"
+            className="w-52 origin-top-right rounded-xl border border-white/5 bg-white/5 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+        >
+            <MenuItem>
+                <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                    Character
+                </button>
+            </MenuItem>
+            <MenuItem>
+                <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                    Attack
+                </button>
+            </MenuItem>
+        </MenuItems>
+    </Menu>
+}
+
 const UserDropdown = ({ userInfo }: { userInfo: any }) => {
     return <Menu>
         <MenuButton className="font-semibold text-white hover:cursor-pointer">
@@ -64,7 +91,7 @@ export function Navbar() {
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
                 {userInfo === null && <div><Link to="login">Login </Link></div>}
-                {userInfo !== null && <div><Link to="submit/attack">Submit Attack</Link></div>}
+                {userInfo !== null && <div><SubmitDropdown/></div>}
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">

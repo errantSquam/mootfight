@@ -35,7 +35,7 @@ import sanitize from 'sanitize-html'
 import rehypeExternalLinks from 'rehype-external-links'
 import { updateUserInfo } from '~/api/firebase';
 import { handleToast } from '~/functions/handleToast';
-import { BioMarkdown } from '~/components/profile/bio';
+import { SanitizedMarkdown } from '~/components/profile/bio';
 
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
@@ -98,7 +98,7 @@ export function BioEditPage() {
         <div className="border border-zinc-500 rounded">
             {isPreview &&
                 <div className="p-2">
-                    <BioMarkdown markdown = {markdown}/>
+                    <SanitizedMarkdown markdown = {markdown}/>
                 </div>}
             {!isPreview &&
                 <MDXEditor markdown={''}
