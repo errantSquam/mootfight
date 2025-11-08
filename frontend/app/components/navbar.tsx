@@ -87,7 +87,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 export function Navbar() {
     const { userInfo, setUserInfo } = useContext(AuthContext)
 
-    return <div className="fixed w-screen h-10 p-4 px-10 bg-zinc-900 flex items-center">
+    return <div className="w-screen h-10 p-4 px-10 bg-zinc-900 flex items-center z-10">
         <div className="flex flex-row text-white gap-x-4 justify-between w-full items-center">
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>

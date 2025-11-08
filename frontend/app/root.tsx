@@ -55,9 +55,15 @@ export default function App() {
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
   return <AuthProvider>
     <LoadScreen />
-    <Navbar />
-    <div className="pt-10">
-      <Outlet />
+    <div className="h-[100vh] fixed">
+      <div className="flex flex-col h-full">
+        <div className="basis-auto grow-0 shrink-1">
+          <Navbar />
+        </div>
+        <div className="basis-auto grow-1 shrink-1">
+          <Outlet />
+        </div>
+      </div>
     </div>
     <ToastContainer />
   </AuthProvider>
