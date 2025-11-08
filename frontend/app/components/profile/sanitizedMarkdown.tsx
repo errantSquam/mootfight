@@ -5,7 +5,7 @@ import rehypeRaw from 'rehype-raw'
 import sanitize from 'sanitize-html'
 
 export function SanitizedMarkdown({markdown}:{markdown: string}) {
-    return <Markdown remarkPlugins={[remarkGfm]}
+    return <div className = "markdown"><Markdown remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw,
         ]}
     >{
@@ -18,5 +18,5 @@ export function SanitizedMarkdown({markdown}:{markdown: string}) {
 
                 }
             )
-        }</Markdown>
+        }</Markdown></div>
 }
