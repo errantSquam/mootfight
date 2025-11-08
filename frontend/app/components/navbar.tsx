@@ -1,14 +1,10 @@
 import { signIn, auth, logOut } from "~/api/firebase"
 import { Link } from "react-router"
-import { useOutletContext } from "react-router"
 import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"
-import { onAuthStateChanged } from "firebase/auth"
-import { useState } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { useContext } from "react"
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { Icon } from "@iconify/react";
 import { getPfp } from "~/functions/helper"
 import { getProfileLink } from "~/functions/helper"
 

@@ -1,7 +1,5 @@
 
-import { getUsers, getUsersHook } from "~/api/firebase";
-import { useState, useEffect } from "react";
-import { QuerySnapshot } from "firebase/firestore";
+import { getUsersHook } from "~/api/firebase";
 import { Link } from "react-router";
 import { getPfp } from "~/functions/helper";
 import { getProfileLink } from "~/functions/helper";

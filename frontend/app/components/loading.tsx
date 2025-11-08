@@ -1,7 +1,4 @@
 
-import { onAuthStateChanged } from "firebase/auth"
-import { auth } from "~/api/firebase";
-import { useState } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { useContext } from "react"
 
