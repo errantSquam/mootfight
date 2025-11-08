@@ -32,6 +32,10 @@ import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import sanitize from 'sanitize-html'
+import rehypeExternalLinks from 'rehype-external-links'
+import { updateUserInfo } from '~/api/firebase';
+import { handleToast } from '~/functions/handleToast';
+import { BioMarkdown } from '~/components/profile/bio';
 
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
@@ -55,29 +59,8 @@ export function BioEditPage() {
 
     }, [isPreview])
 
-
-
-
-    return <div className="p-20 flex flex-col space-y-2">
-        <div className="flex flex-row space-x-2">
-            <Link to="/user/settings" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>Back</div>
-            </Link>
-            <div onClick={() => { setPreview(!isPreview) }}
-                className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>{!isPreview ? 'Preview' : 'Edit'}</div>
-            </div>
-            <div className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>Submit</div>
-            </div>
-        </div>
-        <div className="border border-zinc-500 rounded">
-            {isPreview &&
-                <div className="p-2">
-                    <Markdown remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw]}
-                    >{
-                            sanitize(markdown,
+    const onSubmit = () => {
+        let mdData = sanitize(markdown,
                                 {
                                     allowedTags: ['u', 'img'],
                                     allowedAttributes: {
@@ -86,7 +69,36 @@ export function BioEditPage() {
 
                                 }
                             )
-                        }</Markdown>
+
+            
+        updateUserInfo({bio: mdData}).then((resp) => {
+            handleToast(resp)
+            refreshAuthUser()
+        })
+
+    }
+
+
+
+
+    return <div className="p-20 flex flex-col space-y-2">
+        <div>Please remember to add 'https://' in front of your links!</div>
+        <div className="flex flex-row space-x-2">
+            <Link to="/user/settings" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
+                <div>Back</div>
+            </Link>
+            <div onClick={() => { setPreview(!isPreview) }}
+                className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
+                <div>{!isPreview ? 'Preview' : 'Edit'}</div>
+            </div>
+            <div onClick={() => onSubmit()} className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
+                <div>Submit</div>
+            </div>
+        </div>
+        <div className="border border-zinc-500 rounded">
+            {isPreview &&
+                <div className="p-2">
+                    <BioMarkdown markdown = {markdown}/>
                 </div>}
             {!isPreview &&
                 <MDXEditor markdown={''}

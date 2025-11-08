@@ -1,6 +1,7 @@
 
 import { getPfp } from "~/functions/helper"
 
+import { BioMarkdown } from "./bio"
 
 export function ProfileLayout({children, loading, profileData, hasDuplicate = false} : 
     {children?: any, loading: boolean | undefined, profileData: any, hasDuplicate? : boolean}) {
@@ -34,7 +35,7 @@ export function ProfileLayout({children, loading, profileData, hasDuplicate = fa
                             {
                                 (!loading) &&
                                 <div>
-                                    <div>{profileData?.username}</div>
+                                    <div><BioMarkdown markdown = {profileData?.bio}/></div>
                                 </div>
                             }
                         </div>
