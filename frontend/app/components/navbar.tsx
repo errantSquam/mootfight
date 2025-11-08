@@ -38,9 +38,9 @@ const SubmitDropdown = () => {
 
 const UserDropdown = ({ userInfo }: { userInfo: UserSchema }) => {
     return <Menu>
-        <MenuButton className="font-semibold text-white hover:cursor-pointer flex items-center select-none focus:outline-none">
+        <MenuButton className="font-semibold text-white hover:cursor-pointer">
             <div className="flex flex-row gap-x-4 h-full items-center">
-                <img src={getPfp(userInfo.profilePicture)} className="h-10" />
+                <img src={getPfp(userInfo?.profilePicture)} className="h-10" />
                 <div>{userInfo.username}</div>
             </div>
             {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
@@ -95,6 +95,7 @@ export function Navbar() {
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">
+                <div>{userInfo !== null && <img src={getPfp(userInfo?.profilePicture)} className="h-10" />}</div>
                 <div>{userInfo !== null && <UserDropdown userInfo={userInfo} />}</div>
             </div>
         </div>
