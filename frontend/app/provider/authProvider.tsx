@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { signIn, auth, logOut } from "~/api/firebase"
 import { getUserInfo } from "~/api/firebase";
-import { useAuthState } from 'react-firebase-hooks/auth';
 
 
 const AuthContext = createContext<any>({ state: {}, actions: {} });
@@ -11,7 +10,7 @@ const AuthContext = createContext<any>({ state: {}, actions: {} });
 const AuthProvider = ({ children }: { children: any }) => {
 
     const [authLoaded, setAuthLoaded] = useState(false)
-    const [userInfo, setUserInfo] = useState<any>(null)
+    const [userInfo, setUserInfo] = useState<UserSchema | null>(null)
 
     useEffect(() => {
         let localInfo = localStorage.getItem('userInfo')

@@ -36,10 +36,13 @@ const SubmitDropdown = () => {
     </Menu>
 }
 
-const UserDropdown = ({ userInfo }: { userInfo: any }) => {
+const UserDropdown = ({ userInfo }: { userInfo: UserSchema }) => {
     return <Menu>
         <MenuButton className="font-semibold text-white hover:cursor-pointer">
-            {userInfo.username}
+            <div className="flex flex-row gap-x-4 h-full items-center">
+                <img src={getPfp(userInfo?.profilePicture)} className="h-10" />
+                <div>{userInfo.username}</div>
+            </div>
             {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
         </MenuButton>
 
@@ -65,6 +68,7 @@ const UserDropdown = ({ userInfo }: { userInfo: any }) => {
             </MenuItem>
         </MenuItems>
     </Menu>
+
 }
 
 export function Navbar() {
@@ -87,7 +91,7 @@ export function Navbar() {
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
                 {userInfo === null && <div><Link to="login">Login </Link></div>}
-                {userInfo !== null && <div><SubmitDropdown/></div>}
+                {userInfo !== null && <div><SubmitDropdown /></div>}
                 {userInfo !== null && <div className="cursor-pointer" onClick={() => handleLogout()}>Logout</div>}
             </div>
             <div className="flex flex-row gap-x-4 h-full items-center">

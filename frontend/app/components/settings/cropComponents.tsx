@@ -11,6 +11,7 @@ import React, { useRef } from "react";
 import Cropper from 'react-easy-crop'
 import 'react-easy-crop/react-easy-crop.css'
 import getCroppedImg from "~/functions/crop"
+import { updateUserSettings } from "~/functions/apiHandlers"
 
 
 type Inputs = {
@@ -131,9 +132,8 @@ export const ProfilePictureComponent = () => {
 
     const handleSubmission = async (cropResult: any) => {
         let base64 = await getCroppedImg(modalImage, cropResult[1])
-        updateUserInfo({ profilePicture: base64 }).then((resp) => {
-            handleToast(resp)
-            refreshAuthUser()
+
+        updateUserSettings({ profilePicture: base64 }, refreshAuthUser).then((resp) => {
             resetImage()
         })
     }

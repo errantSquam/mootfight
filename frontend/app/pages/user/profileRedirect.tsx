@@ -19,7 +19,7 @@ export function ProfileRedirectPage() {
 
     function getProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined ) {
         if (typeof profileData === "boolean" || profileData === undefined) {
-            return undefined
+            return {}
         } 
         return profileData.docs[0].data()
     }
