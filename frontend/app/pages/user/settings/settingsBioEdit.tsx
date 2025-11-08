@@ -27,13 +27,7 @@ import { useContext } from 'react';
 import { AuthContext } from '~/provider/authProvider';
 import { Link } from 'react-router';
 import { useEffect } from 'react';
-import Markdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeRaw from 'rehype-raw'
 import sanitize from 'sanitize-html'
-import rehypeExternalLinks from 'rehype-external-links'
-import { updateUserInfo } from '~/api/firebase';
-import { handleToast } from '~/functions/handleToast';
 import { SanitizedMarkdown } from '~/components/profile/sanitizedMarkdown';
 import { updateUserSettings } from '~/functions/apiHandlers';
 
