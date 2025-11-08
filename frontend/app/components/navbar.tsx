@@ -47,7 +47,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
     }
 
     return <Menu>
-        <MenuButton className="flex flex-row gap-x-4 items-center justify-center font-semibold text-white hover:cursor-pointer">
+        <MenuButton className="flex flex-row gap-x-4 items-center justify-center font-semibold text-white hover:cursor-pointer focus:outline-none">
             <img src={userPfp} className="h-10" />
             {userInfo.username}
             {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
