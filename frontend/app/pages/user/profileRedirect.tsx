@@ -1,6 +1,5 @@
 import type { DocumentData, QuerySnapshot } from "firebase/firestore";
 import { useParams } from "react-router";
-import { getUserInfoHook } from "~/api/firebase";
 import { getUserInfoByUsernameHook } from "~/api/firebase";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -53,7 +52,6 @@ export function ProfileRedirectPage() {
                 setHasDuplicate(true)
             }
         }
-        //else offer alternate users
     }, [loading])
 
 
