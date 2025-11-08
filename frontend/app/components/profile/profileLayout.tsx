@@ -39,24 +39,31 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
     //maybe framer motion these tabs later
 
 
-
     return !loading && <div className="w-full h-full flex flex-col sm:flex-row">
         <div className="w-full h-screen bg-gray-500 flex-1 text-center text-gray-400">
             Featured Character WIP
         </div>
         <div className="w-full h-full flex flex-col items-start gap-y-2 flex-3 px-4">
-            <div className="flex flex-col items-center">
-                <div className="flex flex-row items-center gap-x-2">
+            <div className="flex flex-col items-start justify-center w-full">
+                <div className="flex flex-row items-center gap-x-2 w-full">
                     {/* <img src={getPfp(profileData?.profilePicture)} className="h-20" /> */}
                     <ProfilePictureComponent />
-                    <div className="flex flex-col">
-                        <div className="flex flex-row gap-x-2">
-                            <div>{profileData?.username} </div>
+                    <div className="flex flex-col space-y-2 w-full grow">
+                        <div className="flex flex-col grow items-start">
+                            <div className="flex flex-row gap-x-2 items-center justify-center">
+                                <div className="text-xl font-bold">{profileData?.username} </div>
+                                <i className="opacity-70">{`(${profileData?.uid})`}</i>
+                            </div>
                             <div>{profileData?.pronouns &&
-                                <i className="opacity-70">({profileData?.pronouns})</i>}
+                                <div className="">{profileData?.pronouns}</div>}
+                            </div>
+                            <div className="opacity-70 text-sm"><i>{profileData?.status}</i></div>
+                        </div>
+                        <div className="flex flex-col grow items-start">
+                            <div className="flex flex-row gap-x-2">
+
                             </div>
                         </div>
-                        <div className="opacity-70 text-sm"><i>{profileData?.status}</i></div>
                     </div>
                 </div>
             </div>
