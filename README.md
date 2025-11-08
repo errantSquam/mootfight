@@ -8,6 +8,12 @@ An open-source self-hosted Artfight clone. (name tentative...)
 2. cd into frontend folder
 3. ``npm install``
 
+### Creating a new account
+1. In the Firebase console, go to Authentication.
+2. (FIRST TIME SETUP) Under the 'Sign-in method' tab, enable 'Email/Password' as a provider if you haven't already.
+3. Under the 'Users' tab, click on 'Add User', and fill in the e-mail and generic password.
+4. Click the three dots on the newly-created user and click 'Reset Password' to send a password reset email.
+
 ### Firebase db
 Make an .env file and add a firebase key. It should be something like this:
 ```
