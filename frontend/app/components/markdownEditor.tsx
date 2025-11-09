@@ -27,20 +27,13 @@ import { useEffect } from 'react';
 import { SanitizedMarkdown } from "./profile/sanitizedMarkdown";
 import { Button } from "@mdxeditor/editor";
 
-export const MarkdownEditor = ({ markdown, setMarkdown, ref }:
+export const MarkdownEditor = ({ref }:
     {
-        markdown: string, setMarkdown: Dispatch<SetStateAction<string>>,
-        ref: RefObject<MDXEditorMethods> | any //crying because i can't get the typing to work
+        ref: RefObject<MDXEditorMethods> | any //crying because i can't get the typing to
     }) => {
 
 
     const [isPreview, setIsPreview] = useState(false)
-    useEffect(() => {
-        if (!isPreview && ref) {
-            ref.current?.setMarkdown(markdown)
-        }
-
-    }, [isPreview])
 
     return <div className="border border-zinc-500 rounded">
         {isPreview &&
@@ -51,13 +44,12 @@ export const MarkdownEditor = ({ markdown, setMarkdown, ref }:
                         onClick={() => { setIsPreview(!isPreview) }}>Resume Edit</div>
                 </div>
                 <div className="p-2">
-                    <SanitizedMarkdown markdown={markdown} />
+                    <SanitizedMarkdown markdown={ref.current?.getMarkdown()} />
                 </div>
             </div>}
-        {!isPreview &&
+         <div className = {`${isPreview ? "hidden" : "visible"}`}>
             <MDXEditor markdown={''}
                 ref={ref}
-                onChange={(e) => { setMarkdown(e) }}
                 plugins={[
                     headingsPlugin(),
                     thematicBreakPlugin(),
@@ -93,6 +85,6 @@ export const MarkdownEditor = ({ markdown, setMarkdown, ref }:
                 className="dark-theme"
 
             />
-        }
+        </div>
     </div>
 }

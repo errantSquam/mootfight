@@ -16,20 +16,20 @@ import { updateUserSettings } from '~/functions/apiHandlers';
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
     const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
-    const [markdown, setMarkdown] = useState('')
+
+
+    
 
     useEffect(() => {
         if (userInfo !== null) {
             if (userInfo.bio !== undefined) {
-                setMarkdown(userInfo.bio)
                 ref.current?.setMarkdown(userInfo.bio)
             }
         }
     }, [authLoaded])
 
-
     const onSubmit = () => {
-        let mdData = sanitize(markdown,
+        let mdData = sanitize(ref.current?.getMarkdown() || '',
                                 {
                                     allowedTags: ['u', 'img'],
                                     allowedAttributes: {
@@ -55,10 +55,7 @@ export function BioEditPage() {
             </div>
         </div>
         <div>
-            <MarkdownEditor markdown={markdown} setMarkdown={setMarkdown} ref = {ref}/>
-            
+            <MarkdownEditor ref = {ref}/>
         </div>
-
-
     </div>
 }
