@@ -12,13 +12,12 @@ import { useEffect } from 'react';
 import sanitize from 'sanitize-html'
 import { SanitizedMarkdown } from '~/components/profile/sanitizedMarkdown';
 import { updateUserSettings } from '~/functions/apiHandlers';
+import { Icon } from '@iconify/react';
 
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
     const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
-
-
-    
+    const [isLoading, setIsLoading] = useState(false) //change to hook later
 
     useEffect(() => {
         if (userInfo !== null) {
@@ -30,15 +29,18 @@ export function BioEditPage() {
 
     const onSubmit = () => {
         let mdData = sanitize(ref.current?.getMarkdown() || '',
-                                {
-                                    allowedTags: ['u', 'img'],
-                                    allowedAttributes: {
-                                        img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading']
-                                    },
+            {
+                allowedTags: ['u', 'img'],
+                allowedAttributes: {
+                    img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading']
+                },
 
-                                }
-                            )
-        updateUserSettings({bio: mdData}, refreshAuthUser)
+            }
+        )
+        setIsLoading(true)
+        updateUserSettings({ bio: mdData }, refreshAuthUser).then((resp) => {
+            setIsLoading(false)
+        })
     }
 
 
@@ -51,11 +53,14 @@ export function BioEditPage() {
                 <div>Back</div>
             </Link>
             <div onClick={() => onSubmit()} className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>Submit</div>
+                <div className="flex flex-row gap-x-2 items-center">
+    
+                    {isLoading ? <Icon icon="eos-icons:loading" className = "text-lg"/> : <span>Submit</span>}
+                </div>
             </div>
         </div>
         <div>
-            <MarkdownEditor ref = {ref}/>
+            <MarkdownEditor ref={ref} />
         </div>
     </div>
 }
