@@ -8,6 +8,6 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function SubmitAttack() {
+export default function SubmitCharacter() {
   return <Welcome />;
 }
