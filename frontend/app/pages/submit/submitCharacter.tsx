@@ -113,10 +113,22 @@ export function SubmitCharacterPage() {
         <h2>Submit Character</h2>
         <div className="flex flex-col gap-y-2">
             <h3>Character Information</h3>
-            <div className = "grid grid-cols-2">
-                <div className = "flex flex-col items-start"> 
+            <div className = "grid grid-cols-2 gap-x-8 gap-y-4">
+                <div className = "flex flex-col items-start col-span-2"> 
                     <h4>Name</h4>
-                    <input className = "border border-zinc-500 rounded-md p-1 bg-gray-800"/>
+                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"/>
+                </div>
+                <div className = "flex flex-col items-start"> 
+                    <h4>Pronouns <i className = "text-zinc-500">(Optional)</i></h4>
+                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900"/>
+                </div>
+                <div className = "flex flex-col items-start"> 
+                    <h4>Status <i className = "text-zinc-500">(Optional)</i></h4>
+                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900"/>
+                </div>
+                <div className = "flex flex-col items-start col-span-2"> 
+                    <h4>Description</h4>
+                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"/>
                 </div>
             </div>
         </div>
