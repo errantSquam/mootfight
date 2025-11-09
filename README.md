@@ -40,8 +40,16 @@ service cloud.firestore {
     }
     match /users/{userId} {
     	allow read: if true;
-      allow update, delete: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId 
+      && request.resource.data.uid == resource.data.uid
+      && request.resource.data.email == resource.data.email;
       allow create: if request.auth != null;
+    }
+    match /characters/{characterId} {
+    	allow read: if true;
+      allow update: if request.auth != null && request.auth.uid == request.resource.data.owner
+      && request.resource.data.uid == resource.data.uid
+      allow create: if request.auth != null && resource.data.owner == request.auth.uid
     }
   }
 }

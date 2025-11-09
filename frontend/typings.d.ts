@@ -25,3 +25,13 @@ type ToastResponse = {
     message: string,
     data?: any
 }
+
+type CharacterSchema = {
+    name: string,
+    pronouns?: string,
+    status?: string,
+    description?: string,
+    permissions?: string,
+    images: RefImage[],
+    owner: string
+}

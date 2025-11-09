@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { collection, doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
@@ -109,7 +109,6 @@ const getUsersHook = (limitAmount: number = 3) => {
     return useCollection(q)
 }
 
-
 const updateUserInfo = async (toUpdate: any) => {
     if (auth.currentUser === null) {
         return {
@@ -134,6 +133,28 @@ const updateUserInfo = async (toUpdate: any) => {
             message: "User does not exist."
         }
 
+    }
+
+}
+
+const createCharacter = async (data: CharacterSchema) => {
+    try {
+        if (auth.currentUser === null) {
+            return {
+                toastType: "error",
+                message: "Not logged in!"
+            }
+
+        }
+        let collRef = collection(db, "characters")
+        await addDoc(collRef, data);
+        return {
+            toastType: "success",
+            message: "Successfully created character!"
+        }
+
+    } catch (error: unknown) {
+        return handleError(error)
     }
 
 }
@@ -182,7 +203,7 @@ const logOut = async () => {
 
 }
 
-
+//we should refactor this into different API call files...
 export {
     signIn,
     auth,
@@ -192,5 +213,6 @@ export {
     getUserInfoByUsernameHook,
     getUsers,
     getUsersHook,
+    createCharacter,
     updateUserInfo
 }

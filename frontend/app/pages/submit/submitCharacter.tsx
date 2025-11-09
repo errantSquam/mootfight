@@ -1,14 +1,22 @@
-import { useForm, type SubmitHandler, type UseFormRegister } from "react-hook-form"
-import { useRef, useState } from "react"
+import { useForm, type FieldErrors, type SubmitHandler, type UseFormRegister, type UseFormSetValue } from "react-hook-form"
+import { useRef, useState, type FormEvent } from "react"
 import { Icon } from "@iconify/react"
 import { MarkdownEditor } from "~/components/markdownEditor"
 import type { MDXEditorMethods } from "@mdxeditor/editor"
+import { useContext } from "react"
+import { useFieldArray } from "react-hook-form"
+import { AuthContext } from "~/provider/authProvider"
+import { handleToast } from "~/functions/handleToast"
+import { createCharacter } from "~/api/firebase"
 
-type Inputs = {
-    uid: string
+type RefImage = {
+    imageLink: string,
+    artist?: string,
+    artistLink?: string
 }
 
 function checkImage(url: string | undefined) {
+    //console.log(url)
     if (url === undefined || url === "") {
         return false
     }
@@ -25,9 +33,14 @@ function checkImage(url: string | undefined) {
     return true
 }
 
-const ImageUploadComponent = ({ register }: { register: UseFormRegister<Inputs> }) => {
+const ImageUploadComponent = ({ register, errors, setValue }:
+    {
+        register: UseFormRegister<CharacterSchema>,
+        errors: FieldErrors<CharacterSchema>,
+        setValue: UseFormSetValue<CharacterSchema>
+    }) => {
 
-    const [imageLink, setImageLink] = useState<string | undefined>(undefined)
+    const [imageLink, setImageLink] = useState<string>('')
     const [showImage, setShowImage] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
 
@@ -59,7 +72,15 @@ const ImageUploadComponent = ({ register }: { register: UseFormRegister<Inputs> 
                         <input className="bg-zinc-400 rounded text-sm text-zinc-900/100 py-1 px-2"
                             placeholder="Your image link here..."
                             value={imageLink}
-                            onChange={(e) => { setImageLink(e.target.value) }} />
+                            onChange={(e) => {
+                                setImageLink(e.target.value)
+                                setValue("images.0", {
+                                    imageLink: e.target.value,
+                                } //Todo: Add more fields in the form, later... Undefined will default to the user.
+                                )
+
+                            }}
+                        />
 
                         <div onClick={() => { validateImage() }}
                             className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
@@ -70,7 +91,7 @@ const ImageUploadComponent = ({ register }: { register: UseFormRegister<Inputs> 
 
             </div>
             {
-                validationError &&
+                validationError || errors.images &&
                 <div className="text-red-300 text-sm">Invalid image. Check your link?
                     <br />
                     <i className="text-red-400/60">
@@ -81,8 +102,8 @@ const ImageUploadComponent = ({ register }: { register: UseFormRegister<Inputs> 
         </div>
         {
             showImage &&
-            <div className={`flex flex-col w-full items-center`}>
-                <img src={imageLink} />
+            <div className={`flex flex-col items-center`}>
+                <img src={imageLink} className="w-1/3" />
                 <div className='text-green-300'>Image is valid!</div>
 
                 <div onClick={() => { resubmitImage() }} className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded">
@@ -90,6 +111,20 @@ const ImageUploadComponent = ({ register }: { register: UseFormRegister<Inputs> 
                 </div>
             </div>
         }
+        <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+            value={imageLink}
+            {...register("images.0",
+                {
+                    required: true,
+                    validate: (value) => {
+                        //Return false means a-ok in hook forms... why
+                        if (!checkImage(value.imageLink)) { return true }
+
+                    },
+                }
+            )}
+
+        />
         <div className={`flex flex-row gap-x-2 ${showImage ? 'visible' : 'hidden'}`}>
 
         </div>
@@ -103,57 +138,87 @@ export function SubmitCharacterPage() {
         handleSubmit,
         watch,
         reset,
+        setValue,
         formState: { errors },
-    } = useForm<Inputs>()
+    } = useForm<CharacterSchema>()
 
-    const onSubmit: SubmitHandler<Inputs> = (data, e) => {
-        console.log(data)
 
-    }
+
     const descRef = useRef<MDXEditorMethods>(null)
     const permsRef = useRef<MDXEditorMethods>(null)
+    const { userInfo, refreshAuthUser, authLoaded} = useContext(AuthContext)
 
+    const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
+
+        data.description = descRef.current?.getMarkdown()
+        data.permissions = permsRef.current?.getMarkdown()
+        data.owner = userInfo.uid //can be null
+
+        //throw error if auth not loaded? somehow?
+
+        console.log("Data:")
+        console.log(data)
+
+        createCharacter(data).then((resp) => {
+            handleToast(resp)
+        })
+
+    }
 
 
     return <div className="flex flex-col items-center text-center justify-center pt-5 w-full gap-y-2">
         <h2>Submit Character</h2>
-        <div className="flex flex-col gap-y-2">
-            <h3>Character Information</h3>
-            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                <div className="flex flex-col items-start col-span-2">
-                    <h4>Name</h4>
-                    <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
-                </div>
-                <div className="flex flex-col items-start">
-                    <h4>Pronouns <i className="text-zinc-500">(Optional)</i></h4>
-                    <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
-                </div>
-                <div className="flex flex-col items-start">
-                    <h4>Status <i className="text-zinc-500">(Optional)</i></h4>
-                    <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
-                </div>
-                <div className="flex flex-col items-start col-span-2">
-                    <h4>Description</h4>
-                    <div className = "text-start w-full">
-                        <MarkdownEditor ref={descRef} />
+        <form className="flex flex-col max-w-2/3 gap-y-2" onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-y-2">
+                <h3>Character Information</h3>
+                <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                    <div className="flex flex-col items-start col-span-2">
+                        <h4>Name</h4>
+                        <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+                            {...register("name", { required: true })} />
+                        {errors.name && <div className="text-red-400">This field is required</div>}
                     </div>
-                    <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
-                </div>
-                <div className="flex flex-col items-start col-span-2">
-                    <h4>Character Permissions</h4>
-                    <div className = "text-start w-full">
-                        <MarkdownEditor ref={permsRef} />
+                    <div className="flex flex-col items-start">
+                        <h4>Pronouns <i className="text-zinc-500">(Optional)</i></h4>
+                        <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+                            {...register("pronouns")} />
                     </div>
-                    <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
+                    <div className="flex flex-col items-start">
+                        <h4>Status <i className="text-zinc-500">(Optional)</i></h4>
+                        <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+                            {...register("status")} />
+                    </div>
+                    <div className="flex flex-col items-start col-span-2">
+                        <h4>Description</h4>
+                        <div className="text-start w-full">
+                            <MarkdownEditor ref={descRef} />
+                        </div>
+                        <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+                            {...register("description")}
+                            value={descRef.current?.getMarkdown()} />
+                    </div>
+                    <div className="flex flex-col items-start col-span-2">
+                        <h4>Character Permissions</h4>
+                        <div className="text-start w-full">
+                            <MarkdownEditor ref={permsRef} />
+                        </div>
+                        <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+                            {...register("description")}
+                            value={permsRef.current?.getMarkdown()} />
+                    </div>
                 </div>
             </div>
-        </div>
-        <div className="flex flex-col gap-y-2">
-            <h3>Main Image</h3>
-            <ImageUploadComponent register={register} />
-            <div className="bg-zinc-900 p-3 rounded">This will be your character's main image. <br />You can always go back and change this later, or add more images!</div>
+            <div className="flex flex-col items-center text-center gap-y-2">
+                <h3>Main Image</h3>
+                <ImageUploadComponent register={register} errors={errors} setValue={setValue} />
+                <div className="flex bg-zinc-900 p-3 rounded">
+                    This will be your character's main image. <br />You can always go back and change this later, or add more images!
+                </div>
 
-        </div>
+            </div>
+            <input type="submit"
+                className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded" />
+        </form>
 
 
     </div>
