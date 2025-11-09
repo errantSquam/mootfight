@@ -1,6 +1,8 @@
 import { useForm, type SubmitHandler, type UseFormRegister } from "react-hook-form"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { Icon } from "@iconify/react"
+import { MarkdownEditor } from "~/components/markdownEditor"
+import type { MDXEditorMethods } from "@mdxeditor/editor"
 
 type Inputs = {
     uid: string
@@ -23,7 +25,7 @@ function checkImage(url: string | undefined) {
     return true
 }
 
-const ImageUploadComponent = ({register} : {register: UseFormRegister<Inputs>}) => {
+const ImageUploadComponent = ({ register }: { register: UseFormRegister<Inputs> }) => {
 
     const [imageLink, setImageLink] = useState<string | undefined>(undefined)
     const [showImage, setShowImage] = useState<boolean>(false)
@@ -108,34 +110,46 @@ export function SubmitCharacterPage() {
         console.log(data)
 
     }
+    const descRef = useRef<MDXEditorMethods>(null)
+
 
     return <div className="flex flex-col items-center text-center justify-center pt-5 w-full gap-y-2">
         <h2>Submit Character</h2>
         <div className="flex flex-col gap-y-2">
             <h3>Character Information</h3>
-            <div className = "grid grid-cols-2 gap-x-8 gap-y-4">
-                <div className = "flex flex-col items-start col-span-2"> 
+            <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                <div className="flex flex-col items-start col-span-2">
                     <h4>Name</h4>
-                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"/>
+                    <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
                 </div>
-                <div className = "flex flex-col items-start"> 
-                    <h4>Pronouns <i className = "text-zinc-500">(Optional)</i></h4>
-                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900"/>
+                <div className="flex flex-col items-start">
+                    <h4>Pronouns <i className="text-zinc-500">(Optional)</i></h4>
+                    <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
                 </div>
-                <div className = "flex flex-col items-start"> 
-                    <h4>Status <i className = "text-zinc-500">(Optional)</i></h4>
-                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900"/>
+                <div className="flex flex-col items-start">
+                    <h4>Status <i className="text-zinc-500">(Optional)</i></h4>
+                    <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
                 </div>
-                <div className = "flex flex-col items-start col-span-2"> 
+                <div className="flex flex-col items-start col-span-2">
                     <h4>Description</h4>
-                    <input className = "border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"/>
+                    <div className = "text-start w-full">
+                        <MarkdownEditor ref={descRef} />
+                    </div>
+                    <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
+                </div>
+                <div className="flex flex-col items-start col-span-2">
+                    <h4>Character Permissions</h4>
+                    <div className = "text-start w-full">
+                        <MarkdownEditor ref={descRef} />
+                    </div>
+                    <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
                 </div>
             </div>
         </div>
         <div className="flex flex-col gap-y-2">
             <h3>Main Image</h3>
-            <ImageUploadComponent register = {register}/>
-            <div className = "bg-zinc-900 p-3 rounded">This will be your character's main image. <br/>You can always go back and change this later, or add more images!</div>
+            <ImageUploadComponent register={register} />
+            <div className="bg-zinc-900 p-3 rounded">This will be your character's main image. <br />You can always go back and change this later, or add more images!</div>
 
         </div>
 
