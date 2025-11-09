@@ -1,5 +1,5 @@
 import type { Route } from "../+types/home";
-import { SubmitAttackPage } from "~/pages/submit/submitAttack";
+import { SubmitCharacterPage } from "~/pages/submit/submitCharacter";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,6 +8,6 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-export default function SubmitAttack() {
-  return <SubmitAttackPage />;
+export default function SubmitCharacter() {
+  return <SubmitCharacterPage/>;
 }

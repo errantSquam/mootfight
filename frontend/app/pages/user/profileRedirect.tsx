@@ -8,6 +8,7 @@ import { getPfp } from "~/functions/helper";
 import { useState } from "react";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
+import { getCharactersByUserHook } from "~/api/firebase";
 
 export function ProfileRedirectPage() {
     let params = useParams();
@@ -17,17 +18,32 @@ export function ProfileRedirectPage() {
     const [profileData, loading, error] = getUserInfoByUsernameHook(params.username)
     const [hasDuplicate, setHasDuplicate] = useState(false)
 
-    function getProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined ) {
+    const [charaData, charaLoading, charaError] = getCharactersByUserHook(params.userId)
+
+    const handleCharaData = (charaData: QuerySnapshot<DocumentData, DocumentData> | boolean | null | undefined) => {
+        if (typeof charaData === "boolean" || charaData == null) {
+            return []
+        }
+        let tempArray: CharacterSchema[] = []
+        charaData.forEach((result) => {
+            tempArray.push(result.data() as CharacterSchema)
+        })
+        return tempArray
+
+    }
+
+
+    function getProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined) {
         if (typeof profileData === "boolean" || profileData === undefined) {
             return {}
-        } 
+        }
         return profileData.docs[0].data()
     }
 
-    function getAlternateProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined ) {
+    function getAlternateProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined) {
         if (typeof profileData === "boolean" || profileData === undefined) {
             return undefined
-        } 
+        }
         let tempArray: DocumentData[] = []
         profileData.forEach((user) => {
             tempArray.push(user.data())
@@ -35,10 +51,10 @@ export function ProfileRedirectPage() {
         return tempArray
     }
 
-    function checkProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined ) {
+    function checkProfileData(profileData: QuerySnapshot<DocumentData, DocumentData> | boolean | undefined) {
         if (typeof profileData === "boolean" || profileData === undefined) {
             return undefined
-        } 
+        }
         return profileData.size
     }
 
@@ -46,7 +62,7 @@ export function ProfileRedirectPage() {
         let profileCount = checkProfileData(profileData)
         if (profileCount !== undefined) {
             if (profileCount <= 1) {
-                let data = getProfileData(profileData) 
+                let data = getProfileData(profileData)
                 navigate(`/user/profile/${encodeURIComponent(data.username)}/${data.uid}`)
             } else {
                 setHasDuplicate(true)
@@ -56,28 +72,28 @@ export function ProfileRedirectPage() {
 
 
 
-    return <ProfileLayout loading = {loading} profileData = {getProfileData(profileData)}
-    hasDuplicate = {hasDuplicate}
+    return <ProfileLayout loading={loading} profileData={getProfileData(profileData)}
+        hasDuplicate={hasDuplicate} charaData = {handleCharaData(charaData)}
     >
-        
-    {(!loading && hasDuplicate) && 
-        <div className = "flex flex-col items-center space-y-2"> 
-            <div>Who are you looking for?</div>
-            <div className = "grid grid-cols-2 space-x-4">
-            {getAlternateProfileData(profileData)?.map(
-                (user) => {
-                    return <Link to = {getProfileLink(user.username, user.uid)}><div className = "flex flex-col items-center">
-                                <img src = {getPfp(user.profilePicture)} className = "h-20 w-20"/>
+
+        {(!loading && hasDuplicate) &&
+            <div className="flex flex-col items-center space-y-2">
+                <div>Who are you looking for?</div>
+                <div className="grid grid-cols-2 space-x-4">
+                    {getAlternateProfileData(profileData)?.map(
+                        (user) => {
+                            return <Link to={getProfileLink(user.username, user.uid)}><div className="flex flex-col items-center">
+                                <img src={getPfp(user.profilePicture)} className="h-20 w-20" />
                                 <div>{user.username}</div>
-                                <div className = "text-xs opacity-60 italic">ID: {user.uid}</div>
+                                <div className="text-xs opacity-60 italic">ID: {user.uid}</div>
 
                             </div>
                             </Link>
-                }
-            )}
-            </div>
+                        }
+                    )}
+                </div>
 
-        </div>
-    }
-        </ProfileLayout>
+            </div>
+        }
+    </ProfileLayout>
 }

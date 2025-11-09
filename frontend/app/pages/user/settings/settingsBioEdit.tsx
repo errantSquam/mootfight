@@ -1,26 +1,8 @@
-import { useState } from 'react';
+import { useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
 import { MDXEditor } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import {
-    UndoRedo,
-    BlockTypeSelect,
-    BoldItalicUnderlineToggles, CodeToggle, CreateLink,
-    InsertImage,
-    toolbarPlugin,
-    InsertTable,
-    ListsToggle,
-    diffSourcePlugin,
-    DiffSourceToggleWrapper,
-    tablePlugin,
-    InsertThematicBreak,
-    linkDialogPlugin,
-    linkPlugin,
-    imagePlugin,
-    listsPlugin,
 
-    thematicBreakPlugin,
-    headingsPlugin
-} from '@mdxeditor/editor';
+import { MarkdownEditor } from '~/components/markdownEditor';
 import { useRef } from 'react';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useContext } from 'react';
@@ -30,44 +12,35 @@ import { useEffect } from 'react';
 import sanitize from 'sanitize-html'
 import { SanitizedMarkdown } from '~/components/profile/sanitizedMarkdown';
 import { updateUserSettings } from '~/functions/apiHandlers';
+import { Icon } from '@iconify/react';
 
 export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
     const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
-    const [markdown, setMarkdown] = useState('')
-    const [isPreview, setPreview] = useState(false)
+    const [isLoading, setIsLoading] = useState(false) //change to hook later
 
     useEffect(() => {
         if (userInfo !== null) {
             if (userInfo.bio !== undefined) {
-                setMarkdown(userInfo.bio)
                 ref.current?.setMarkdown(userInfo.bio)
             }
         }
     }, [authLoaded])
 
-    useEffect(() => {
-        if (!isPreview) {
-            ref.current?.setMarkdown(markdown)
-        }
-
-    }, [isPreview])
-
     const onSubmit = () => {
-        let mdData = sanitize(markdown,
-                                {
-                                    allowedTags: ['u', 'img'],
-                                    allowedAttributes: {
-                                        img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading']
-                                    },
+        let mdData = sanitize(ref.current?.getMarkdown() || '',
+            {
+                allowedTags: ['u', 'img'],
+                allowedAttributes: {
+                    img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading']
+                },
 
-                                }
-                            )
-
-            
-
-        updateUserSettings({bio: mdData}, refreshAuthUser)
-
+            }
+        )
+        setIsLoading(true)
+        updateUserSettings({ bio: mdData }, refreshAuthUser).then((resp) => {
+            setIsLoading(false)
+        })
     }
 
 
@@ -79,57 +52,15 @@ export function BioEditPage() {
             <Link to="/user/settings" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
                 <div>Back</div>
             </Link>
-            <div onClick={() => { setPreview(!isPreview) }}
-                className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>{!isPreview ? 'Preview' : 'Edit'}</div>
-            </div>
             <div onClick={() => onSubmit()} className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>Submit</div>
+                <div className="flex flex-row gap-x-2 items-center">
+    
+                    {isLoading ? <Icon icon="eos-icons:loading" className = "text-lg"/> : <span>Submit</span>}
+                </div>
             </div>
         </div>
-        <div className="border border-zinc-500 rounded">
-            {isPreview &&
-                <div className="p-2">
-                    <SanitizedMarkdown markdown = {markdown}/>
-                </div>}
-            {!isPreview &&
-                <MDXEditor markdown={''}
-                    ref={ref}
-                    onChange={(e) => { setMarkdown(e) }}
-                    plugins={[
-                        headingsPlugin(),
-                        thematicBreakPlugin(),
-                        tablePlugin(),
-                        linkDialogPlugin(),
-                        linkPlugin(),
-                        imagePlugin(),
-                        listsPlugin(),
-                        //quotePlugin(), need to style before we think about this...
-                        diffSourcePlugin({ viewMode: 'rich-text' }),
-                        toolbarPlugin({
-                            toolbarClassName: 'my-classname',
-                            toolbarContents: () => (
-                                <DiffSourceToggleWrapper>
-                                    <UndoRedo />
-                                    <BoldItalicUnderlineToggles />
-                                    <BlockTypeSelect />
-                                    <InsertThematicBreak />
-
-
-                                    <CodeToggle />
-                                    <CreateLink />
-                                    <InsertImage />
-                                    <InsertTable />
-                                    <ListsToggle />
-                                </DiffSourceToggleWrapper>
-                            )
-                        })]}
-                    className="dark-theme"
-
-                />
-            }
+        <div>
+            <MarkdownEditor ref={ref} />
         </div>
-
-
     </div>
 }

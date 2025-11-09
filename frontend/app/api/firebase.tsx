@@ -4,7 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { collection, doc, setDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
@@ -20,11 +20,6 @@ const auth = getAuth()
 
 var db = getFirestore(app)
 
-type ToastResponse = {
-    toastType: string,
-    message: string,
-    data?: any
-}
 
 const handleError = (error: unknown) => {
     if (error instanceof FirebaseError) {
@@ -76,7 +71,7 @@ const getUserInfoHook = (uid?: string) => {
         }
     }
 
-    return useDocument(doc(getFirestore(app), 'users', uid))
+    return useDocument(doc(db, 'users', uid))
 
 }
 
@@ -114,7 +109,6 @@ const getUsersHook = (limitAmount: number = 3) => {
     return useCollection(q)
 }
 
-
 const updateUserInfo = async (toUpdate: any) => {
     if (auth.currentUser === null) {
         return {
@@ -141,6 +135,41 @@ const updateUserInfo = async (toUpdate: any) => {
 
     }
 
+}
+
+const createCharacter = async (data: CharacterSchema) => {
+    try {
+        if (auth.currentUser === null) {
+            return {
+                toastType: "error",
+                message: "Not logged in!"
+            }
+
+        }
+        let collRef = collection(db, "characters")
+        await addDoc(collRef, data);
+        return {
+            toastType: "success",
+            message: "Successfully created character!"
+        }
+
+    } catch (error: unknown) {
+        return handleError(error)
+    }
+
+}
+
+const getCharactersByUserHook = (uid?: string, limitAmount: number = 3) => {
+    if (uid === undefined) {
+        return [null, true, null]
+    }
+    let charaRef = collection(db, "characters")
+    //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
+    const q = query(charaRef, limit(limitAmount),where('owner', '==', uid));
+
+    //Debug string... 
+    /*let resp = getDocs(q).then((data) => {console.log(data)})*/
+    return useCollection(q)
 }
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
@@ -187,7 +216,7 @@ const logOut = async () => {
 
 }
 
-
+//we should refactor this into different API call files...
 export {
     signIn,
     auth,
@@ -197,5 +226,7 @@ export {
     getUserInfoByUsernameHook,
     getUsers,
     getUsersHook,
+    createCharacter,
+    getCharactersByUserHook,
     updateUserInfo
 }
