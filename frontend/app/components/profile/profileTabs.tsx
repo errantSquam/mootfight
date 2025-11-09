@@ -5,14 +5,28 @@ export const ProfileBioTab = ({ profileData }: { profileData: UserAmbiguousSchem
 
 }
 
-export const ProfileCharactersTab = ({ profileData }: { profileData: UserAmbiguousSchema }) => {
+export const ProfileCharactersTab = ({ profileData, charaData }: 
+    { profileData: UserAmbiguousSchema, charaData: CharacterSchema[] }) => {
     //todo: characters
     /*
     characters should be an array of IDs pointing to said character, maybe?
     or maybe characters should have an owner id and we query from there...
     */
     return <div>
-        Characters
+        <h1>Characters</h1>
+        <div className = "flex flex-row">
+            {
+                charaData.map((chara) => {
+                    console.log(charaData)
+                    return <div className = "flex flex-col items-center">
+                        <img src = {chara.images[0].imageLink} className = "w-40"/>
+                        <div>{chara.name}</div>
+
+                    </div>
+                })
+            }
+
+        </div>
     </div>
 
 }

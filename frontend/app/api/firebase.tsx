@@ -159,6 +159,19 @@ const createCharacter = async (data: CharacterSchema) => {
 
 }
 
+const getCharactersByUserHook = (uid?: string, limitAmount: number = 3) => {
+    if (uid === undefined) {
+        return [null, true, null]
+    }
+    let charaRef = collection(db, "characters")
+    //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
+    const q = query(charaRef, limit(limitAmount),where('owner', '==', uid));
+
+    //Debug string... 
+    /*let resp = getDocs(q).then((data) => {console.log(data)})*/
+    return useCollection(q)
+}
+
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
         let userCredential = await signInWithEmailAndPassword(auth, email, password)
@@ -214,5 +227,6 @@ export {
     getUsers,
     getUsersHook,
     createCharacter,
+    getCharactersByUserHook,
     updateUserInfo
 }

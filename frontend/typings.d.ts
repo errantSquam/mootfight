@@ -26,6 +26,13 @@ type ToastResponse = {
     data?: any
 }
 
+
+type RefImage = {
+    imageLink: string,
+    artist?: string,
+    artistLink?: string
+}
+
 type CharacterSchema = {
     name: string,
     pronouns?: string,

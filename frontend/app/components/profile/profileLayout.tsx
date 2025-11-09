@@ -8,6 +8,9 @@ import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
 import { ProfilePictureComponent } from "../settings/cropComponents"
 import { ProfileBioTab, ProfileCharactersTab, ProfileBattlesTab, ProfileStatsTab } from "./profileTabs"
+import { getCharactersByUserHook } from "~/api/firebase"
+import type { DocumentData, QuerySnapshot } from "firebase/firestore"
+
 
 type Inputs = {
     uid: string
@@ -17,7 +20,12 @@ type Inputs = {
     status: string
 }
 
-const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefined, profileData: UserAmbiguousSchema }) => {
+const MainProfileLayout = ({ loading, profileData, charaData }:
+    {
+        loading: boolean | undefined,
+        profileData: UserAmbiguousSchema,
+        charaData: CharacterSchema[],
+    }) => {
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
     const [profileTab, setProfileTab] = useState("Bio")
     const [isEditing, setIsEditing] = useState(false)
@@ -31,16 +39,19 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
 
     }
 
+
+
     //Seems kinda ass to pass in profile data like that lol. Is there a way we could use a context...?
 
-    const profileTabs: {[index: string]: JSX.Element} = {
-        "Bio": <ProfileBioTab profileData={profileData}/>,
-        "Characters": <ProfileCharactersTab profileData={profileData}/>,
-        "Battles": <ProfileBattlesTab profileData={profileData}/>, //attacks/defences
-        "Stats": <ProfileStatsTab profileData={profileData}/>
+    const profileTabs: { [index: string]: JSX.Element } = {
+        "Bio": <ProfileBioTab profileData={profileData} />,
+        "Characters": <ProfileCharactersTab profileData={profileData}
+            charaData={charaData} />,
+        "Battles": <ProfileBattlesTab profileData={profileData} />, //attacks/defences
+        "Stats": <ProfileStatsTab profileData={profileData} />
     }
 
-    
+
     //maybe framer motion these tabs later
 
 
@@ -51,8 +62,8 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
         <div className="w-full h-full flex flex-col items-start gap-y-2 flex-3 px-4">
             <div className="flex flex-col items-start justify-center w-full">
                 <div className="flex flex-row items-center gap-x-2 w-full">
-                    <div className = "p-2">
-                        <img src={getPfp(profileData?.profilePicture)} className="w-30 rounded-full" /> 
+                    <div className="p-2">
+                        <img src={getPfp(profileData?.profilePicture)} className="w-30 rounded-full" />
                         {/*
                         Put pfp component here if user is editing...
                         <ProfilePictureComponent />
@@ -92,18 +103,22 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
             </div>
             <div className="w-2/3 space-y-6 px-4">
                 <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
-                        {
-                            (!loading) &&
-                            profileTabs[profileTab]
-                        }
+                    {
+                        (!loading) &&
+                        profileTabs[profileTab]
+                    }
                 </div>
             </div></div>
     </div>
 }
 
-export function ProfileLayout({ children, loading, profileData, hasDuplicate = false }:
-    { children?: any, loading: boolean | undefined, profileData: any, hasDuplicate?: boolean }) {
+export function ProfileLayout({ children, loading, profileData, charaData, hasDuplicate = false }:
+    {
+        children?: any, loading: boolean | undefined, profileData: any,
+        charaData: CharacterSchema[],
+        hasDuplicate?: boolean
+    }) {
     return <div className="flex items-center justify-center">
-        {!hasDuplicate && <MainProfileLayout loading={loading} profileData={profileData} />}
+        {!hasDuplicate && <MainProfileLayout loading={loading} profileData={profileData} charaData = {charaData}/>}
     </div>
 }
