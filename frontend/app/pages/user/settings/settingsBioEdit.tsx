@@ -17,7 +17,6 @@ export function BioEditPage() {
     const ref = useRef<MDXEditorMethods>(null)
     const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
     const [markdown, setMarkdown] = useState('')
-    const [isPreview, setPreview] = useState(false)
 
     useEffect(() => {
         if (userInfo !== null) {
@@ -39,11 +38,7 @@ export function BioEditPage() {
 
                                 }
                             )
-
-            
-
         updateUserSettings({bio: mdData}, refreshAuthUser)
-
     }
 
 
@@ -55,10 +50,6 @@ export function BioEditPage() {
             <Link to="/user/settings" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
                 <div>Back</div>
             </Link>
-            <div onClick={() => { setPreview(!isPreview) }}
-                className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>{!isPreview ? 'Preview' : 'Edit'}</div>
-            </div>
             <div onClick={() => onSubmit()} className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
                 <div>Submit</div>
             </div>

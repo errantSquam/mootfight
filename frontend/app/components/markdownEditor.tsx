@@ -30,7 +30,7 @@ import { Button } from "@mdxeditor/editor";
 export const MarkdownEditor = ({ markdown, setMarkdown, ref }:
     {
         markdown: string, setMarkdown: Dispatch<SetStateAction<string>>,
-        ref: RefObject<MDXEditorMethods> | null
+        ref: RefObject<MDXEditorMethods> | any //crying because i can't get the typing to work
     }) => {
 
 
