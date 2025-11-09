@@ -20,11 +20,6 @@ const auth = getAuth()
 
 var db = getFirestore(app)
 
-type ToastResponse = {
-    toastType: string,
-    message: string,
-    data?: any
-}
 
 const handleError = (error: unknown) => {
     if (error instanceof FirebaseError) {
@@ -76,7 +71,7 @@ const getUserInfoHook = (uid?: string) => {
         }
     }
 
-    return useDocument(doc(getFirestore(app), 'users', uid))
+    return useDocument(doc(db, 'users', uid))
 
 }
 
