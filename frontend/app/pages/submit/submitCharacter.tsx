@@ -111,6 +111,8 @@ export function SubmitCharacterPage() {
 
     }
     const descRef = useRef<MDXEditorMethods>(null)
+    const permsRef = useRef<MDXEditorMethods>(null)
+
 
 
     return <div className="flex flex-col items-center text-center justify-center pt-5 w-full gap-y-2">
@@ -140,7 +142,7 @@ export function SubmitCharacterPage() {
                 <div className="flex flex-col items-start col-span-2">
                     <h4>Character Permissions</h4>
                     <div className = "text-start w-full">
-                        <MarkdownEditor ref={descRef} />
+                        <MarkdownEditor ref={permsRef} />
                     </div>
                     <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full" />
                 </div>

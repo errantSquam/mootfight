@@ -50,6 +50,7 @@ export const MarkdownEditor = ({ref }:
          <div className = {`${isPreview ? "hidden" : "visible"}`}>
             <MDXEditor markdown={''}
                 ref={ref}
+                contentEditableClassName="markdown-editor"
                 plugins={[
                     headingsPlugin(),
                     thematicBreakPlugin(),
