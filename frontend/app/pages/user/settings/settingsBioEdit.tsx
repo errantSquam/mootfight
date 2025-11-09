@@ -1,26 +1,8 @@
-import { useState } from 'react';
+import { useState, type Dispatch, type RefObject, type SetStateAction } from 'react';
 import { MDXEditor } from '@mdxeditor/editor'
 import '@mdxeditor/editor/style.css'
-import {
-    UndoRedo,
-    BlockTypeSelect,
-    BoldItalicUnderlineToggles, CodeToggle, CreateLink,
-    InsertImage,
-    toolbarPlugin,
-    InsertTable,
-    ListsToggle,
-    diffSourcePlugin,
-    DiffSourceToggleWrapper,
-    tablePlugin,
-    InsertThematicBreak,
-    linkDialogPlugin,
-    linkPlugin,
-    imagePlugin,
-    listsPlugin,
 
-    thematicBreakPlugin,
-    headingsPlugin
-} from '@mdxeditor/editor';
+import { MarkdownEditor } from '~/components/markdownEditor';
 import { useRef } from 'react';
 import { type MDXEditorMethods } from '@mdxeditor/editor';
 import { useContext } from 'react';
@@ -46,12 +28,6 @@ export function BioEditPage() {
         }
     }, [authLoaded])
 
-    useEffect(() => {
-        if (!isPreview) {
-            ref.current?.setMarkdown(markdown)
-        }
-
-    }, [isPreview])
 
     const onSubmit = () => {
         let mdData = sanitize(markdown,
@@ -87,47 +63,9 @@ export function BioEditPage() {
                 <div>Submit</div>
             </div>
         </div>
-        <div className="border border-zinc-500 rounded">
-            {isPreview &&
-                <div className="p-2">
-                    <SanitizedMarkdown markdown = {markdown}/>
-                </div>}
-            {!isPreview &&
-                <MDXEditor markdown={''}
-                    ref={ref}
-                    onChange={(e) => { setMarkdown(e) }}
-                    plugins={[
-                        headingsPlugin(),
-                        thematicBreakPlugin(),
-                        tablePlugin(),
-                        linkDialogPlugin(),
-                        linkPlugin(),
-                        imagePlugin(),
-                        listsPlugin(),
-                        //quotePlugin(), need to style before we think about this...
-                        diffSourcePlugin({ viewMode: 'rich-text' }),
-                        toolbarPlugin({
-                            toolbarClassName: 'my-classname',
-                            toolbarContents: () => (
-                                <DiffSourceToggleWrapper>
-                                    <UndoRedo />
-                                    <BoldItalicUnderlineToggles />
-                                    <BlockTypeSelect />
-                                    <InsertThematicBreak />
-
-
-                                    <CodeToggle />
-                                    <CreateLink />
-                                    <InsertImage />
-                                    <InsertTable />
-                                    <ListsToggle />
-                                </DiffSourceToggleWrapper>
-                            )
-                        })]}
-                    className="dark-theme"
-
-                />
-            }
+        <div>
+            <MarkdownEditor markdown={markdown} setMarkdown={setMarkdown} ref = {ref}/>
+            
         </div>
 
 
