@@ -2,11 +2,12 @@
 import { getPfp } from "~/functions/helper"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { SanitizedMarkdown } from "./sanitizedMarkdown"
-import { useState, useContext } from "react"
+import { useState, useContext, type JSX } from "react"
 import { handleToast } from "~/functions/handleToast"
 import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/firebase"
 import { ProfilePictureComponent } from "../settings/cropComponents"
+import { ProfileBioTab, ProfileCharactersTab, ProfileBattlesTab, ProfileStatsTab } from "./profileTabs"
 
 type Inputs = {
     uid: string
@@ -16,7 +17,7 @@ type Inputs = {
     status: string
 }
 
-const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefined, profileData: any }) => {
+const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefined, profileData: UserAmbiguousSchema }) => {
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
     const [profileTab, setProfileTab] = useState("Bio")
     const [isEditing, setIsEditing] = useState(false)
@@ -30,12 +31,16 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
 
     }
 
-    const profileTabs: any = {
-        "Bio": "Bio Component Here",
-        "Characters": "Characters Component Here",
-        "Battles": "Component", //attacks/defences
-        "Stats": "Component"
+    //Seems kinda ass to pass in profile data like that lol. Is there a way we could use a context...?
+
+    const profileTabs: {[index: string]: JSX.Element} = {
+        "Bio": <ProfileBioTab profileData={profileData}/>,
+        "Characters": <ProfileCharactersTab profileData={profileData}/>,
+        "Battles": <ProfileBattlesTab profileData={profileData}/>, //attacks/defences
+        "Stats": <ProfileStatsTab profileData={profileData}/>
     }
+
+    
     //maybe framer motion these tabs later
 
 
@@ -87,14 +92,10 @@ const MainProfileLayout = ({ loading, profileData }: { loading: boolean | undefi
             </div>
             <div className="w-2/3 space-y-6 px-4">
                 <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
-                    <div>
                         {
                             (!loading) &&
-                            <div>
-                                <div><SanitizedMarkdown markdown={profileData?.bio} /></div>
-                            </div>
+                            profileTabs[profileTab]
                         }
-                    </div>
                 </div>
             </div></div>
     </div>
