@@ -58,5 +58,14 @@ service cloud.firestore {
 (to implement: https://github.com/gitname/react-gh-pages)
 ``npm run deploy``
 
+## Known Vulnerabilities
+Mootfight is meant to be hosted for a small group of trusted folks on a free Firebase plan, but we've done our best to validate the data as much as we can. Still, some validation checks are frontend-only and cannot be caught by Firebase's free plan. 
+
+Here are some things to note:
+
+### Not Backend Validated
+- Profile picture is stored as a (base64) string, and the request can be modified to include any string.
+- Image links are stored as strings, and only validated by the frontend. Requests can be modified to include any string, and if the image link breaks in the future, it will not be caught.
+
 ## Important Rule
 If u put in chatgpt'd code I will kill you, doubly so if it's ag*ntic ai :nauseated_face: 
