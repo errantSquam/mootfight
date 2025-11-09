@@ -1,10 +1,9 @@
 import type { Route } from "../+types/home";
 import { ProfilePage } from "~/pages/user/profile";
-import { getUserInfoHook } from "~/api/firebase";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "Mootfight!" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }

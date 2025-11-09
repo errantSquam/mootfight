@@ -3,7 +3,7 @@ import { SubmitAttackPage } from "~/pages/submit/submitAttack";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
+    { title: "Mootfight!" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
