@@ -3,7 +3,7 @@ import { getUserInfoHook } from "~/api/userApi";
 import { ProfileLayout } from "~/components/profile/profileLayout";
 import { DocumentSnapshot } from "firebase/firestore";
 import type { DocumentData, QuerySnapshot } from "firebase/firestore";
-import { getCharactersByUserHook } from "~/api/firebase";
+import { getCharactersByUserHook } from "~/api/characterApi";
 
 export function ProfilePage() {
     let params = useParams();

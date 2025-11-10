@@ -1,4 +1,3 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
@@ -135,8 +134,5 @@ export {
     db,
     handleError,
     signIn,
-    logOut,
-    createCharacter,
-    getCharacterHook,
-    getCharactersByUserHook,
+    logOut
 }

@@ -8,7 +8,7 @@ import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/userApi"
 import { ProfilePictureComponent } from "../settings/cropComponents"
 import { ProfileBioTab, ProfileCharactersTab, ProfileBattlesTab, ProfileStatsTab } from "./profileTabs"
-import { getCharactersByUserHook } from "~/api/firebase"
+import { getCharactersByUserHook } from "~/api/characterApi"
 import type { DocumentData, QuerySnapshot } from "firebase/firestore"
 
 

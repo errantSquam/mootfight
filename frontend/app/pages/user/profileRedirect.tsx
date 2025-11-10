@@ -8,7 +8,7 @@ import { getPfp } from "~/functions/helper";
 import { useState } from "react";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
-import { getCharactersByUserHook } from "~/api/firebase";
+import { getCharactersByUserHook } from "~/api/characterApi";
 
 export function ProfileRedirectPage() {
     let params = useParams();
