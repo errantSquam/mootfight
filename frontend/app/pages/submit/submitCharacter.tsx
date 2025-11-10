@@ -7,13 +7,8 @@ import { useContext } from "react"
 import { useFieldArray } from "react-hook-form"
 import { AuthContext } from "~/provider/authProvider"
 import { handleToast } from "~/functions/handleToast"
-import { createCharacter } from "~/api/firebase"
+import { createCharacter } from "~/api/characterApi"
 
-type RefImage = {
-    imageLink: string,
-    artist?: string,
-    artistLink?: string
-}
 
 function checkImage(url: string | undefined) {
     //console.log(url)

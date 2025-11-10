@@ -1,6 +1,6 @@
 import type { DocumentData, QuerySnapshot } from "firebase/firestore";
 import { useParams } from "react-router";
-import { getUserInfoByUsernameHook } from "~/api/firebase";
+import { getUserInfoByUsernameHook } from "~/api/userApi";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ProfileLayout } from "~/components/profile/profileLayout";
@@ -8,7 +8,7 @@ import { getPfp } from "~/functions/helper";
 import { useState } from "react";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
-import { getCharactersByUserHook } from "~/api/firebase";
+import { getCharactersByUserHook } from "~/api/characterApi";
 
 export function ProfileRedirectPage() {
     let params = useParams();
