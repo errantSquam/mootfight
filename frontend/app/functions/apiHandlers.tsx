@@ -1,5 +1,5 @@
 
-import { updateUserInfo } from "~/api/firebase";
+import { updateUserInfo } from "~/api/userApi";
 import { handleToast } from "./handleToast";
 
 export async function updateUserSettings(data: UserAmbiguousSchema, refreshAuthUser: () => void) {

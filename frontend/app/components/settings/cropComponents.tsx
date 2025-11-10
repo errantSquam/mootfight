@@ -1,10 +1,7 @@
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { type UseFormRegister } from "react-hook-form"
 import { useState } from "react"
-import { handleToast } from "~/functions/handleToast"
 import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
-import { updateUserInfo } from "~/api/firebase"
 import { Icon } from "@iconify/react"
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import React, { useRef } from "react";

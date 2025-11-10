@@ -1,5 +1,5 @@
 
-import { getUsersHook } from "~/api/firebase";
+import { getUsersHook } from "~/api/userApi";
 import { Link } from "react-router";
 import { getPfp } from "~/functions/helper";
 import { getProfileLink } from "~/functions/helper";

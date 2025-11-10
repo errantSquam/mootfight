@@ -1,6 +1,6 @@
 import type { DocumentData, QuerySnapshot } from "firebase/firestore";
 import { useParams } from "react-router";
-import { getUserInfoByUsernameHook } from "~/api/firebase";
+import { getUserInfoByUsernameHook } from "~/api/userApi";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { ProfileLayout } from "~/components/profile/profileLayout";

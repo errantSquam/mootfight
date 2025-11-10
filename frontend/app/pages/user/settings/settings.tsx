@@ -5,7 +5,6 @@ import { useState } from "react"
 import { handleToast } from "~/functions/handleToast"
 import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
-import { updateUserInfo } from "~/api/firebase"
 import 'react-easy-crop/react-easy-crop.css'
 import { ProfilePictureComponent } from "~/components/settings/cropComponents"
 import { Link } from "react-router"
