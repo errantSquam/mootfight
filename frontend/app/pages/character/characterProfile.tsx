@@ -92,8 +92,8 @@ export default function CharacterPage() {
             </div>
             <div> {!userLoading &&
                 <div>
-                    Belongs to <Link to={`/user/profile/${userData?.data()?.username}/${userData?.data()?.uid}`}>
-                        <u>{userData?.data()?.username}</u></Link>
+                    Belongs to <Link to={`/user/profile/${userData?.username}/${userData?.uid}`}>
+                        <u>{userData?.username}</u></Link>
                 </div>
             }</div>
             <div className="w-full flex flex-row">

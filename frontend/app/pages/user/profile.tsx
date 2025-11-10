@@ -28,13 +28,9 @@ export function ProfilePage() {
     }
 
 
-    function getProfileData(profileData: DocumentSnapshot<DocumentData, DocumentData> | undefined) {
-        return profileData?.data()
-    }
-
 
 
     //we NEED to switch to a provider. groans
-    return (<ProfileLayout loading={loading} profileData={getProfileData(profileData) || {}} 
+    return (<ProfileLayout loading={loading} profileData={profileData || {}} 
     charaData = {handleCharaData(charaData)}/>);
 }

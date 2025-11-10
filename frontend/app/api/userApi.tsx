@@ -1,7 +1,8 @@
+import type { FirebaseError } from "firebase/app";
 import { app, auth, db, handleError } from "./firebase"
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 
@@ -23,9 +24,11 @@ const getUserInfo = async (uid?: string) => {
     return docSnap.data()
 }
 
-const getUserInfoHook = (uid?: string) => {
+const getUserInfoHook = (uid?: string): [UserAmbiguousSchema| undefined, boolean, FirestoreError | undefined] => {
+
     if (uid === null) {
-        return useDocument(undefined)
+        let [undefinedInfo, returnedLoading, returnedError] = useDocument(undefined) //oops all undefined
+        return [undefined, returnedLoading, returnedError]
     }
     if (uid === undefined) {
         if (auth.currentUser !== null) {
@@ -38,8 +41,9 @@ const getUserInfoHook = (uid?: string) => {
         }
     }
 
-    return useDocument(doc(db, 'users', uid))
-
+    let [unhandledInfo, returnedLoading, returnedError] = useDocument(doc(db, 'users', uid))
+    let returnedInfo = unhandledInfo?.data() as UserAmbiguousSchema
+    return [returnedInfo, returnedLoading, returnedError]
 }
 
 const getUserInfoByUsername = async (username: string | undefined) => {
@@ -53,13 +57,23 @@ const getUserInfoByUsername = async (username: string | undefined) => {
 
 }
 
-const getUserInfoByUsernameHook = (username: string | undefined) => {
+const getUserInfoByUsernameHook = (username: string | undefined):
+ [UserSchema[], boolean, FirebaseError | undefined] => {
     if (username === undefined) {
-        return [undefined, true, undefined]
+        return [[] as UserSchema[], true, undefined]
     }
+
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), where('username', '==', username));
-    return useCollection(q)
+    let [userData, userLoading, userError] = useCollection(q)
+
+    let returnedArray: UserSchema[] = []
+
+    userData?.docs.forEach((document) => {
+        returnedArray.push((document.data() as UserSchema))
+    })
+
+    return [returnedArray, userLoading, userError]
 }
 
 const getUsers = async (limitAmount: number = 3) => {
