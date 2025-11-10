@@ -11,6 +11,7 @@ import { createCharacter } from "~/api/characterApi"
 import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
 
+
 function checkImage(url: string | undefined) {
     //console.log(url)
     if (url === undefined || url === "") {
@@ -41,44 +42,47 @@ const ImageUploadComponent = ({ register, errors, setValue }:
         artist: '',
         artistLink: '',
     })
-    const [showImage, setShowImage] = useState<boolean>(false)
+    const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
 
     const validateImage = (imageLink: string) => {
+        //change to a handler?
         if (checkImage(imageLink) === true) {
-            setShowImage(true)
+            setValidationVerified(true)
             setValidationError(false)
         } else {
+            console.log("True")
             setValidationError(true)
         }
 
     }
 
     const resubmitImage = () => {
-        setShowImage(false)
+        setValidationVerified(false)
         setValidationError(false)
     }
 
-    return <div className="flex flex-col gap-y-2 items-center">
-        <div className={`flex flex-col text-center items-center gap-y-2 ${showImage ? 'hidden' : 'visible'}`}>
+    return <div className="flex flex-col items-center ">
+        <div className={`flex flex-col items-center gap-y-2`}>
 
-            <div className="flex flex-col text-center items-center justify-center w-80">
+            <div className="flex flex-row text-center items-center justify-center">
 
-                <div className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg bg-gray-50 border-gray-600 bg-zinc-900">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6 gap-y-2">
-                        <Icon icon="cuida:upload-outline" className="text-5xl text-gray-400" />
-                        <p className="text-sm text-gray-400">Input image link:</p>
+                <div className="flex flex-row">
+                    <div className="flex flex-row items-center justify-center gap-x-2">
+                        <p className="text-sm">Input image link:</p>
 
-                        <input className="bg-zinc-400 rounded text-sm text-zinc-900/100 py-1 px-2"
+                        <input className={`${validationError? "bg-red-300" : 
+                        validationVerified ? "bg-green-300" : "bg-zinc-400"} 
+                        rounded text-sm text-zinc-900/100 py-1 px-2`}
                             placeholder="Your image link here..."
                             value={imageData.imageLink}
                             onChange={(e) => {
-                                let updatedData = {...imageData,
+                                let updatedData = {
+                                    ...imageData,
                                     imageLink: e.target.value
                                 }
                                 setImageData(updatedData)
-                                setValue("images.0", updatedData //Todo: Add more fields in the form, later... Undefined will default to the user.
-                                )
+                                setValue("images.0", updatedData)
 
                             }}
                         />
@@ -91,17 +95,19 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                 </div>
 
             </div>
-            {
-                validationError || errors.images &&
-                <div className="text-red-300 text-sm">Invalid image. Check your link?
+            {/*
+                (validationError || errors.images) &&
+                <div className="text-red-300 text-sm text-start">Invalid image. Check your link?
                     <br />
                     <i className="text-red-400/60">
                         (It should end with the file extension, e.g. <u>https://(yourfilehost)/(yourart).png</u>.
                     </i>
                 </div>
-            }
+            */}
         </div>
         {
+            //Summon a modal instead...
+        /*
             showImage &&
             <div className={`flex flex-col items-center`}>
                 <img src={imageData.imageLink} className="w-1/3" />
@@ -111,6 +117,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                     Resubmit Image
                 </div>
             </div>
+            */
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
             value={imageData.imageLink}
@@ -126,7 +133,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
             )}
 
         />
-        <div className={`flex flex-row gap-x-2 ${showImage ? 'visible' : 'hidden'}`}>
+        <div className={`flex flex-row gap-x-2 ${validationVerified ? 'visible' : 'hidden'}`}>
 
         </div>
     </div>
@@ -147,7 +154,7 @@ export function SubmitCharacterPage() {
 
     const descRef = useRef<MDXEditorMethods>(null)
     const permsRef = useRef<MDXEditorMethods>(null)
-    const { userInfo, refreshAuthUser, authLoaded} = useContext(AuthContext)
+    const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
     let navigate = useNavigate()
 
     const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
@@ -174,7 +181,7 @@ export function SubmitCharacterPage() {
 
     return <div className="flex flex-col items-center text-center justify-center pt-5 w-full gap-y-2">
         <h2>Submit Character</h2>
-        <form className="flex flex-col max-w-2/3 gap-y-2" onSubmit={handleSubmit(onSubmit)}>
+        <form className="flex flex-col items-center max-w-2/3 gap-y-2" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-y-2">
                 <h3>Character Information</h3>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -214,16 +221,19 @@ export function SubmitCharacterPage() {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col items-center text-center gap-y-2">
-                <h3>Main Image</h3>
+            <div className="flex flex-col items-center text-center gap-y-2 w-2/3">
+                <h3>Upload Images</h3>
                 <ImageUploadComponent register={register} errors={errors} setValue={setValue} />
-                <div className="flex bg-zinc-900 p-3 rounded">
-                    This will be your character's main image. <br />You can always go back and change this later, or add more images!
+                <div className = {`flex flex-row w-60 items-center justify-center text-center 
+                rounded-lg p-2 text-zinc-400 font-bold bg-zinc-900 gap-x-1
+                hover:bg-zinc-700 select-none cursor-pointer`}>
+                    <Icon icon="mingcute:plus-fill" className = "text-xl"/>
+                    <div>Add Image</div>
                 </div>
 
             </div>
             <input type="submit"
-                className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded" />
+                className="w-full bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded" />
         </form>
 
 
