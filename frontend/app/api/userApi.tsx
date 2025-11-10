@@ -24,12 +24,17 @@ const getUserInfo = async (uid?: string) => {
 }
 
 const getUserInfoHook = (uid?: string) => {
+    if (uid === null) {
+        return useDocument(undefined)
+    }
     if (uid === undefined) {
         if (auth.currentUser !== null) {
             uid = auth.currentUser.uid
         }
         else {
-            uid = ''
+            //this shouldn't be called...
+            console.log("This shouldn't be called...")
+            uid = 'invalid'
         }
     }
 

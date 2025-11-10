@@ -18,12 +18,10 @@ export default function CharacterPage() {
 
     const handleCharacterData = (charaData: boolean | DocumentSnapshot<DocumentData, DocumentData> | null | undefined) => {
         if (typeof charaData === "boolean" || charaData == null) {
-            return {}
+            return {owner: null}
         } else {
             let tempData = charaData.data() || {}
             tempData.cid = charaData.id
-            console.log(tempData)
-            console.log(tempData.images[0])
             return tempData
         }
 
