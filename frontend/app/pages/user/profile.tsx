@@ -12,29 +12,11 @@ export function ProfilePage() {
 
     const [charaData, charaLoading, charaError] = getCharactersByUserHook(params.userId)
 
-    const handleCharaData = (charaData: QuerySnapshot<DocumentData, DocumentData> | boolean | null | undefined) => {
-        //console.log(charaData)
-        if (typeof charaData === "boolean" || charaData == null) {
-            return []
-        }
-        let tempArray: CharacterSchema[] = []
-        charaData.forEach((result) => {
-            let tempData = result.data()
-            tempData.cid = result.id
-            tempArray.push(tempData as CharacterSchema)
-        })
-        return tempArray
 
-    }
-
-
-    function getProfileData(profileData: DocumentSnapshot<DocumentData, DocumentData> | undefined) {
-        return profileData?.data()
-    }
 
 
 
     //we NEED to switch to a provider. groans
-    return (<ProfileLayout loading={loading} profileData={getProfileData(profileData) || {}} 
-    charaData = {handleCharaData(charaData)}/>);
+    return (<ProfileLayout loading={loading} profileData={profileData || {}} 
+    charaData = {charaData || []}/>);
 }
