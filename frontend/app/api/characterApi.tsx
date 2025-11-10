@@ -1,3 +1,4 @@
+import type { FirebaseError } from "firebase/app";
 import { app, auth, db, handleError } from "./firebase"
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
@@ -14,7 +15,9 @@ const createCharacter = async (data: CharacterSchema) => {
 
         }
         let collRef = collection(db, "characters")
-        await addDoc(collRef, data);
+        let resp = await addDoc(collRef, data);
+        /*let docRef = doc(db, "characters", resp.id)
+        docRef.*/
         return {
             toastType: "success",
             message: "Successfully created character!"
@@ -40,12 +43,17 @@ const getCharactersByUserHook = (uid?: string, limitAmount: number = 3) => {
 }
 
 
-const getCharacterHook = (cid?: string) => {
+const getCharacterHook = (cid?: string) : [CharacterSchema | undefined, boolean, FirebaseError | undefined] => {
     if (cid === undefined) {
-        return [null, true, null]
+        return [undefined, true, undefined]
     }
     let charaRef = doc(db, "characters", cid)
-    return useDocument(charaRef)
+    let [charaData, charaLoading, charaError]  = useDocument(charaRef)
+    let dataToReturn = charaData?.data() as CharacterSchema
+    if (dataToReturn !== undefined) {
+        dataToReturn.cid = charaRef.id
+    }
+    return [dataToReturn, charaLoading, charaError]
 }
 
 

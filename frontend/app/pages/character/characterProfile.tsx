@@ -16,37 +16,26 @@ export default function CharacterPage() {
 
     const [charaData, charaLoading, charaError] = getCharacterHook(params.characterId)
 
-    const handleCharacterData = (charaData: boolean | DocumentSnapshot<DocumentData, DocumentData> | null | undefined) => {
-        if (typeof charaData === "boolean" || charaData == null) {
-            return {owner: null}
-        } else {
-            let tempData = charaData.data() || {}
-            tempData.cid = charaData.id
-            return tempData
-        }
-
-    }
-
-    const [userData, userLoading, userError] = getUserInfoHook(handleCharacterData(charaData)?.owner)
+    const [userData, userLoading, userError] = getUserInfoHook(charaData?.owner)
 
 
 
     const CharaTabs: { [index: string]: JSX.Element } = {
         "Gallery": <div>
             {!charaLoading &&
-                handleCharacterData(charaData).images.map((image: RefImage) => {
+                charaData?.images.map((image: RefImage) => {
                     return <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
                 })
             }
         </div>,
         "Description": <div>
             <div><h3>Description</h3>
-                <SanitizedMarkdown markdown={handleCharacterData(charaData)?.description} />
+                <SanitizedMarkdown markdown={charaData?.description || ''} />
             </div>
         </div>,
         "Permissions": <div>
             <h3> Permissions</h3>
-            <SanitizedMarkdown markdown={handleCharacterData(charaData)?.permissions} />
+            <SanitizedMarkdown markdown={charaData?.permissions || ''} />
         </div>,
         "Battles": <div></div>, //attacks/defences
         "Stats": <div></div>
@@ -63,7 +52,7 @@ export default function CharacterPage() {
                 <div className="flex flex-row items-center gap-x-2 w-full">
                     <div className="p-2">
                         {charaLoading ? <ImageSkeletonComponent className="w-20 h-20 object-cover" /> :
-                            <ImageWithLoader src={handleCharacterData(charaData).images[0].imageLink}
+                            <ImageWithLoader src={charaData?.images[0].imageLink || ''}
                                 className="w-20 h-20 object-cover" />
                         }
                     </div>
@@ -72,15 +61,15 @@ export default function CharacterPage() {
                             {!charaLoading &&
                                 <div className="flex flex-row gap-x-2 items-center justify-center">
                                     <div className="text-xl font-bold">
-                                        {handleCharacterData(charaData).name}
+                                        {charaData?.name}
                                     </div>
-                                    <i className="opacity-70">({handleCharacterData(charaData).cid})</i>
+                                    <i className="opacity-70">({charaData?.cid})</i>
                                 </div>
                             }
-                            <div>{handleCharacterData(charaData)?.pronouns &&
-                                <div className="">{handleCharacterData(charaData)?.pronouns}</div>}
+                            <div>
+                                <div className="">{charaData?.pronouns}</div>
                             </div>
-                            <div className="opacity-70 text-sm"><i>{handleCharacterData(charaData)?.status}</i></div>
+                            <div className="opacity-70 text-sm"><i>{charaData?.status}</i></div>
                         </div>
                         <div className="flex flex-col grow items-start">
                             <div className="flex flex-row gap-x-2">
