@@ -47,9 +47,8 @@ service cloud.firestore {
     }
     match /characters/{characterId} {
     	allow read: if true;
-      allow update: if request.auth != null && request.auth.uid == request.resource.data.owner
-      && request.resource.data.uid == resource.data.uid
-      allow create: if request.auth != null && resource.data.owner == request.auth.uid
+      allow update, delete: if request.auth != null && request.auth.uid == request.resource.data.owner;
+      allow create: if request.auth != null && resource.data.owner == request.auth.uid;
     }
   }
 }

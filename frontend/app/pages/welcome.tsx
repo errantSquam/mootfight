@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import { getPfp } from "~/functions/helper";
 import { getProfileLink } from "~/functions/helper";
 import type { DocumentData, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
-
+import { ImageWithLoader } from "~/components/loaders";
 
 export function Welcome() {
 
@@ -36,7 +36,7 @@ export function Welcome() {
               {!loading && transformSnapshot(snapshot).map((user) => {
                 return <Link to = {getProfileLink(user.username, user.uid)}>
                   <div className = "flex flex-col items-center" key = {user.username}>
-                  <img src = {getPfp(user.profilePicture)} className = "w-20"/>
+                  <ImageWithLoader src = {getPfp(user.profilePicture)} className = "w-20 h-20 object-cover"/>
                   <span>{user.username}</span>
                   </div></Link>
               })}

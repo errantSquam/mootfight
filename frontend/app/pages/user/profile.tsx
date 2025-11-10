@@ -13,7 +13,7 @@ export function ProfilePage() {
     const [charaData, charaLoading, charaError] = getCharactersByUserHook(params.userId)
 
     const handleCharaData = (charaData: QuerySnapshot<DocumentData, DocumentData> | boolean | null | undefined) => {
-        console.log(charaData)
+        //console.log(charaData)
         if (typeof charaData === "boolean" || charaData == null) {
             return []
         }

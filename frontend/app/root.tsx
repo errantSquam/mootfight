@@ -12,7 +12,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 
 import { ToastContainer, toast } from 'react-toastify/unstyled';
-import { LoadScreen } from "./components/loading";
+import { LoadScreen } from "./components/loadingScreen";
 import { AuthProvider } from "./provider/authProvider";
 import 'react-toastify/ReactToastify.css';
 

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router"
 import { useState } from "react"
 import { handleToast } from "~/functions/handleToast"
 import { useOutletContext } from "react-router"
-import { LoadScreenNoAuth } from "~/components/loading"
+import { LoadScreenNoAuth } from "~/components/loadingScreen"
 
 type Inputs = {
     email: string
