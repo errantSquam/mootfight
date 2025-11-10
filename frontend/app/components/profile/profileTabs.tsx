@@ -14,6 +14,7 @@ export const ProfileCharactersTab = ({ profileData, charaData }:
     characters should be an array of IDs pointing to said character, maybe?
     or maybe characters should have an owner id and we query from there...
     */
+   const characterLimit = 30
     return <div>
         <h1>Characters</h1>
         <div className = "grid grid-cols-4 gap-x-2">
@@ -22,7 +23,7 @@ export const ProfileCharactersTab = ({ profileData, charaData }:
                     console.log(charaData)
                     return <Link to ={`/character/${chara.cid}`} className = "flex flex-col items-center">
                         <ImageWithLoader src = {chara.images[0].imageLink} className = "w-40 h-40 object-cover"/>
-                        <div>{chara.name.substring(0, 20)}</div>
+                        <div className = "w-40 text-center text-ellipsis overflow-hidden">{chara.name.substring(0, characterLimit)}</div>
 
                     </Link>
                 })

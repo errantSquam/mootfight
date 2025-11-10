@@ -51,7 +51,7 @@ export default function CharacterPage() {
             <div className="flex flex-col items-start justify-center w-full">
                 <div className="flex flex-row items-center gap-x-2 w-full">
                     <div className="p-2">
-                        {charaLoading ? <ImageSkeletonComponent className="w-20 h-20 object-cover" /> :
+                        {charaLoading ? <ImageSkeletonComponent className="min-w-20 min-h-20 object-cover" /> :
                             <ImageWithLoader src={charaData?.images[0].imageLink || ''}
                                 className="w-20 h-20 object-cover" />
                         }
