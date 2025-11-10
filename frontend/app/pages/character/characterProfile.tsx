@@ -5,6 +5,8 @@ import { useParams } from "react-router";
 import { getCharacterHook } from "~/api/characterApi";
 import { ImageWithLoader, ImageSkeletonComponent } from "~/components/loaders";
 import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
+import { getUserInfoHook } from "~/api/userApi";
+import { Link } from "react-router";
 
 
 export default function CharacterPage() {
@@ -27,19 +29,27 @@ export default function CharacterPage() {
 
     }
 
+    const [userData, userLoading, userError] = getUserInfoHook(handleCharacterData(charaData)?.owner)
+
 
 
     const CharaTabs: { [index: string]: JSX.Element } = {
-        "Gallery": <div></div>,
+        "Gallery": <div>
+            {!charaLoading &&
+                handleCharacterData(charaData).images.map((image: RefImage) => {
+                    return <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
+                })
+            }
+        </div>,
         "Description": <div>
             <div><h3>Description</h3>
-            <SanitizedMarkdown markdown ={handleCharacterData(charaData)?.description}/>
+                <SanitizedMarkdown markdown={handleCharacterData(charaData)?.description} />
             </div>
         </div>,
-        "Permissions":  <div>
+        "Permissions": <div>
             <h3> Permissions</h3>
-            <SanitizedMarkdown markdown ={handleCharacterData(charaData)?.permissions}/>
-            </div>,
+            <SanitizedMarkdown markdown={handleCharacterData(charaData)?.permissions} />
+        </div>,
         "Battles": <div></div>, //attacks/defences
         "Stats": <div></div>
     }
@@ -82,6 +92,12 @@ export default function CharacterPage() {
                     </div>
                 </div>
             </div>
+            <div> {!userLoading &&
+                <div>
+                    Belongs to <Link to={`/user/profile/${userData?.data()?.username}/${userData?.data()?.uid}`}>
+                        <u>{userData?.data()?.username}</u></Link>
+                </div>
+            }</div>
             <div className="w-full flex flex-row">
                 <div className="flex flex-row w-fit">
                     {Object.keys(CharaTabs).map((tabKey: string) => {
