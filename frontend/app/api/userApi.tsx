@@ -5,7 +5,7 @@ import { signOut } from "firebase/auth";
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
-
+import { ToastStatus } from "common";
 const getUserInfo = async (uid?: string) => {
 
     /*if (auth.currentUser === null) {
@@ -93,7 +93,7 @@ const getUsersHook = (limitAmount: number = 3) => {
 const updateUserInfo = async (toUpdate: any) => {
     if (auth.currentUser === null) {
         return {
-            toastType: "error",
+            toastType: ToastStatus.ERROR,
             message: "Not logged in!"
         }
     }
@@ -104,13 +104,13 @@ const updateUserInfo = async (toUpdate: any) => {
         updateDoc(docRef, toUpdate);
 
         return {
-            toastType: "success",
+            toastType: ToastStatus.SUCCESS,
             message: "Successfully updated info!"
         }
     }
     else {
         return {
-            toastType: "error",
+            toastType: ToastStatus.ERROR,
             message: "User does not exist."
         }
 

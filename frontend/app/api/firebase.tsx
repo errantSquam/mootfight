@@ -8,8 +8,7 @@ import { FirebaseError } from "firebase/app";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 import { useAuthState } from 'react-firebase-hooks/auth';
-
-
+import { ToastStatus } from "common";
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
 const app = initializeApp(firebaseConfig);
@@ -17,7 +16,7 @@ const auth = getAuth()
 const db = getFirestore(app)
 
 
-const handleError = (error: unknown) => {
+const handleError = (error: unknown) : {toastType: ToastStatus, message: string}=> {
     if (error instanceof FirebaseError) {
         console.log(`GOT ERROR: ` + error.code)
 
@@ -27,12 +26,13 @@ const handleError = (error: unknown) => {
         }
 
         return {
-            toastType: "error",
+            toastType: ToastStatus.ERROR,
             message: errorMessage
         }
     } else {
+        console.log(error)
         return {
-            toastType: "error",
+            toastType: ToastStatus.ERROR,
             message: "UNKNOWN ERROR"
 
         }
@@ -58,7 +58,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
             });
         }
         return {
-            toastType: "success",
+            toastType: ToastStatus.SUCCESS,
             message: "Successfully logged in!"
         }
     } catch (error: unknown) {
@@ -72,7 +72,7 @@ const logOut = async () => {
     try {
         await signOut(auth)
         return {
-            toastType: "success",
+            toastType: ToastStatus.SUCCESS,
             message: "Successfully signed out!"
         }
 

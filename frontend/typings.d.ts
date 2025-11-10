@@ -20,8 +20,9 @@ interface BioUserSchema extends UserSchema {
 }
 
 
+export enum ToastStatus {SUCCESS = "success", ERROR = "error"}
 type ToastResponse = {
-    toastType: string,
+    toastType: ToastStatus,
     message: string,
     data?: any
 }

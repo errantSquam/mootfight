@@ -8,7 +8,8 @@ import { useFieldArray } from "react-hook-form"
 import { AuthContext } from "~/provider/authProvider"
 import { handleToast } from "~/functions/handleToast"
 import { createCharacter } from "~/api/characterApi"
-
+import { useNavigate } from "react-router"
+import { ToastStatus } from "common"
 
 function checkImage(url: string | undefined) {
     //console.log(url)
@@ -142,6 +143,7 @@ export function SubmitCharacterPage() {
     const descRef = useRef<MDXEditorMethods>(null)
     const permsRef = useRef<MDXEditorMethods>(null)
     const { userInfo, refreshAuthUser, authLoaded} = useContext(AuthContext)
+    let navigate = useNavigate()
 
     const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
 
@@ -156,6 +158,10 @@ export function SubmitCharacterPage() {
 
         createCharacter(data).then((resp) => {
             handleToast(resp)
+            if (resp.toastType === ToastStatus.SUCCESS) {
+                navigate(`/user/profile/${userInfo.username}/${userInfo.uid}`)
+
+            }
         })
 
     }

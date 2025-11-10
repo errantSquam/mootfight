@@ -3,13 +3,12 @@ import { app, auth, db, handleError } from "./firebase"
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
-
-
+import { ToastStatus } from "common";
 const createCharacter = async (data: CharacterSchema) => {
     try {
         if (auth.currentUser === null) {
             return {
-                toastType: "error",
+                toastType: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
@@ -19,7 +18,7 @@ const createCharacter = async (data: CharacterSchema) => {
         /*let docRef = doc(db, "characters", resp.id)
         docRef.*/
         return {
-            toastType: "success",
+            toastType: ToastStatus.SUCCESS,
             message: "Successfully created character!"
         }
 
@@ -29,8 +28,8 @@ const createCharacter = async (data: CharacterSchema) => {
 
 }
 
-const getCharactersByUserHook = (uid?: string, limitAmount: number = 3) 
-: [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] => {
+const getCharactersByUserHook = (uid?: string, limitAmount: number = 99)
+    : [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] => {
     if (uid === undefined) {
         return [undefined, true, undefined]
     }

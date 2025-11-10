@@ -16,13 +16,13 @@ export const ProfileCharactersTab = ({ profileData, charaData }:
     */
     return <div>
         <h1>Characters</h1>
-        <div className = "flex flex-row gap-x-2">
+        <div className = "grid grid-cols-4 gap-x-2">
             {
                 charaData.map((chara) => {
                     console.log(charaData)
                     return <Link to ={`/character/${chara.cid}`} className = "flex flex-col items-center">
                         <ImageWithLoader src = {chara.images[0].imageLink} className = "w-40 h-40 object-cover"/>
-                        <div>{chara.name}</div>
+                        <div>{chara.name.substring(0, 20)}</div>
 
                     </Link>
                 })
