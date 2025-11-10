@@ -4,6 +4,7 @@ import { useState, type JSX } from "react";
 import { useParams } from "react-router";
 import { getCharacterHook } from "~/api/characterApi";
 import { ImageWithLoader, ImageSkeletonComponent } from "~/components/loaders";
+import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 
 
 export default function CharacterPage() {
@@ -30,7 +31,15 @@ export default function CharacterPage() {
 
     const CharaTabs: { [index: string]: JSX.Element } = {
         "Gallery": <div></div>,
-        "Description": <div>{handleCharacterData(charaData)?.description}</div>,
+        "Description": <div>
+            <div><h3>Description</h3>
+            <SanitizedMarkdown markdown ={handleCharacterData(charaData)?.description}/>
+            </div>
+        </div>,
+        "Permissions":  <div>
+            <h3> Permissions</h3>
+            <SanitizedMarkdown markdown ={handleCharacterData(charaData)?.permissions}/>
+            </div>,
         "Battles": <div></div>, //attacks/defences
         "Stats": <div></div>
     }
