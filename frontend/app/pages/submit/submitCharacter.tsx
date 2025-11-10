@@ -27,7 +27,12 @@ function checkImage(url: string | undefined) {
         return false
     }
     image.src = url;
-    return true
+
+    if (image.width > 0) {
+        return true
+    } else {
+        return false
+    }
 }
 
 const ImageUploadComponent = ({ register, errors, setValue }:
