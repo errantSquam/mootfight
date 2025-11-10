@@ -36,11 +36,15 @@ const ImageUploadComponent = ({ register, errors, setValue }:
         setValue: UseFormSetValue<CharacterSchema>
     }) => {
 
-    const [imageLink, setImageLink] = useState<string>('')
+    const [imageData, setImageData] = useState<RefImage>({
+        imageLink: '',
+        artist: '',
+        artistLink: '',
+    })
     const [showImage, setShowImage] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
 
-    const validateImage = () => {
+    const validateImage = (imageLink: string) => {
         if (checkImage(imageLink) === true) {
             setShowImage(true)
             setValidationError(false)
@@ -67,18 +71,19 @@ const ImageUploadComponent = ({ register, errors, setValue }:
 
                         <input className="bg-zinc-400 rounded text-sm text-zinc-900/100 py-1 px-2"
                             placeholder="Your image link here..."
-                            value={imageLink}
+                            value={imageData.imageLink}
                             onChange={(e) => {
-                                setImageLink(e.target.value)
-                                setValue("images.0", {
-                                    imageLink: e.target.value,
-                                } //Todo: Add more fields in the form, later... Undefined will default to the user.
+                                let updatedData = {...imageData,
+                                    imageLink: e.target.value
+                                }
+                                setImageData(updatedData)
+                                setValue("images.0", updatedData //Todo: Add more fields in the form, later... Undefined will default to the user.
                                 )
 
                             }}
                         />
 
-                        <div onClick={() => { validateImage() }}
+                        <div onClick={() => { validateImage(imageData.imageLink) }}
                             className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
                             Validate
                         </div>
@@ -99,7 +104,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
         {
             showImage &&
             <div className={`flex flex-col items-center`}>
-                <img src={imageLink} className="w-1/3" />
+                <img src={imageData.imageLink} className="w-1/3" />
                 <div className='text-green-300'>Image is valid!</div>
 
                 <div onClick={() => { resubmitImage() }} className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded">
@@ -108,7 +113,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
             </div>
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
-            value={imageLink}
+            value={imageData.imageLink}
             {...register("images.0",
                 {
                     required: true,
