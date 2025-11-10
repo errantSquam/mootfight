@@ -26,6 +26,8 @@ export function ProfileRedirectPage() {
         }
         let tempArray: CharacterSchema[] = []
         charaData.forEach((result) => {
+            let tempData = result.data()
+            tempData.cid = result.id
             tempArray.push(result.data() as CharacterSchema)
         })
         return tempArray

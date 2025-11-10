@@ -1,7 +1,7 @@
 import { Icon } from "@iconify/react"
 import { useState } from "react"
 
-const ImageSkeletonComponent = ({className} : {className:string}) => {
+export const ImageSkeletonComponent = ({className} : {className:string}) => {
     return <div className={`flex items-center justify-center ${className}
     rounded-sm bg-gray-700`}>
         <Icon icon = "material-symbols:image-outline-rounded" className="w-10 h-10 text-gray-200 dark:text-gray-600" />

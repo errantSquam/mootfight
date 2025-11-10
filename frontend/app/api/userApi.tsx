@@ -101,9 +101,6 @@ const updateUserInfo = async (toUpdate: any) => {
 
 //we should refactor this into different API call files...
 export {
-    app,
-    auth,
-    db,
     getUserInfo,
     getUserInfoHook,
     getUserInfoByUsernameHook,

@@ -19,7 +19,9 @@ export function ProfilePage() {
         }
         let tempArray: CharacterSchema[] = []
         charaData.forEach((result) => {
-            tempArray.push(result.data() as CharacterSchema)
+            let tempData = result.data()
+            tempData.cid = result.id
+            tempArray.push(tempData as CharacterSchema)
         })
         return tempArray
 

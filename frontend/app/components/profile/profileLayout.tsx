@@ -101,7 +101,7 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
 
                 </div>
             </div>
-            <div className="w-2/3 space-y-6 px-4">
+            <div className="w-full space-y-6 px-4">
                 <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
                     {
                         (!loading) &&

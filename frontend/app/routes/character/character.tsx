@@ -1,5 +1,5 @@
 import type { Route } from "../+types/home";
-import { ProfilePage } from "~/pages/user/profile";
+import CharacterPage from "~/pages/character/characterProfile";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +9,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Character() {
-  return <ProfilePage />;
+  return <CharacterPage />;
 }

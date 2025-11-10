@@ -33,7 +33,7 @@ type RefImage = {
     artistLink?: string
 }
 
-type CharacterSchema = {
+interface CharacterSchema {
     name: string,
     pronouns?: string,
     status?: string,
@@ -41,4 +41,6 @@ type CharacterSchema = {
     permissions?: string,
     images: RefImage[],
     owner: string
+    cid?: string
 }
+

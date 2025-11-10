@@ -1,5 +1,6 @@
 import { SanitizedMarkdown } from "./sanitizedMarkdown"
 import { ImageWithLoader } from "../loaders"
+import { Link } from "react-router"
 
 export const ProfileBioTab = ({ profileData }: { profileData: UserAmbiguousSchema }) => {
     return <SanitizedMarkdown markdown={profileData.bio || ''} />
@@ -15,15 +16,15 @@ export const ProfileCharactersTab = ({ profileData, charaData }:
     */
     return <div>
         <h1>Characters</h1>
-        <div className = "flex flex-row">
+        <div className = "flex flex-row gap-x-2">
             {
                 charaData.map((chara) => {
                     console.log(charaData)
-                    return <div className = "flex flex-col items-center">
+                    return <Link to ={`/character/${chara.cid}`} className = "flex flex-col items-center">
                         <ImageWithLoader src = {chara.images[0].imageLink} className = "w-40 h-40 object-cover"/>
                         <div>{chara.name}</div>
 
-                    </div>
+                    </Link>
                 })
             }
 
