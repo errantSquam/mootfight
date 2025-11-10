@@ -20,20 +20,6 @@ export function ProfileRedirectPage() {
 
     const [charaData, charaLoading, charaError] = getCharactersByUserHook(params.userId)
 
-    const handleCharaData = (charaData: QuerySnapshot<DocumentData, DocumentData> | boolean | null | undefined) => {
-        if (typeof charaData === "boolean" || charaData == null) {
-            return []
-        }
-        let tempArray: CharacterSchema[] = []
-        charaData.forEach((result) => {
-            let tempData = result.data()
-            tempData.cid = result.id
-            tempArray.push(result.data() as CharacterSchema)
-        })
-        return tempArray
-
-    }
-
     useEffect(() => {
         let profileCount = profileData.length
         if (profileCount !== undefined) {
@@ -49,9 +35,8 @@ export function ProfileRedirectPage() {
 
 
     return <ProfileLayout loading={loading} profileData={profileData[0]}
-        hasDuplicate={hasDuplicate} charaData = {handleCharaData(charaData)}
+        hasDuplicate={hasDuplicate} charaData = {charaData || []}
     >
-
         {(!loading && hasDuplicate) &&
             <div className="flex flex-col items-center space-y-2">
                 <div>Who are you looking for?</div>
