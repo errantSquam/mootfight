@@ -158,6 +158,7 @@ export function SubmitAttackPage() {
         watch,
         reset,
         setValue,
+        getValues,
         unregister,
         formState: { errors },
     } = useForm<AttackSchema>()
@@ -213,25 +214,35 @@ export function SubmitAttackPage() {
             </div>
             <div className="flex flex-col gap-y-2">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="flex flex-col items-start col-span-1">
+                    <div className="flex flex-col items-start col-span-2">
                         <h4>Recipient ID</h4>
-                        <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
-                            {...register("defender", {
-                                required: true,
-                                validate: (value) => {
-                                    if (value === userInfo.uid) {
-                                        return "You cannot set yourself as the recipient!"
+                        <div className="flex flex-row gap-x-2">
+                            <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
+                                {...register("defender", {
+                                    required: true,
+                                    validate: (value) => {
+                                        if (value === userInfo.uid) {
+                                            return "You cannot set yourself as the recipient!"
+                                        }
+
                                     }
 
-                                }
+                                })} />
+                            <div onClick={() => { /*search*/ }}
+                                className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                                Search
+                            </div>
 
-                            })} />
+                            <div onClick={() => { /*validate*/ }}
+                                className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                                Validate
+                            </div>
+                        </div>
                         {errors.defender && <div className="text-red-400">{errors.defender.message}</div>}
                         {errors.defender?.type === "required" &&
                             <div className="text-red-400">This field is required</div>}
                         {/*TODO: Pop up a search modal*/}
                     </div>
-                    <div />
                     <div className="flex flex-col items-start col-span-2 gap-y-2">
                         <h4>Character(s)</h4>
                         <div className="flex flex-col w-full gap-y-2">
@@ -244,7 +255,7 @@ export function SubmitAttackPage() {
                                         className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
                                         Search
                                     </div>
-                                    
+
                                     <div onClick={() => { /*validate*/ }}
                                         className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
                                         Validate
