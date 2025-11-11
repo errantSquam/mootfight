@@ -88,10 +88,15 @@ body {
 }
 
 .mdxeditor-popup-container {
-    div {
+  div[role=dialog] {
+    display: flex;
+    flex-direction: column
+  }
+  div {
     background-color: var(--color-zinc-800);
     color: white;
   }
+
   .dialog-overlay {
     background-color: var(--color-zinc-800);
     color: white;
@@ -101,7 +106,7 @@ body {
 
 .mdxeditor-toolbar {
   button[role=combobox] {
-        background-color: var(--color-zinc-800);
+    background-color: var(--color-zinc-800);
     color: white;
   }
 }
