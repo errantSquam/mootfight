@@ -310,7 +310,10 @@ export function SubmitAttackPage() {
                                     setEnableWarnings(e.target.checked)
 
                                 }} />
-                            <div>Enable custom warnings</div>
+                            <div
+                            className = "select-none" onClick ={(e) => {
+                                    setEnableWarnings(!enableWarnings)}}
+                            >Enable custom warnings</div>
                         </div>
                         {enableWarnings &&
                             <div className="flex flex-row gap-x-2 w-full">
