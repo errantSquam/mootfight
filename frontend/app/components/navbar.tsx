@@ -3,10 +3,14 @@ import { Link } from "react-router"
 import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"
 import { AuthContext } from "~/provider/authProvider"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { Button, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { getPfp } from "~/functions/helper"
 import { getProfileLink } from "~/functions/helper"
+
+import { useState } from "react"
+
+import { useScrollDirection } from "./hooks/useScrollDirection"
 
 
 
@@ -90,22 +94,26 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 export function Navbar() {
     const { userInfo, setUserInfo } = useContext(AuthContext)
 
-    return <div className="w-screen flex flex-col h-40 bg-zinc-900 flex items-center z-10">
+    const scrollDirection = useScrollDirection();
+
+
+    return <div className={`w-screen bg-zinc-900 flex flex-col items-center z-10 
+        sticky transition-all duration-300
+    ${scrollDirection === "up" ? 'top-0 opacity-100' : '-top-100 opacity-0'}`}>
         <div className={`min-h-30 w-full bg-center bg-cover 
         `} style={{
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
-            }} />
+            }}>
+        </div>
         <div className="p-4 px-10 h-10 flex flex-row text-white gap-x-4 justify-between w-full items-center">
-            <div className="flex flex-row text-white gap-x-4 justify-between w-full items-center">
-                <div className="flex flex-row gap-x-4 h-full items-center">
-                    <div><Link to="/">Home</Link></div>
-                    {userInfo !== null && <div><SubmitDropdown /></div>}
-                </div>
-                <div className="flex flex-row gap-x-4 h-full items-center">
-                    {userInfo === null && <div><Link to="login">Login </Link></div>}
-                    <div>
-                        {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profilePicture)} />}
-                    </div>
+            <div className="flex flex-row gap-x-4 h-full items-center">
+                <div><Link to="/">Home</Link></div>
+                {userInfo !== null && <div><SubmitDropdown /></div>}
+            </div>
+            <div className="flex flex-row gap-x-4 h-full items-center">
+                {userInfo === null && <div><Link to="login">Login </Link></div>}
+                <div>
+                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profilePicture)} />}
                 </div>
             </div>
 
