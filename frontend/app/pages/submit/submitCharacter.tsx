@@ -12,7 +12,7 @@ import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
 
 
-function checkImage(url: string | undefined) {
+async function checkImage(url: string | undefined) {
     //console.log(url)
     if (url === undefined || url === "") {
         return false
@@ -28,9 +28,12 @@ function checkImage(url: string | undefined) {
     }
     image.src = url;
 
+    await image.decode()
+
     if (image.width > 0) {
         return true
     } else {
+        console.log("Width error")
         return false
     }
 }
@@ -51,9 +54,10 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
     const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
 
-    const validateImage = (imageLink: string) => {
+    const validateImage = async (imageLink: string) => {
         //change to a handler?
-        if (checkImage(imageLink) === true) {
+        let resp = await checkImage(imageLink)
+        if (resp === true) {
             setValidationVerified(true)
             setValidationError(false)
         } else {
@@ -91,6 +95,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                                 setValue(`images.${imageIndex}`, updatedData)
 
                             }}
+                            autoComplete="off"
                         />
 
                         <div onClick={() => { validateImage(imageData.imageLink) }}
