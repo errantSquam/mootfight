@@ -92,14 +92,27 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 }
 
 export function Navbar() {
+    const [position, setPosition] = useState(window.pageYOffset)
+    const [navbarIsVisible, setNavbarIsVisible] = useState(false)
     const { userInfo, setUserInfo } = useContext(AuthContext)
-
-    const scrollDirection = useScrollDirection();
+    
+    useEffect(()=> {
+        const handleScroll = () => {
+           let scrollYOffset = window.pageYOffset
+           
+           setNavbarIsVisible(position > scrollYOffset);
+           setPosition(scrollYOffset)
+        };
+        window.addEventListener("scroll", handleScroll);
+        return(() => {
+           window.removeEventListener("scroll", handleScroll);
+        })
+    })
 
 
     return <div className={`w-screen bg-zinc-900 flex flex-col items-center z-10 
         sticky transition-all duration-300
-    ${scrollDirection === "up" ? 'top-0 opacity-100' : '-top-100 opacity-0'}`}>
+    ${navbarIsVisible ? 'top-0 opacity-100' : '-top-100 opacity-0'}`}>
         <div className={`min-h-30 w-full bg-center bg-cover 
         `} style={{
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
