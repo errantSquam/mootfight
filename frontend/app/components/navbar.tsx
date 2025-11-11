@@ -23,12 +23,12 @@ const SubmitDropdown = () => {
             className="w-52 origin-top-right rounded-xl border border-white/5 bg-zinc-900/70 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
             <MenuItem>
-                <Link to = "/submit/character" className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                <Link to="/submit/character" className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
                     Character
                 </Link>
             </MenuItem>
             <MenuItem>
-                <Link to = "/submit/attack" className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                <Link to="/submit/attack" className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
                     Attack
                 </Link>
             </MenuItem>
@@ -90,19 +90,25 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 export function Navbar() {
     const { userInfo, setUserInfo } = useContext(AuthContext)
 
-    return <div className="w-screen h-10 p-4 px-10 bg-zinc-900 flex items-center z-10">
-        <div className="flex flex-row text-white gap-x-4 justify-between w-full items-center">
-            <div className="flex flex-row gap-x-4 h-full items-center">
-                <div><Link to="/">Home</Link></div>
-                {userInfo !== null && <div><SubmitDropdown /></div>}
-            </div>
-            <div className="flex flex-row gap-x-4 h-full items-center">
-                {userInfo === null && <div><Link to="login">Login </Link></div>}
-                <div>
-                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profilePicture)} />}
+    return <div className="w-screen flex flex-col h-40 bg-zinc-900 flex items-center z-10">
+        <div className={`min-h-30 w-full bg-center bg-cover 
+        `} style={{
+                backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
+            }} />
+        <div className="p-4 px-10 h-10 flex flex-row text-white gap-x-4 justify-between w-full items-center">
+            <div className="flex flex-row text-white gap-x-4 justify-between w-full items-center">
+                <div className="flex flex-row gap-x-4 h-full items-center">
+                    <div><Link to="/">Home</Link></div>
+                    {userInfo !== null && <div><SubmitDropdown /></div>}
+                </div>
+                <div className="flex flex-row gap-x-4 h-full items-center">
+                    {userInfo === null && <div><Link to="login">Login </Link></div>}
+                    <div>
+                        {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profilePicture)} />}
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
+        </div>
 }
