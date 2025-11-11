@@ -243,7 +243,7 @@ export function SubmitCharacterPage() {
         //throw error if auth not loaded? somehow?
 
         //Map artist to self if unset
-        data.images.map((image) => {
+        data.images = data.images.map((image) => {
             let tempImage = {...image}
             if (image.artist === undefined) {
                 tempImage.artist = userInfo.username
@@ -251,6 +251,7 @@ export function SubmitCharacterPage() {
             if (image.artistLink === undefined) {
                 tempImage.artistLink = `user/profile/${userInfo.username}/${userInfo.uid}`
             }
+            return tempImage
         })
 
         console.log("Data:")
