@@ -17,7 +17,7 @@ export const ProfileCharactersTab = ({ profileData, charaData }:
    const characterLimit = 30
     return <div>
         <h1>Characters</h1>
-        <div className = "grid grid-cols-4 gap-x-2">
+        <div className = "grid grid-cols-2 md:grid-cols-4 gap-x-2">
             {
                 charaData.map((chara) => {
                     console.log(charaData)

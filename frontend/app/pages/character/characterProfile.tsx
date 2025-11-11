@@ -21,7 +21,7 @@ export default function CharacterPage() {
 
 
     const CharaTabs: { [index: string]: JSX.Element } = {
-        "Gallery": <div>
+        "Gallery": <div className = "grid grid-cols-2 md:grid-cols-4 gap-x-2">
             {!charaLoading &&
                 charaData?.images.map((image: RefImage) => {
                     return <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
