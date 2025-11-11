@@ -10,6 +10,7 @@ import 'react-easy-crop/react-easy-crop.css'
 import getCroppedImg from "~/functions/crop"
 import { updateUserSettings } from "~/functions/apiHandlers"
 import { getPfp } from "~/functions/helper"
+import { Modal } from "../genericComponents"
 
 
 type Inputs = {
@@ -46,59 +47,47 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmi
     }
 
 
-    return <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={() => handleClose()}>
-        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4">
-                <DialogPanel
-                    transition
-                    className="w-full max-w-md rounded-xl bg-zinc-900 p-6 duration-300 ease-out data-closed:transform-[scale(95%)] data-closed:opacity-0"
-                >
-                    <DialogTitle as="h3" className="text-base/7 font-medium text-white">
-                        Crop
-                    </DialogTitle>
-                    <div className="relative h-[400px] w-[400px]">
-                        <Cropper
-                            image={modalImage}
-                            aspect={1}
-                            crop={crop}
-                            zoom={zoom}
-                            onCropComplete={onCropComplete}
-                            onCropChange={setCrop}
-                            onZoomChange={setZoom}
-                            cropShape='round'
-                        />
-                    </div>
-                    <input type="range" value={zoom}
-                        min={1}
-                        max={3}
-                        step={0.1}
-                        onChange={(e) => {
-                            setZoom(Number(e.target.value))
-                        }} />
-                    <div className="flex flex-row mt-4">
-                        <Button
-                            className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                            onClick={() => {
-                                handleSubmission(result)
-                                setIsOpen(false)
-                            }
-                            }
-                        >
-                            Submit
-                        </Button>
-                        <Button
-                            className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
-                            onClick={() => {
-                                handleClose()
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </DialogPanel>
-            </div>
+    return <Modal isOpen={isOpen} handleClose={handleClose} title="Crop">
+        <div className="relative h-[400px] w-[400px]">
+            <Cropper
+                image={modalImage}
+                aspect={1}
+                crop={crop}
+                zoom={zoom}
+                onCropComplete={onCropComplete}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                cropShape='round'
+            />
         </div>
-    </Dialog>
+        <input type="range" value={zoom}
+            min={1}
+            max={3}
+            step={0.1}
+            onChange={(e) => {
+                setZoom(Number(e.target.value))
+            }} />
+        <div className="flex flex-row mt-4 gap-x-2">
+            <Button
+                className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+                onClick={() => {
+                    handleSubmission(result)
+                    setIsOpen(false)
+                }
+                }
+            >
+                Submit
+            </Button>
+            <Button
+                className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+                onClick={() => {
+                    handleClose()
+                }}
+            >
+                Cancel
+            </Button>
+        </div>
+    </Modal>
 }
 
 export const ProfilePictureComponent = () => {
