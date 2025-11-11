@@ -71,6 +71,13 @@ body {
 
 }
 
+@layer components {
+
+  .mootfight-link {
+    @apply text-blue-200 underline
+  }
+}
+
 .markdown {
   a {
     text-decoration: underline;
@@ -81,7 +88,7 @@ body {
 }
 
 .markdown-editor {
-  table{
+  table {
     width: auto;
     height: auto;
   }

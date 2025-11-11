@@ -10,6 +10,7 @@ import { handleToast } from "~/functions/handleToast"
 import { createCharacter } from "~/api/characterApi"
 import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
+import { Modal } from "~/components/genericComponents"
 
 
 async function checkImage(url: string | undefined) {
@@ -48,11 +49,14 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
     const [imageData, setImageData] = useState<RefImage>({
         imageLink: '',
-        artist: '',
-        artistLink: '',
+        artist: undefined,
+        artistLink: undefined,
     })
     const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
+
+    const [showImage, setShowImage] = useState<boolean>(false)
+    const [customCreditEnable, setCustomCredit] = useState<boolean>(false)
 
     const validateImage = async (imageLink: string) => {
         //change to a handler?
@@ -60,6 +64,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
         if (resp === true) {
             setValidationVerified(true)
             setValidationError(false)
+            setShowImage(true)
         } else {
             console.log("True")
             setValidationError(true)
@@ -72,8 +77,12 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
         setValidationError(false)
     }
 
-    return <div className="flex flex-col items-center ">
-        <div className={`flex flex-col items-center gap-y-2`}>
+    const handleModalClose = () => {
+        setShowImage(false)
+    }
+
+    return <div className="flex flex-col items-center bg-zinc-900 p-2 px-4 rounded">
+        <div className={`flex flex-col items-start gap-y-1 text-sm`}>
 
             <div className="flex flex-row text-center items-center justify-center">
 
@@ -102,34 +111,78 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
                             Validate
                         </div>
-                        
+
                     </div>
                 </div>
-
             </div>
-            {/*
-                (validationError || errors.images) &&
-                <div className="text-red-300 text-sm text-start">Invalid image. Check your link?
-                    <br />
-                    <i className="text-red-400/60">
-                        (It should end with the file extension, e.g. <u>https://(yourfilehost)/(yourart).png</u>.
-                    </i>
+
+            <div className="flex flex-row items-center justify-center gap-x-2 italic">
+                <input type="checkbox"
+                    checked={customCreditEnable}
+                    onChange={(e) => { 
+                        setCustomCredit(e.target.checked) 
+                        if (e.target.checked === false) {
+                            let nulledData = {...imageData,
+                                artist: undefined,
+                                artistLink: undefined
+                            }
+                            setImageData(nulledData)
+                            setValue(`images.${imageIndex}`, nulledData)
+
+                        }
+                        }} />
+                <div>Custom artist credit</div>
+            </div>
+
+            {
+                customCreditEnable &&
+                <div className="flex flex-col items-start">
+                    <div className="flex flex-row items-center justify-center gap-x-2 italic">
+                        <div>Artist Name</div>
+                        <input type="text"
+                            className="bg-zinc-400 rounded text-xs text-zinc-900/100 px-2"
+                            checked={customCreditEnable}
+                            onChange={(e) => {
+                                let updatedData = {
+                                    ...imageData,
+                                    artist: e.target.value
+                                }
+                                setImageData(updatedData)
+                                setValue(`images.${imageIndex}`, updatedData)
+                            }} />
+                    </div>
+                    <div className="flex flex-row items-center justify-center gap-x-2 italic">
+                        <div>Artist Link</div>
+                        <input type="text"
+                            className="bg-zinc-400 rounded text-xs text-zinc-900/100 px-2"
+                            checked={customCreditEnable}
+                            onChange={(e) => {
+                                let updatedData = {
+                                    ...imageData,
+                                    artistLink: e.target.value
+                                }
+                                setImageData(updatedData)
+                                setValue(`images.${imageIndex}`, updatedData)
+                            }} />
+                    </div>
                 </div>
-            */}
+            }
         </div>
         {
             //Summon a modal instead...
-            /*
-                showImage &&
-                <div className={`flex flex-col items-center`}>
+            <Modal isOpen={showImage} handleClose={handleModalClose} title="Image Verification">
+                <div className={`flex flex-col items-center gap-y-2`}>
                     <img src={imageData.imageLink} className="w-1/3" />
                     <div className='text-green-300'>Image is valid!</div>
-    
-                    <div onClick={() => { resubmitImage() }} className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded">
-                        Resubmit Image
+
+
+                    <div className="flex bg-zinc-800 hover:bg-zinc-700 cursor-pointer select-none rounded p-2"
+                        onClick={() => { handleModalClose() }}>
+                        Close
                     </div>
                 </div>
-                */
+            </Modal>
+
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
             value={imageData.imageLink}
@@ -145,9 +198,6 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
             )}
 
         />
-        <div className={`flex flex-row gap-x-2 ${validationVerified ? 'visible' : 'hidden'}`}>
-
-        </div>
     </div>
 
 }
@@ -176,7 +226,7 @@ export function SubmitCharacterPage() {
         if (imagesIndex === 0) {
             return
         }
-        unregister(`images.${imagesIndex}`, {keepValue: false})
+        unregister(`images.${imagesIndex}`, { keepValue: false })
         setImagesIndex(imagesIndex - 1)
     }
 
@@ -191,6 +241,18 @@ export function SubmitCharacterPage() {
         data.owner = userInfo.uid //can be null
 
         //throw error if auth not loaded? somehow?
+
+        //Map artist to self if unset
+        data.images = data.images.map((image) => {
+            let tempImage = {...image}
+            if (image.artist === undefined) {
+                tempImage.artist = userInfo.username
+            }
+            if (image.artistLink === undefined) {
+                tempImage.artistLink = `user/profile/${userInfo.username}/${userInfo.uid}`
+            }
+            return tempImage
+        })
 
         console.log("Data:")
         console.log(data)
@@ -250,11 +312,11 @@ export function SubmitCharacterPage() {
             </div>
             <div className="flex flex-col items-center text-center gap-y-2 w-2/3">
                 <h3>Upload Images</h3>
-                
+
 
                 {[...Array(imagesIndex + 1).keys()].map((index) => {
                     return <ImageUploadComponent register={register} errors={errors} setValue={setValue}
-                    imageIndex={index} />
+                        imageIndex={index} />
                 })}
 
 
@@ -264,21 +326,21 @@ export function SubmitCharacterPage() {
                     <div className={`flex flex-row w-full items-center justify-center text-center 
                 rounded-lg p-2 text-zinc-400 font-bold bg-zinc-900 gap-x-1
                 hover:bg-zinc-700 select-none cursor-pointer`}
-                onClick = {() => {handleAddImage()}}>
+                        onClick={() => { handleAddImage() }}>
                         <Icon icon="mingcute:plus-fill" className="text-xl" />
                         <div>Add Image</div>
                     </div>
-                        {
-                            //if more than one image show this
-                            imagesIndex > 0 &&
-                    <div className={`flex flex-row w-full items-center justify-center text-center 
+                    {
+                        //if more than one image show this
+                        imagesIndex > 0 &&
+                        <div className={`flex flex-row w-full items-center justify-center text-center 
                 rounded-lg p-2 text-zinc-400 font-bold bg-zinc-900 gap-x-1
                 hover:bg-zinc-700 select-none cursor-pointer`}
-                
-                onClick = {() => {handleDeleteImage()}}>
-                        <Icon icon="mingcute:plus-fill" className="text-xl" />
-                        <div>Remove Image</div>
-                    </div>
+
+                            onClick={() => { handleDeleteImage() }}>
+                            <Icon icon="mingcute:plus-fill" className="text-xl" />
+                            <div>Remove Image</div>
+                        </div>
                     }
                 </div>
 

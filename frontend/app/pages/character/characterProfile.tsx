@@ -21,10 +21,16 @@ export default function CharacterPage() {
 
 
     const CharaTabs: { [index: string]: JSX.Element } = {
-        "Gallery": <div className = "grid grid-cols-2 md:grid-cols-4 gap-x-2">
+        "Gallery": <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">
             {!charaLoading &&
                 charaData?.images.map((image: RefImage) => {
-                    return <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
+                    return <div className="flex flex-col gap-y-2 items-center">
+                        <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
+                        <div> by <a href={image.artistLink} className="mootfight-link"
+                            target="_blank" rel="noopener noreferrer">
+                            {image.artist}
+                        </a></div>
+                    </div>
                 })
             }
         </div>,
