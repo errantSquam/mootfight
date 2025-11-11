@@ -249,7 +249,7 @@ export function SubmitCharacterPage() {
                 tempImage.artist = userInfo.username
             }
             if (image.artistLink === undefined) {
-                tempImage.artistLink = `user/profile/${userInfo.username}/${userInfo.uid}`
+                tempImage.artistLink = `/user/profile/${userInfo.username}/${userInfo.uid}`
             }
             return tempImage
         })
