@@ -35,11 +35,12 @@ function checkImage(url: string | undefined) {
     }
 }
 
-const ImageUploadComponent = ({ register, errors, setValue }:
+const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
     {
         register: UseFormRegister<CharacterSchema>,
         errors: FieldErrors<CharacterSchema>,
-        setValue: UseFormSetValue<CharacterSchema>
+        setValue: UseFormSetValue<CharacterSchema>,
+        imageIndex: number
     }) => {
 
     const [imageData, setImageData] = useState<RefImage>({
@@ -76,8 +77,8 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                     <div className="flex flex-row items-center justify-center gap-x-2">
                         <p className="text-sm">Input image link:</p>
 
-                        <input className={`${validationError? "bg-red-300" : 
-                        validationVerified ? "bg-green-300" : "bg-zinc-400"} 
+                        <input className={`${validationError ? "bg-red-300" :
+                            validationVerified ? "bg-green-300" : "bg-zinc-400"} 
                         rounded text-sm text-zinc-900/100 py-1 px-2`}
                             placeholder="Your image link here..."
                             value={imageData.imageLink}
@@ -87,7 +88,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                                     imageLink: e.target.value
                                 }
                                 setImageData(updatedData)
-                                setValue("images.0", updatedData)
+                                setValue(`images.${imageIndex}`, updatedData)
 
                             }}
                         />
@@ -96,6 +97,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                             className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
                             Validate
                         </div>
+                        
                     </div>
                 </div>
 
@@ -112,21 +114,21 @@ const ImageUploadComponent = ({ register, errors, setValue }:
         </div>
         {
             //Summon a modal instead...
-        /*
-            showImage &&
-            <div className={`flex flex-col items-center`}>
-                <img src={imageData.imageLink} className="w-1/3" />
-                <div className='text-green-300'>Image is valid!</div>
-
-                <div onClick={() => { resubmitImage() }} className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded">
-                    Resubmit Image
+            /*
+                showImage &&
+                <div className={`flex flex-col items-center`}>
+                    <img src={imageData.imageLink} className="w-1/3" />
+                    <div className='text-green-300'>Image is valid!</div>
+    
+                    <div onClick={() => { resubmitImage() }} className="bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded">
+                        Resubmit Image
+                    </div>
                 </div>
-            </div>
-            */
+                */
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
             value={imageData.imageLink}
-            {...register("images.0",
+            {...register(`images.${imageIndex}`,
                 {
                     required: true,
                     validate: (value) => {
@@ -152,6 +154,7 @@ export function SubmitCharacterPage() {
         watch,
         reset,
         setValue,
+        unregister,
         formState: { errors },
     } = useForm<CharacterSchema>()
 
@@ -159,8 +162,22 @@ export function SubmitCharacterPage() {
 
     const descRef = useRef<MDXEditorMethods>(null)
     const permsRef = useRef<MDXEditorMethods>(null)
+    const [imagesIndex, setImagesIndex] = useState(0)
     const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
     let navigate = useNavigate()
+
+    const handleDeleteImage = () => {
+
+        if (imagesIndex === 0) {
+            return
+        }
+        unregister(`images.${imagesIndex}`, {keepValue: false})
+        setImagesIndex(imagesIndex - 1)
+    }
+
+    const handleAddImage = () => {
+        setImagesIndex(imagesIndex + 1)
+    }
 
     const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
 
@@ -228,12 +245,36 @@ export function SubmitCharacterPage() {
             </div>
             <div className="flex flex-col items-center text-center gap-y-2 w-2/3">
                 <h3>Upload Images</h3>
-                <ImageUploadComponent register={register} errors={errors} setValue={setValue} />
-                <div className = {`flex flex-row w-60 items-center justify-center text-center 
+                
+
+                {[...Array(imagesIndex + 1).keys()].map((index) => {
+                    return <ImageUploadComponent register={register} errors={errors} setValue={setValue}
+                    imageIndex={index} />
+                })}
+
+
+
+
+                <div className={`flex flex-row w-120 space-x-2`}>
+                    <div className={`flex flex-row w-full items-center justify-center text-center 
                 rounded-lg p-2 text-zinc-400 font-bold bg-zinc-900 gap-x-1
-                hover:bg-zinc-700 select-none cursor-pointer`}>
-                    <Icon icon="mingcute:plus-fill" className = "text-xl"/>
-                    <div>Add Image</div>
+                hover:bg-zinc-700 select-none cursor-pointer`}
+                onClick = {() => {handleAddImage()}}>
+                        <Icon icon="mingcute:plus-fill" className="text-xl" />
+                        <div>Add Image</div>
+                    </div>
+                        {
+                            //if more than one image show this
+                            imagesIndex > 0 &&
+                    <div className={`flex flex-row w-full items-center justify-center text-center 
+                rounded-lg p-2 text-zinc-400 font-bold bg-zinc-900 gap-x-1
+                hover:bg-zinc-700 select-none cursor-pointer`}
+                
+                onClick = {() => {handleDeleteImage()}}>
+                        <Icon icon="mingcute:plus-fill" className="text-xl" />
+                        <div>Remove Image</div>
+                    </div>
+                    }
                 </div>
 
             </div>

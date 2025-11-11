@@ -65,7 +65,7 @@ export default function App() {
         </div>
       </div>
     </div>
-    <ToastContainer />
+    <ToastContainer theme="dark"/>
   </AuthProvider>
 }
 
