@@ -87,6 +87,25 @@ body {
 
 }
 
+.mdxeditor-popup-container {
+    div {
+    background-color: var(--color-zinc-800);
+    color: white;
+  }
+  .dialog-overlay {
+    background-color: var(--color-zinc-800);
+    color: white;
+  }
+
+}
+
+.mdxeditor-toolbar {
+  button[role=combobox] {
+        background-color: var(--color-zinc-800);
+    color: white;
+  }
+}
+
 .markdown-editor {
   table {
     width: auto;
