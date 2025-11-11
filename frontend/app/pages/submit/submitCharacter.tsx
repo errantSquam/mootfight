@@ -49,13 +49,14 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
     const [imageData, setImageData] = useState<RefImage>({
         imageLink: '',
-        artist: '',
-        artistLink: '',
+        artist: undefined,
+        artistLink: undefined,
     })
     const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
 
     const [showImage, setShowImage] = useState<boolean>(false)
+    const [customCreditEnable, setCustomCredit] = useState<boolean>(false)
 
     const validateImage = async (imageLink: string) => {
         //change to a handler?
@@ -80,8 +81,8 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
         setShowImage(false)
     }
 
-    return <div className="flex flex-col items-center ">
-        <div className={`flex flex-col items-center gap-y-2`}>
+    return <div className="flex flex-col items-center bg-zinc-900 p-2 px-4 rounded">
+        <div className={`flex flex-col items-start gap-y-1 text-sm`}>
 
             <div className="flex flex-row text-center items-center justify-center">
 
@@ -113,17 +114,59 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
                     </div>
                 </div>
-
             </div>
-            {/*
-                (validationError || errors.images) &&
-                <div className="text-red-300 text-sm text-start">Invalid image. Check your link?
-                    <br />
-                    <i className="text-red-400/60">
-                        (It should end with the file extension, e.g. <u>https://(yourfilehost)/(yourart).png</u>.
-                    </i>
+
+            <div className="flex flex-row items-center justify-center gap-x-2 italic">
+                <input type="checkbox"
+                    checked={customCreditEnable}
+                    onChange={(e) => { 
+                        setCustomCredit(e.target.checked) 
+                        if (e.target.checked === false) {
+                            let nulledData = {...imageData,
+                                artist: undefined,
+                                artistLink: undefined
+                            }
+                            setImageData(nulledData)
+                            setValue(`images.${imageIndex}`, nulledData)
+
+                        }
+                        }} />
+                <div>Custom artist credit</div>
+            </div>
+
+            {
+                customCreditEnable &&
+                <div className="flex flex-col items-start">
+                    <div className="flex flex-row items-center justify-center gap-x-2 italic">
+                        <div>Artist Name</div>
+                        <input type="text"
+                            className="bg-zinc-400 rounded text-xs text-zinc-900/100 px-2"
+                            checked={customCreditEnable}
+                            onChange={(e) => {
+                                let updatedData = {
+                                    ...imageData,
+                                    artist: e.target.value
+                                }
+                                setImageData(updatedData)
+                                setValue(`images.${imageIndex}`, updatedData)
+                            }} />
+                    </div>
+                    <div className="flex flex-row items-center justify-center gap-x-2 italic">
+                        <div>Artist Link</div>
+                        <input type="text"
+                            className="bg-zinc-400 rounded text-xs text-zinc-900/100 px-2"
+                            checked={customCreditEnable}
+                            onChange={(e) => {
+                                let updatedData = {
+                                    ...imageData,
+                                    artistLink: e.target.value
+                                }
+                                setImageData(updatedData)
+                                setValue(`images.${imageIndex}`, updatedData)
+                            }} />
+                    </div>
                 </div>
-            */}
+            }
         </div>
         {
             //Summon a modal instead...
@@ -134,7 +177,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
 
                     <div className="flex bg-zinc-800 hover:bg-zinc-700 cursor-pointer select-none rounded p-2"
-                    onClick = {() => {handleModalClose()}}>
+                        onClick={() => { handleModalClose() }}>
                         Close
                     </div>
                 </div>
@@ -155,9 +198,6 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
             )}
 
         />
-        <div className={`flex flex-row gap-x-2 ${validationVerified ? 'visible' : 'hidden'}`}>
-
-        </div>
     </div>
 
 }
@@ -201,6 +241,17 @@ export function SubmitCharacterPage() {
         data.owner = userInfo.uid //can be null
 
         //throw error if auth not loaded? somehow?
+
+        //Map artist to self if unset
+        data.images.map((image) => {
+            let tempImage = {...image}
+            if (image.artist === undefined) {
+                tempImage.artist = userInfo.username
+            }
+            if (image.artistLink === undefined) {
+                tempImage.artistLink = `user/profile/${userInfo.username}/${userInfo.uid}`
+            }
+        })
 
         console.log("Data:")
         console.log(data)
