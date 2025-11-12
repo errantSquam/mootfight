@@ -40,7 +40,7 @@ export const ProfileCharactersTab = () => {
 }
 
 export const ProfileBattlesTab = () => {
-    const { profileLoading, profileData, charaLoading, charaData, attackLoading, attackData } = useContext(ProfileContext)
+    const { profileLoading, profileData, defenceLoading, defenceData, attackLoading, attackData } = useContext(ProfileContext)
 
     //todo: battles — attacks and defences!
     /*
@@ -58,6 +58,15 @@ export const ProfileBattlesTab = () => {
                 </Link>
             })}</div>
         <h3>Defences</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
+            defenceData?.map((attack) => {
+                console.log(attackData)
+                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
+                    <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" />
+                    <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
+
+                </Link>
+            })}</div>
         <div> </div>
     </div>
 

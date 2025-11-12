@@ -76,11 +76,12 @@ You should wait until these indexes are **finished building** before running the
 
 If any of these indexes don't work, please report them. There should be an error log in the console: `[FirebaseError: The query requires an index...]`
 
-⬆️ denotes Ascending, ⬇️ denotes Descending.
+⬆️ denotes **Ascending**, ⬇️ denotes **Descending**, and 🔠 denotes **Arrays**. (Arrays looks more like ([]) on the Firebase console, but there isn't a Cool Emoji for that...)
 
-| Collection ID | Fields Indexed |
-| ------------- | -------------- |
-| attacks | attacker ⬆️, creationDate ⬇️, __name__ ⬇️ |
+| Collection ID | Fields Indexed | Explanation |
+| ------------- | -------------- | ----------- |
+| attacks | attacker ⬆️, creationDate ⬇️, __name__ ⬇️ | To query attacks belonging to a user, in descending chronological order. |
+| attacks | defenders 🔠, creationDate ⬇️, __name__ ⬇️ | To query defences belonging to a user, in descending chronological order. |
 
 #### Firebase requirements:
 - Enable 'Authentication' for Email/Password
