@@ -3,7 +3,7 @@ An open-source self-hosted Artfight clone. (name tentative...)
 
 # Frontend
 ## Dev Setup
-Only required if you're contributing to the codebase!
+Only required if you're contributing to the codebase! Also, do everything mentioned in **Hosting Setup.**
 ### Install
 1. Pull repo
 2. cd into frontend folder
