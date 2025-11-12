@@ -102,6 +102,7 @@ const updateUserInfo = async (toUpdate: any) => {
     let docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
         updateDoc(docRef, toUpdate);
+        //Catch errors here...
 
         return {
             toastType: ToastStatus.SUCCESS,

@@ -49,8 +49,7 @@ service cloud.firestore {
     match /users/{userId} {
     	allow read: if true;
       allow update: if request.auth != null && request.auth.uid == userId 
-      && request.resource.data.uid == resource.data.uid
-      && request.resource.data.email == resource.data.email;
+      && request.resource.data.uid == resource.data.uid;
       allow create: if request.auth != null;
     }
     match /characters/{characterId} {
@@ -59,7 +58,7 @@ service cloud.firestore {
       allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
     }
     match /attacks/{attackId} {
-    	allow read: if true;
+    	allow read: if true; 
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.attacker;
       allow create: if request.auth != null && request.resource.data.attacker == request.auth.uid;
     }
@@ -68,11 +67,14 @@ service cloud.firestore {
 ```
 
 ### Firestore Composite Indexes
-**These are needed for certain queries to run.** Please set them under the 'Indexes' tab.
+**These are needed for certain queries to run.** Please set them under the 'Indexes' tab. 
+
+You should wait until these indexes are **finished building** before running the site.
 
 If any of these indexes don't work, please report them. There should be an error log in the console: `[FirebaseError: The query requires an index...]`
 
 ⬆️ denotes Ascending, ⬇️ denotes Descending.
+
 | Collection ID | Fields Indexed |
 | ------------- | -------------- |
 | attacks | attacker ⬆️, creationDate ⬇️, __name__ ⬇️ |
