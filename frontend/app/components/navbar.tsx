@@ -102,11 +102,11 @@ export function Navbar() {
     return <div className={`w-screen bg-zinc-900 flex flex-col items-center z-10 
         transition-all duration-300
     ${(scrollDirection === "up" && windowOffset > 10) ? 'sticky top-0' : 'flex -top-100'}`}>
-        <div className={` w-full bg-center bg-cover 
+        <Link to = "/" className={` w-full bg-center bg-cover cursor-pointer 
         ${windowOffset === 0 ? 'min-h-30' : 'h-0'}`} style={{
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
             }}>
-        </div>
+        </Link>
         <div className="p-4 px-10 h-10 flex flex-row text-white gap-x-4 justify-between w-full items-center">
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
