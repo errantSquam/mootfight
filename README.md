@@ -19,6 +19,7 @@ Only required if you're contributing to the codebase! Also, do everything mentio
 
 ### Firebase db
 Make an .env file and add a firebase key. It should be something like this:
+
 **(Note that this is a string, not a JSON, or several .env variables.** Thus, wrap your Firebase key in quotes. This is because the Firebase app takes in an initial JSON object, so we're going to have it be parsed into a usable JSON by Javascript.)
 ```
 REACT_APP_FIREBASE_KEY = '{
