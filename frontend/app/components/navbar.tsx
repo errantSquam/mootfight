@@ -92,19 +92,15 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 }
 
 export function Navbar() {
-    const [position, setPosition] = useState<number | undefined>(undefined)
+    const [position, setPosition] = useState(window.pageYOffset)
     const [navbarIsVisible, setNavbarIsVisible] = useState(false)
     const { userInfo, setUserInfo } = useContext(AuthContext)
     
     useEffect(()=> {
         const handleScroll = () => {
-            let tempPosition = position 
-            if (tempPosition === undefined) {
-                tempPosition = window.pageYOffset
-            }
            let scrollYOffset = window.pageYOffset
            
-           setNavbarIsVisible(tempPosition > scrollYOffset);
+           setNavbarIsVisible(position > scrollYOffset);
            setPosition(scrollYOffset)
         };
         window.addEventListener("scroll", handleScroll);
