@@ -23,3 +23,21 @@ export function useScrollDirection() {
 
   return scrollDirection;
 };
+
+export function getWindowOffset() {
+  const [windowOffset, setWindowOffset] = useState<number>(0);
+
+  useEffect(() => {
+
+    const updateScrollDirection = () => {
+      setWindowOffset(window.pageYOffset)
+      console.log(windowOffset)
+    };
+    window.addEventListener("scroll", updateScrollDirection); // add event listener
+    return () => {
+      window.removeEventListener("scroll", updateScrollDirection); // clean up
+    }
+  }, [windowOffset]);
+
+  return windowOffset;
+};

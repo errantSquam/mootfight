@@ -10,8 +10,9 @@ import { getProfileLink } from "~/functions/helper"
 
 import { useState } from "react"
 
-import { useScrollDirection } from "./hooks/useScrollDirection"
+import { useScrollDirection } from "./hooks/scrollHooks"
 
+import { getWindowOffset } from "./hooks/scrollHooks"
 
 
 const SubmitDropdown = () => {
@@ -95,13 +96,14 @@ export function Navbar() {
     const { userInfo, setUserInfo } = useContext(AuthContext)
 
     const scrollDirection = useScrollDirection();
+    const windowOffset = getWindowOffset();
 
 
     return <div className={`w-screen bg-zinc-900 flex flex-col items-center z-10 
-        sticky transition-all duration-300
-    ${scrollDirection === "up" ? 'top-0 opacity-100' : '-top-100 opacity-0'}`}>
-        <div className={`min-h-30 w-full bg-center bg-cover 
-        `} style={{
+        transition-all duration-500
+    ${scrollDirection === "up" ? 'sticky top-0' : 'flex -top-100'}`}>
+        <div className={` w-full bg-center bg-cover 
+        ${windowOffset === 0 ? 'min-h-30' : 'h-0'}`} style={{
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
             }}>
         </div>
