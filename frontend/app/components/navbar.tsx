@@ -90,6 +90,15 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 
 }
 
+export function Banner() {
+    return <div className="h-24 w-screen flex">
+          <Link to="/" className={`w-full min-h-full bg-center bg-cover cursor-pointer transition-all duration-300`} style={{
+            backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
+          }}>
+          </Link>
+        </div>
+}
+
 export function Navbar() {
     const { userInfo, setUserInfo } = useContext(AuthContext)
 
@@ -98,13 +107,14 @@ export function Navbar() {
     const isScrollNavbar = isScrolledNavbar();
 
 
-    return <div className={`w-screen bg-zinc-900 flex flex-col items-center z-10 
+    return <div className={`w-screen bg-zinc-900 flex flex-col items-center justify-between z-10 
         transition-all duration-300 sticky ${scrollDirection === 'up' ? 'top-0' : '-top-100'}`}>
-        <Link to = "/" className={` w-full bg-center bg-cover cursor-pointer transition-all duration-300
+        {/*<Link to = "/" className={` w-full bg-center bg-cover cursor-pointer transition-all duration-300
         ${isScrollBanner ? 'h-0' : 'h-24'}`} style={{
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
             }}>
-        </Link>
+        </Link>*/}
+        <div/>
         <div className={`p-4 px-10 h-10 flex flex-row text-white gap-x-4 justify-between w-full items-center `}>
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>

@@ -1,12 +1,13 @@
 import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { Navbar } from "./components/navbar";
+import { Banner, Navbar } from "./components/navbar";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -55,13 +56,15 @@ export default function App() {
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
   return <AuthProvider>
     <LoadScreen />
-    <div className="h-[100vh] w-full">
-          <Navbar />
-        <div className="h-full">
-          <Outlet />
-        </div>
+    <div className="w-full">
+      <Banner/>
+      <Navbar />
+      <div className="h-full">
+        
+        <Outlet />
+      </div>
     </div>
-    <ToastContainer theme="dark"/>
+    <ToastContainer theme="dark" />
   </AuthProvider>
 }
 
