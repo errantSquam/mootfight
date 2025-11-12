@@ -89,7 +89,6 @@ const ImageUploadComponent = ({ register, errors, setValue }:
 
                 <div className="flex flex-row">
                     <div className="flex flex-row items-center justify-center gap-x-2">
-                        <p className="text-sm">Input image link:</p>
 
                         <input className={`${validationError ? "bg-red-300" :
                             validationVerified ? "bg-green-300" : "bg-zinc-400"} 

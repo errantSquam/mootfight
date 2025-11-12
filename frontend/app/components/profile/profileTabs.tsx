@@ -51,7 +51,7 @@ export const ProfileBattlesTab = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             attackData?.map((attack) => {
                 console.log(attackData)
-                return <Link to={`/character/${attack.aid}`} className="flex flex-col items-center">
+                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
                     <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" />
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
 
