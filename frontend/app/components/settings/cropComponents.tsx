@@ -12,14 +12,6 @@ import { updateUserSettings } from "~/functions/apiHandlers"
 import { getPfp } from "~/functions/helper"
 import { Modal } from "../genericComponents"
 
-
-type Inputs = {
-    username: string
-    email: string
-    pronouns: string
-    status: string
-}
-
 type ImageInput = {
     profilePicture: File
 }

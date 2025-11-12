@@ -12,13 +12,6 @@ import { getCharactersByUserHook } from "~/api/characterApi"
 import type { DocumentData, QuerySnapshot } from "firebase/firestore"
 
 
-type Inputs = {
-    uid: string
-    username: string
-    email: string
-    pronouns: string
-    status: string
-}
 
 const MainProfileLayout = ({ loading, profileData, charaData }:
     {
@@ -30,7 +23,7 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
     const [profileTab, setProfileTab] = useState("Bio")
     const [isEditing, setIsEditing] = useState(false)
 
-    const onSubmit: SubmitHandler<Inputs> = (data, e) => {
+    const onSubmit: SubmitHandler<UserSchema> = (data, e) => {
         updateUserInfo(data).then((resp) => {
             handleToast(resp)
             setIsEditing(false)

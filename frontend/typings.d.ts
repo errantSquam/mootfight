@@ -1,6 +1,5 @@
 interface UserSchema {
     username:string,
-    email:string,
     profilePicture?:string,
     pronouns?:string,
     status?:string,
@@ -11,7 +10,6 @@ interface UserSchema {
 
 interface UserAmbiguousSchema extends UserSchema {
     username?:string,
-    email?: string,
     uid?:string
 }
 

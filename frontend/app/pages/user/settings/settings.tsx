@@ -11,17 +11,10 @@ import { Link } from "react-router"
 import { updateUserSettings } from "~/functions/apiHandlers"
 
 
-type Inputs = {
-    uid: string
-    username: string
-    email: string
-    pronouns: string
-    status: string
-}
 
 
 const SettingsInput = ({ defaultValue, value, register, isPassword = false, disabled = false, required = false }:
-    { defaultValue: any, value: any, register: UseFormRegister<Inputs>, isPassword?: boolean, disabled?: boolean, required?: boolean }) => {
+    { defaultValue: any, value: any, register: UseFormRegister<UserSchema>, isPassword?: boolean, disabled?: boolean, required?: boolean }) => {
     return <input className={`disabled:bg-gray-800/0 
                                         disabled:border-white/0
                                         border border-white rounded-md p-1 bg-gray-800 transition`}
@@ -41,7 +34,7 @@ export function SettingsPage() {
         watch,
         reset,
         formState: { errors },
-    } = useForm<Inputs>()
+    } = useForm<UserSchema>()
 
     let navigate = useNavigate()
 
@@ -49,7 +42,7 @@ export function SettingsPage() {
     const [isEditing, setIsEditing] = useState(false)
 
 
-    const onSubmit: SubmitHandler<Inputs> = (data, e) => {
+    const onSubmit: SubmitHandler<UserSchema> = (data, e) => {
         updateUserSettings(data, refreshAuthUser).then(() => {
             setIsEditing(false)
         })
@@ -95,13 +88,6 @@ export function SettingsPage() {
                                                 required={true} />
                                         </div>
                                         <div>
-                                            Email: <SettingsInput
-                                                defaultValue={userInfo.email}
-                                                value="email"
-                                                register={register}
-                                                disabled />
-                                        </div>
-                                        <div>
                                             Pronouns: <SettingsInput
                                                 defaultValue={userInfo.pronouns}
                                                 value="pronouns"
@@ -123,7 +109,7 @@ export function SettingsPage() {
                                                 Edit
                                             </span>
 
-                                            <input type="submit" value="Submit"className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                            <input type="submit" value="Submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
 
                                             <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}

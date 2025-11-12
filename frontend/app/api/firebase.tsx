@@ -51,7 +51,6 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
         if (snap.data().count === 0) {
             let docRef = doc(db, "users", userUid)
             setDoc(docRef, {
-                email: email,
                 username: `User #${Math.floor(Math.random() * 100)}`,
                 uid: userUid
 
