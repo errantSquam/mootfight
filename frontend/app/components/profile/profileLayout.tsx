@@ -10,16 +10,14 @@ import { ProfilePictureComponent } from "../settings/cropComponents"
 import { ProfileBioTab, ProfileCharactersTab, ProfileBattlesTab, ProfileStatsTab } from "./profileTabs"
 import { getCharactersByUserHook } from "~/api/characterApi"
 import type { DocumentData, QuerySnapshot } from "firebase/firestore"
+import { ProfileContext } from "~/provider/profileProvider"
 
 
 
-const MainProfileLayout = ({ loading, profileData, charaData }:
-    {
-        loading: boolean | undefined,
-        profileData: UserAmbiguousSchema,
-        charaData: CharacterSchema[],
-    }) => {
+const MainProfileLayout = () => {
+    const {profileLoading, profileData, charaLoading, charaData, attackLoading, attackData} = useContext(ProfileContext)
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
+
     const [profileTab, setProfileTab] = useState("Bio")
     const [isEditing, setIsEditing] = useState(false)
 
@@ -37,18 +35,17 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
     //Seems kinda ass to pass in profile data like that lol. Is there a way we could use a context...?
 
     const profileTabs: { [index: string]: JSX.Element } = {
-        "Bio": <ProfileBioTab profileData={profileData} />,
-        "Characters": <ProfileCharactersTab profileData={profileData}
-            charaData={charaData} />,
-        "Battles": <ProfileBattlesTab profileData={profileData} />, //attacks/defences
-        "Stats": <ProfileStatsTab profileData={profileData} />
+        "Bio": <ProfileBioTab/>,
+        "Characters": <ProfileCharactersTab/>,
+        "Battles": <ProfileBattlesTab/>, //attacks/defences
+        "Stats": <ProfileStatsTab/>
     }
 
 
     //maybe framer motion these tabs later
 
 
-    return !loading && <div className="w-full h-full flex flex-col sm:flex-row">
+    return !profileLoading && <div className="w-full h-full flex flex-col sm:flex-row">
         <div className="w-full h-screen bg-gray-500 flex-1 text-center text-gray-400">
             Featured Character WIP
         </div>
@@ -97,7 +94,7 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
             <div className="w-full space-y-6 px-4">
                 <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
                     {
-                        (!loading) &&
+                        (!profileLoading) &&
                         profileTabs[profileTab]
                     }
                 </div>
@@ -105,13 +102,12 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
     </div>
 }
 
-export function ProfileLayout({ children, loading, profileData, charaData, hasDuplicate = false }:
+export function ProfileLayout({ children, hasDuplicate = false }:
     {
-        children?: any, loading: boolean | undefined, profileData: any,
-        charaData: CharacterSchema[],
+        children?: any, 
         hasDuplicate?: boolean
     }) {
     return <div className="flex items-center justify-center">
-        {!hasDuplicate && <MainProfileLayout loading={loading} profileData={profileData} charaData = {charaData}/>}
+        {!hasDuplicate && <MainProfileLayout/>}
     </div>
 }

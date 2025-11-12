@@ -51,5 +51,7 @@ type AttackSchema = {
     characters: string[],
     title: string,
     warnings: string | undefined,
+    creationDate: number,
+    aid?: string
 }
 

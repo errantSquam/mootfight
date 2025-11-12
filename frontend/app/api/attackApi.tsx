@@ -17,6 +17,7 @@ const createAttack = async (data: AttackSchema) => {
         }
         let collRef = collection(db, "attacks")
         let resp = await addDoc(collRef, data);
+        //TODO: Batch update with notifications to the defenders as well
         return {
             toastType: ToastStatus.SUCCESS,
             message: "Successfully created attack!"
@@ -29,8 +30,31 @@ const createAttack = async (data: AttackSchema) => {
 }
 
 
+const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 1)
+    : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    if (uid === undefined) {
+        return [undefined, true, undefined]
+    }
+    let attackRef = collection(db, "attacks")
+    //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
+    const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), where('attacker', '==', uid));
 
+    //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
+    let resp = getDocs(q).then((data) => {console.log(data)})
+
+    let [charaData, charaLoading, charaError] = useCollection(q)
+
+
+    let returnArray: AttackSchema[] = []
+    charaData?.forEach((result) => {
+        let tempData = result.data()
+        tempData.aid = result.id
+        returnArray.push(tempData as AttackSchema)
+    })
+    return [returnArray, charaLoading, charaError]
+}
 
 export {
-    createAttack
+    createAttack,
+    getAttacksByUserHook
 }
