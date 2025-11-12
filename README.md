@@ -2,11 +2,14 @@
 An open-source self-hosted Artfight clone. (name tentative...)
 
 # Frontend
-## Setup
+## Dev Setup
+Only required if you're contributing to the codebase!
 ### Install
 1. Pull repo
 2. cd into frontend folder
 3. ``npm install``
+
+## Hosting Setup
 
 ### Creating a new account
 1. In the Firebase console, go to Authentication.
@@ -49,6 +52,11 @@ service cloud.firestore {
     	allow read: if true;
       allow update, delete: if request.auth != null && request.auth.uid == resource.data.owner;
       allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
+    }
+    match /attacks/{attackId} {
+    	allow read: if true;
+      allow update, delete: if request.auth != null && request.auth.uid == resource.data.attacker;
+      allow create: if request.auth != null && request.resource.data.attacker == request.auth.uid;
     }
   }
 }
