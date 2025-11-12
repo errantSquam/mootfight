@@ -15,6 +15,9 @@ export default [
     ]),
     ...prefix("character", [
         route(":characterId", "routes/character/character.tsx")
+    ]),
+    ...prefix("attack", [
+        route(":attackId", "routes/attack/attack.tsx")
     ])
 
 ] satisfies RouteConfig;
