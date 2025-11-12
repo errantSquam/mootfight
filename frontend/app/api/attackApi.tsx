@@ -29,6 +29,30 @@ const createAttack = async (data: AttackSchema) => {
 
 }
 
+const getAttack = async (aid?: string): Promise<AttackSchema | undefined> => {
+    if (aid === undefined) {
+        return undefined
+    }
+    let attackRef = doc(db, "attacks", aid)
+    let resp = await getDoc(attackRef)
+
+    return resp.data() as AttackSchema
+}
+
+const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, FirestoreError | undefined] => {
+    if (aid === undefined) {
+        return [undefined, true, undefined]
+    }
+    let attackRef = doc(db, "attacks", aid)
+    let [attackData, attackLoading, attackError] = useDocument(attackRef)
+    let dataToReturn = attackData?.data() as AttackSchema
+    if (dataToReturn !== undefined) {
+        dataToReturn.aid = attackRef.id
+    }
+    return [dataToReturn, attackLoading, attackError]
+}
+
+
 
 const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 1)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
@@ -62,7 +86,8 @@ const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination
     }
     let attackRef = collection(db, "attacks")
     //if we're doing order by, needs a compound index, created in console.
-    const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), where("defenders", "array-contains", uid));
+    const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), 
+    where("defenders", "array-contains", uid));
 
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
     let resp = getDocs(q).then((data) => {console.log(data)})
@@ -81,6 +106,8 @@ const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination
 
 export {
     createAttack,
+    getAttack,
+    getAttackHook,
     getAttacksByUserHook,
     getDefencesByUserHook
 }
