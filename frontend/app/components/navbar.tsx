@@ -100,8 +100,8 @@ export function Navbar() {
 
 
     return <div className={`w-screen bg-zinc-900 flex flex-col items-center z-10 
-        transition-all duration-500
-    ${scrollDirection === "up" ? 'sticky top-0' : 'flex -top-100'}`}>
+        transition-all duration-300
+    ${(scrollDirection === "up" && windowOffset > 10) ? 'sticky top-0' : 'flex -top-100'}`}>
         <div className={` w-full bg-center bg-cover 
         ${windowOffset === 0 ? 'min-h-30' : 'h-0'}`} style={{
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
