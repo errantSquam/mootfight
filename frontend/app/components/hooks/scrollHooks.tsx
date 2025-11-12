@@ -9,10 +9,11 @@ export function useScrollDirection() {
     const updateScrollDirection = () => {
       const scrollY = window.pageYOffset;
       const direction = scrollY > lastScrollY ? "down" : "up";
-      if (direction !== scrollDirection && (scrollY - lastScrollY > 10 || scrollY - lastScrollY < -10)) {
+      if (direction !== scrollDirection && (scrollY - lastScrollY > 10 || scrollY - lastScrollY < 10)) {
         
         setScrollDirection(direction);
       }
+      console.log(direction)
       lastScrollY = scrollY > 0 ? scrollY : 0;
     };
     window.addEventListener("scroll", updateScrollDirection); // add event listener
@@ -24,19 +25,36 @@ export function useScrollDirection() {
   return scrollDirection;
 };
 
-export function getWindowOffset() {
-  const [windowOffset, setWindowOffset] = useState<number>(0);
+export function isScrolledBanner() {
+  const [isScrolledBanner, setIsScrolledBanner] = useState<boolean>(false);
 
   useEffect(() => {
 
     const updateScrollDirection = () => {
-      setWindowOffset(window.pageYOffset)
+      setIsScrolledBanner(window.pageYOffset > 20)
     };
     window.addEventListener("scroll", updateScrollDirection); // add event listener
     return () => {
       window.removeEventListener("scroll", updateScrollDirection); // clean up
     }
-  }, [windowOffset]);
+  }, [isScrolledBanner]);
 
-  return windowOffset;
+  return isScrolledBanner;
+};
+
+export function isScrolledNavbar() {
+  const [isScrolledNavbar, setIsScrolledNavbar] = useState<number>(0);
+
+  useEffect(() => {
+
+    const updateScrollDirection = () => {
+      setIsScrolledNavbar(window.pageYOffset)
+    };
+    window.addEventListener("scroll", updateScrollDirection); // add event listener
+    return () => {
+      window.removeEventListener("scroll", updateScrollDirection); // clean up
+    }
+  }, [isScrolledNavbar]);
+
+  return isScrolledNavbar;
 };
