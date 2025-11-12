@@ -4,7 +4,8 @@ interface UserSchema {
     pronouns?:string,
     status?:string,
     uid:string,
-    bio?:string
+    bio?:string,
+    permissions?: string
 
 }
 
@@ -51,7 +52,7 @@ type AttackSchema = {
     characters: string[],
     title: string,
     warnings: string | undefined,
-    creationDate: number,
-    aid?: string
+    created_at: number,
+    attack_id?: string
 }
 
