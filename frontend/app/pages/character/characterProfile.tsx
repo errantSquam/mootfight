@@ -7,6 +7,7 @@ import { ImageWithLoader, ImageSkeletonComponent } from "~/components/loaders";
 import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 import { getUserInfoHook } from "~/api/userApi";
 import { Link } from "react-router";
+import { getProfileLink } from "~/functions/helper";
 
 
 export default function CharacterPage() {
@@ -87,7 +88,7 @@ export default function CharacterPage() {
             </div>
             <div> {!userLoading &&
                 <div>
-                    Belongs to <Link to={`/user/profile/${userData?.username}/${userData?.uid}`}>
+                    Belongs to <Link to={getProfileLink(userData?.username || '', userData?.uid)}>
                         <u>{userData?.username}</u></Link>
                 </div>
             }</div>

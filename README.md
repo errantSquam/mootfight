@@ -9,6 +9,9 @@ Only required if you're contributing to the codebase! Also, do everything mentio
 2. cd into frontend folder
 3. ``npm install``
 
+### Common Issues
+- Please use getProfileLink(), sanitize() and getPfp() helper functions. They do the parsing so data doesn't throw errors.
+
 ### Note to Contributors
 PRs are welcome! But please don't make PRs with AI generated code, thanks
 
