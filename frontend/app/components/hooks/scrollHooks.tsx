@@ -31,7 +31,6 @@ export function getWindowOffset() {
 
     const updateScrollDirection = () => {
       setWindowOffset(window.pageYOffset)
-      console.log(windowOffset)
     };
     window.addEventListener("scroll", updateScrollDirection); // add event listener
     return () => {
