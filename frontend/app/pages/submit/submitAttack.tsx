@@ -412,7 +412,7 @@ export function SubmitAttackPage() {
                 </div>
             </div>
 
-            <input type="submit"
+            <input type="submit" value="Submit"
                 className="w-full bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded" />
         </form>
 

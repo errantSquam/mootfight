@@ -73,7 +73,7 @@ export function Login() {
 
                                 {errors.password && <span>This field is required</span>}
 
-                                <input type="submit" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                <input type="submit" value="Submit" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
                             </form>
                         </div>
                     </div>

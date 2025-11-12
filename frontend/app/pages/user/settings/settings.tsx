@@ -123,7 +123,7 @@ export function SettingsPage() {
                                                 Edit
                                             </span>
 
-                                            <input type="submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                            <input type="submit" value="Submit"className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
 
                                             <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
