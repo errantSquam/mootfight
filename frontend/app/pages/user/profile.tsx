@@ -5,6 +5,7 @@ import { DocumentSnapshot } from "firebase/firestore";
 import type { DocumentData, QuerySnapshot } from "firebase/firestore";
 import { getCharactersByUserHook } from "~/api/characterApi";
 import { getAttacksByUserHook } from "~/api/attackApi"
+import { ProfileProvider } from "~/provider/profileProvider";
 
 export function ProfilePage() {
     let params = useParams();
@@ -19,7 +20,6 @@ export function ProfilePage() {
 
 
     //we NEED to switch to a provider. groans
-    return (<ProfileLayout loading={loading} profileData={profileData || {}} 
-    charaData = {charaData || []}
-    attackData={attackData || []}/>);
+    return (
+    <ProfileProvider><ProfileLayout/> </ProfileProvider>);
 }

@@ -38,9 +38,8 @@ export function ProfileRedirectPage() {
 
 
 
-    return <ProfileLayout loading={loading} profileData={profileData[0]}
-        hasDuplicate={hasDuplicate} charaData = {charaData || []}
-        attackData={attackData || []}
+    return <ProfileLayout 
+        hasDuplicate={hasDuplicate}
     >
         {(!loading && hasDuplicate) &&
             <div className="flex flex-col items-center space-y-2">

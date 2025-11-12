@@ -30,7 +30,7 @@ const createAttack = async (data: AttackSchema) => {
 }
 
 
-const getAttacksByUserHook = (uid?: string, limitAmount: number = 5, pagination:number = 1)
+const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 1)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
     if (uid === undefined) {
         return [undefined, true, undefined]
