@@ -39,8 +39,22 @@ export const ProfileCharactersTab = () => {
 
 }
 
+const AttacksArray = ({attackData}: {attackData: AttackSchema[] | undefined}) => {
+    return <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
+            attackData?.map((attack) => {
+                console.log(attackData)
+                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
+                    <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" 
+                    spoiler = {attack?.warnings}/>
+                    <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
+
+                </Link>
+            })}</div>
+
+}
+
 export const ProfileBattlesTab = () => {
-    const { profileLoading, profileData, charaLoading, charaData, attackLoading, attackData } = useContext(ProfileContext)
+    const { profileLoading, profileData, defenceLoading, defenceData, attackLoading, attackData } = useContext(ProfileContext)
 
     //todo: battles — attacks and defences!
     /*
@@ -48,17 +62,9 @@ export const ProfileBattlesTab = () => {
     */
     return <div>
         <h3>Attacks</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
-            attackData?.map((attack) => {
-                console.log(attackData)
-                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
-                    <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" />
-                    <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
-
-                </Link>
-            })}</div>
+        <AttacksArray attackData = {attackData}/>
         <h3>Defences</h3>
-        <div> </div>
+        <AttacksArray attackData = {defenceData}/>
     </div>
 
 }
