@@ -53,6 +53,54 @@ const getCharactersByUserHook = (uid?: string, limitAmount: number = 99)
 }
 
 
+const getCharacter = async (cid?: string): Promise<CharacterSchema | undefined> => {
+    if (cid === undefined) {
+        return undefined
+    }
+    let charaRef = doc(db, "characters", cid)
+    let resp = await getDoc(charaRef)
+
+    return resp.data() as CharacterSchema
+}
+
+const checkCharacterExists = async (cid?: string): Promise<boolean> => {
+    const snap = await getCountFromServer(query(
+            collection(db, 'characters'), where(documentId(), '==', cid)
+        ))
+    
+    if (snap.data().count > 0) {
+        return true
+    } else {
+        return false
+    }
+
+}
+
+const checkCharactersExist = async (cidArray: string[]): Promise<boolean> => {
+    const snap = await getCountFromServer(query(
+            collection(db, 'characters'), where(documentId(), 'in', cidArray)
+        ))
+    if (snap.data().count === cidArray.length) {
+        return true
+    } else {
+        return false
+    }
+}
+
+const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
+    let resp = await getDocs(query(
+            collection(db, 'characters'), where(documentId(), 'in', cidArray)
+        ))
+    
+    let tempArray: string[] = []
+    resp.forEach((data) => {
+        let owner = data.data().owner
+        tempArray.push(owner)
+    })
+
+    return tempArray
+}
+
 const getCharacterHook = (cid?: string): [CharacterSchema | undefined, boolean, FirestoreError | undefined] => {
     if (cid === undefined) {
         return [undefined, true, undefined]
@@ -67,9 +115,15 @@ const getCharacterHook = (cid?: string): [CharacterSchema | undefined, boolean, 
 }
 
 
+
+
 //we should refactor this into different API call files...
 export {
     createCharacter,
     getCharacterHook,
+    getCharacter,
+    checkCharacterExists,
+    checkCharactersExist,
     getCharactersByUserHook,
+    getCharactersOwners
 }

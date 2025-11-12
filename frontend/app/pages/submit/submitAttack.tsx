@@ -7,21 +7,17 @@ import { useContext } from "react"
 import { useFieldArray } from "react-hook-form"
 import { AuthContext } from "~/provider/authProvider"
 import { handleToast } from "~/functions/handleToast"
-import { createCharacter } from "~/api/characterApi"
+import { createCharacter, getCharactersOwners } from "~/api/characterApi"
 import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
 import { Modal } from "~/components/genericComponents"
+import { getCharacter } from "~/api/characterApi"
+import { getCharacterHook } from "~/api/characterApi"
+import { checkCharacterExists } from "~/api/characterApi"
+import { getUserInfo } from "~/api/userApi"
+import { toast } from "react-toastify/unstyled"
+import { createAttack } from "~/api/attackApi"
 
-
-type AttackSchema = {
-    image: string,
-    description: string | undefined,
-    attacker: string,
-    defender: string,
-    characters: string[],
-    title: string,
-    warnings: string | undefined,
-}
 
 
 async function checkImage(url: string | undefined) {
@@ -151,6 +147,94 @@ const ImageUploadComponent = ({ register, errors, setValue }:
 
 }
 
+async function isCharacterValid(cid: string) {
+    let resp = await checkCharacterExists(cid)
+    return resp
+
+}
+
+const CharacterUploadComponent = ({ register, index }:
+    {
+        register: UseFormRegister<AttackSchema>,
+        index: number
+    }
+) => {
+
+    const [isValidated, setValidated] = useState<boolean>(false)
+
+    const [validatedValue, setValidatedValue] = useState({
+        user: '',
+        character: ''
+    })
+    const [inputValue, setInputValue] = useState<string>('')
+
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+
+
+
+    const handleValidate = async () => {
+        setIsLoading(true)
+        console.log(inputValue)
+        let characterValidity = await isCharacterValid(inputValue)
+        if (characterValidity) {
+            let resp = await getCharacter(inputValue)
+            let userResp = await getUserInfo(resp?.owner || '')
+
+            let tempValue = {
+                user: userResp?.username || '',
+                character: resp?.name || '',
+            }
+
+            console.log(tempValue)
+
+
+            setValidated(true)
+            setValidatedValue(tempValue)
+        }
+
+        setIsLoading(false)
+
+        return characterValidity
+    }
+
+    const handleResubmit = () => {
+        setValidated(false)
+    }
+
+    return <div className="w-full flex flex-row items-center gap-x-2">
+        <input className={`${isValidated ? "visible" : "hidden"} w-full border border-zinc-500 rounded-md p-1 
+        text-green-300`}
+            defaultValue={`${validatedValue.user}'s ${validatedValue.character}`}
+            disabled
+        />
+
+        <input className={`${isValidated ? "hidden" : "visible"} w-full border border-zinc-500 rounded-md p-1 bg-zinc-900`}
+            {...register(`characters.${index}`, { required: true })}
+            onChange={(e) => { setInputValue(e.target.value) }}
+            value = {inputValue}
+        />
+
+
+        {!isValidated ?
+            <div className="flex flex-row gap-x-2">
+                <div onClick={() => { /*search*/ }}
+                    className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                    Search
+                </div>
+                <div onClick={() => { handleValidate() }}
+                    className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                    {isLoading ? <Icon icon="eos-icons:loading" className = "text-lg"/> : <span>Validate</span>}
+                </div>
+            </div> :
+            <div onClick={() => { handleResubmit() }}
+                className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                Resubmit
+            </div>
+        }
+    </div>
+}
+
+
 export function SubmitAttackPage() {
     const {
         register,
@@ -173,6 +257,8 @@ export function SubmitAttackPage() {
 
     const [charactersIndex, setCharactersIndex] = useState<number>(0)
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const handleDeleteCharacter = () => {
 
         if (charactersIndex === 0) {
@@ -187,19 +273,58 @@ export function SubmitAttackPage() {
     }
 
 
-    const onSubmit: SubmitHandler<AttackSchema> = (data, e) => {
+    const onSubmit: SubmitHandler<AttackSchema> = async (data, e) => {
+
+        // Iterate through characters to get list of defenders
+
+        setIsLoading(true)
+        console.log(data)
+        let owners = await getCharactersOwners(data.characters)
+        let filteredArray = owners.filter((id) => {
+            return id === userInfo.uid
+        })
+
+        if (filteredArray.length === owners.length) {
+            console.log("toast should fire")
+            handleToast({
+                toastType:"error",
+                message:"Attack must contain at least one character from a different user!"
+            })
+            setIsLoading(false)
+            return
+        } 
+
+        //now filter yourself out
+        data.defenders = owners.filter((id) => {
+            return id !== userInfo.uid
+        })
 
         data.description = descRef.current?.getMarkdown()
         data.attacker = userInfo.uid //can be null
 
+        //check for empty
+        if (!data.warnings) {
+            data.warnings = undefined
+        }
         if (enableWarnings === false) {
             data.warnings = undefined
         }
+
+        if (data.warnings === undefined) {
+            delete data.warnings
+
+        }
+
+        setIsLoading(false)
 
         console.log("Data:")
         console.log(data)
 
         //API call goes here.
+
+        createAttack(data).then((resp) => {
+            handleToast(resp)
+        })
     }
 
 
@@ -210,57 +335,17 @@ export function SubmitAttackPage() {
                 <h3>Upload Image</h3>
 
                 <ImageUploadComponent register={register} errors={errors} setValue={setValue} />
+                {errors.image && <div className="text-red-400">This field is required.</div>}
 
             </div>
             <div className="flex flex-col gap-y-2">
                 <div className="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <div className="flex flex-col items-start col-span-2">
-                        <h4>Recipient ID</h4>
-                        <div className="flex flex-row gap-x-2">
-                            <input className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
-                                {...register("defender", {
-                                    required: true,
-                                    validate: (value) => {
-                                        if (value === userInfo.uid) {
-                                            return "You cannot set yourself as the recipient!"
-                                        }
 
-                                    }
-
-                                })} />
-                            <div onClick={() => { /*search*/ }}
-                                className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
-                                Search
-                            </div>
-
-                            <div onClick={() => { /*validate*/ }}
-                                className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
-                                Validate
-                            </div>
-                        </div>
-                        {errors.defender && <div className="text-red-400">{errors.defender.message}</div>}
-                        {errors.defender?.type === "required" &&
-                            <div className="text-red-400">This field is required</div>}
-                        {/*TODO: Pop up a search modal*/}
-                    </div>
                     <div className="flex flex-col items-start col-span-2 gap-y-2">
                         <h4>Character(s)</h4>
                         <div className="flex flex-col w-full gap-y-2">
                             {[...Array(charactersIndex + 1).keys()].map((index) => {
-                                return <div className="w-full flex flex-row gap-x-2">
-                                    <input className="w-full border border-zinc-500 rounded-md p-1 bg-zinc-900"
-                                        {...register(`characters.${index}`, { required: true })} />
-
-                                    <div onClick={() => { /*search*/ }}
-                                        className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
-                                        Search
-                                    </div>
-
-                                    <div onClick={() => { /*validate*/ }}
-                                        className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
-                                        Validate
-                                    </div>
-                                </div>
+                                return <CharacterUploadComponent register={register} index={index} />
                             })}
 
                         </div>
@@ -311,8 +396,9 @@ export function SubmitAttackPage() {
 
                                 }} />
                             <div
-                            className = "select-none" onClick ={(e) => {
-                                    setEnableWarnings(!enableWarnings)}}
+                                className="select-none" onClick={(e) => {
+                                    setEnableWarnings(!enableWarnings)
+                                }}
                             >Enable custom warnings</div>
                         </div>
                         {enableWarnings &&

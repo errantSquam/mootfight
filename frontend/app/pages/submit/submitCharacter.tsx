@@ -11,6 +11,7 @@ import { createCharacter } from "~/api/characterApi"
 import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
 import { Modal } from "~/components/genericComponents"
+import { getProfileLink } from "~/functions/helper"
 
 
 async function checkImage(url: string | undefined) {
@@ -219,6 +220,8 @@ export function SubmitCharacterPage() {
     const permsRef = useRef<MDXEditorMethods>(null)
     const [imagesIndex, setImagesIndex] = useState(0)
     const { userInfo, refreshAuthUser, authLoaded } = useContext(AuthContext)
+    const [isLoading, setIsLoading] = useState(false)
+
     let navigate = useNavigate()
 
     const handleDeleteImage = () => {
@@ -235,6 +238,7 @@ export function SubmitCharacterPage() {
     }
 
     const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
+        setIsLoading(true)
 
         data.description = descRef.current?.getMarkdown()
         data.permissions = permsRef.current?.getMarkdown()
@@ -260,10 +264,12 @@ export function SubmitCharacterPage() {
         createCharacter(data).then((resp) => {
             handleToast(resp)
             if (resp.toastType === ToastStatus.SUCCESS) {
-                navigate(`/user/profile/${userInfo.username}/${userInfo.uid}`)
+                navigate(getProfileLink(userInfo.username, userInfo.uid))
 
             }
         })
+
+        setIsLoading(false)
 
     }
 

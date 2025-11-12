@@ -20,7 +20,6 @@ interface BioUserSchema extends UserSchema {
 }
 
 
-export enum ToastStatus {SUCCESS = "success", ERROR = "error"}
 type ToastResponse = {
     toastType: ToastStatus,
     message: string,
@@ -43,5 +42,16 @@ interface CharacterSchema {
     images: RefImage[],
     owner: string
     cid?: string
+}
+
+
+type AttackSchema = {
+    image: string,
+    description: string | undefined,
+    attacker: string,
+    defenders: string[],
+    characters: string[],
+    title: string,
+    warnings: string | undefined,
 }
 
