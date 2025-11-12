@@ -67,6 +67,16 @@ service cloud.firestore {
 }
 ```
 
+### Firestore Composite Indexes
+**These are needed for certain queries to run.** Please set them under the 'Indexes' tab.
+
+If any of these indexes don't work, please report them. There should be an error log in the console: `[FirebaseError: The query requires an index...]`
+
+⬆️ denotes Ascending, ⬇️ denotes Descending.
+| Collection ID | Fields Indexed |
+| ------------- | -------------- |
+| attacks | attacker ⬆️, creationDate ⬇️, __name__ ⬇️ |
+
 #### Firebase requirements:
 - Enable 'Authentication' for Email/Password
 - Enable Firestore and create the following collections:

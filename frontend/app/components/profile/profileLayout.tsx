@@ -13,11 +13,12 @@ import type { DocumentData, QuerySnapshot } from "firebase/firestore"
 
 
 
-const MainProfileLayout = ({ loading, profileData, charaData }:
+const MainProfileLayout = ({ loading, profileData, charaData, attackData }:
     {
         loading: boolean | undefined,
         profileData: UserAmbiguousSchema,
         charaData: CharacterSchema[],
+        attackData: AttackSchema[]
     }) => {
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
     const [profileTab, setProfileTab] = useState("Bio")
@@ -40,7 +41,7 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
         "Bio": <ProfileBioTab profileData={profileData} />,
         "Characters": <ProfileCharactersTab profileData={profileData}
             charaData={charaData} />,
-        "Battles": <ProfileBattlesTab profileData={profileData} />, //attacks/defences
+        "Battles": <ProfileBattlesTab profileData={profileData} attackData={attackData} />, //attacks/defences
         "Stats": <ProfileStatsTab profileData={profileData} />
     }
 
@@ -105,13 +106,15 @@ const MainProfileLayout = ({ loading, profileData, charaData }:
     </div>
 }
 
-export function ProfileLayout({ children, loading, profileData, charaData, hasDuplicate = false }:
+export function ProfileLayout({ children, loading, profileData, charaData, attackData, hasDuplicate = false }:
     {
         children?: any, loading: boolean | undefined, profileData: any,
         charaData: CharacterSchema[],
+        attackData: AttackSchema[],
         hasDuplicate?: boolean
     }) {
     return <div className="flex items-center justify-center">
-        {!hasDuplicate && <MainProfileLayout loading={loading} profileData={profileData} charaData = {charaData}/>}
+        {!hasDuplicate && <MainProfileLayout loading={loading} profileData={profileData} charaData = {charaData}
+        attackData = {attackData}/>}
     </div>
 }

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
 import { getCharactersByUserHook } from "~/api/characterApi";
+import { getAttacksByUserHook } from "~/api/attackApi"
 
 export function ProfileRedirectPage() {
     let params = useParams();
@@ -19,6 +20,9 @@ export function ProfileRedirectPage() {
     const [hasDuplicate, setHasDuplicate] = useState(false)
 
     const [charaData, charaLoading, charaError] = getCharactersByUserHook(params.userId)
+    const [attackData, attackLoading, attackError] = getAttacksByUserHook(params.userId)
+
+    
 
     useEffect(() => {
         let profileCount = profileData.length
@@ -36,6 +40,7 @@ export function ProfileRedirectPage() {
 
     return <ProfileLayout loading={loading} profileData={profileData[0]}
         hasDuplicate={hasDuplicate} charaData = {charaData || []}
+        attackData={attackData || []}
     >
         {(!loading && hasDuplicate) &&
             <div className="flex flex-col items-center space-y-2">

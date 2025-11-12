@@ -302,6 +302,8 @@ export function SubmitAttackPage() {
         data.description = descRef.current?.getMarkdown()
         data.attacker = userInfo.uid //can be null
 
+        data.creationDate = Date.now()
+
         //check for empty
         if (!data.warnings) {
             data.warnings = undefined

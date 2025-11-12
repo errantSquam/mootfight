@@ -34,14 +34,27 @@ export const ProfileCharactersTab = ({ profileData, charaData }:
 
 }
 
-export const ProfileBattlesTab = ({ profileData }: { profileData: UserAmbiguousSchema }) => {
+export const ProfileBattlesTab = ({ profileData, attackData }: 
+    { profileData: UserAmbiguousSchema,
+        attackData: AttackSchema[]
+     }) => {
     //todo: battles — attacks and defences!
     /*
     Might need to come up with a firebase query to find all attacks and defences per user...
     */
     return <div>
-        <div>Attacks</div>
-        <div>Defences</div>
+        <h3>Attacks</h3>
+        <div>{
+            attackData.map((attack) => {
+                console.log(attackData)
+                    return <Link to ={`/character/${attack.aid}`} className = "flex flex-col items-center">
+                        <ImageWithLoader src = {attack.image} className = "w-40 h-40 object-cover"/>
+                        <div className = "w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
+
+                    </Link>
+            })}</div>
+        <h3>Defences</h3>
+        <div> </div>
     </div>
 
 }
