@@ -1,6 +1,6 @@
 import type { FirebaseError } from "firebase/app";
 import { app, auth, db, handleError } from "./firebase"
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
+import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError, startAt } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 import { ToastStatus } from "common";
@@ -54,7 +54,7 @@ const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, Firest
 
 
 
-const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 1)
+const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
     if (uid === undefined) {
         return [undefined, true, undefined]
@@ -66,20 +66,20 @@ const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
     //let resp = getDocs(q).then((data) => {console.log(data)})
 
-    let [charaData, charaLoading, charaError] = useCollection(q)
+    let [attackData, attackLoading, attackError] = useCollection(q)
 
 
     let returnArray: AttackSchema[] = []
-    charaData?.forEach((result) => {
+    attackData?.forEach((result) => {
         let tempData = result.data()
         tempData.aid = result.id
         returnArray.push(tempData as AttackSchema)
     })
-    return [returnArray, charaLoading, charaError]
+    return [returnArray, attackLoading, attackError]
 }
 
 
-const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 1)
+const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
     if (uid === undefined) {
         return [undefined, true, undefined]
@@ -90,18 +90,48 @@ const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination
     where("defenders", "array-contains", uid));
 
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
-    let resp = getDocs(q).then((data) => {console.log(data)})
+    //let resp = getDocs(q).then((data) => {console.log(data)})
 
-    let [charaData, charaLoading, charaError] = useCollection(q)
+    let [attackData, attackLoading, attackError] = useCollection(q)
 
 
     let returnArray: AttackSchema[] = []
-    charaData?.forEach((result) => {
+    attackData?.forEach((result) => {
         let tempData = result.data()
         tempData.aid = result.id
         returnArray.push(tempData as AttackSchema)
     })
-    return [returnArray, charaLoading, charaError]
+    return [returnArray, attackLoading, attackError]
+}
+
+const getDefencesByCharacterHook = (cid?: string, limitAmount: number = 4, pagination:number = 0)
+    : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    if (cid === undefined) {
+        return [undefined, true, undefined]
+    }
+
+    console.log("CID:" + cid)
+    let attackRef = collection(db, "attacks")
+    //if we're doing order by, needs a compound index, created in console.
+    const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), 
+    where("characters", "array-contains", cid));
+
+    //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
+    console.log("Resp")
+    let resp = getDocs(q).then((data) => {data?.forEach((result) => {
+        console.log(result)
+    })})
+
+    let [attackData, attackLoading, attackError] = useCollection(q)
+
+
+    let returnArray: AttackSchema[] = []
+    attackData?.forEach((result) => {
+        let tempData = result.data()
+        tempData.aid = result.id
+        returnArray.push(tempData as AttackSchema)
+    })
+    return [returnArray, attackLoading, attackError]
 }
 
 export {
@@ -109,5 +139,6 @@ export {
     getAttack,
     getAttackHook,
     getAttacksByUserHook,
-    getDefencesByUserHook
+    getDefencesByUserHook,
+    getDefencesByCharacterHook
 }

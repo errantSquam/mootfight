@@ -8,6 +8,7 @@ import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 import { getUserInfoHook } from "~/api/userApi";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
+import { getDefencesByCharacterHook } from "~/api/attackApi";
 
 
 export default function CharacterPage() {
@@ -18,6 +19,8 @@ export default function CharacterPage() {
     const [charaData, charaLoading, charaError] = getCharacterHook(params.characterId)
 
     const [userData, userLoading, userError] = getUserInfoHook(charaData?.owner)
+
+    const [attackData, attackLoading, attackError] = getDefencesByCharacterHook(params.characterId)
 
 
 
@@ -44,7 +47,16 @@ export default function CharacterPage() {
             <h3> Permissions</h3>
             <SanitizedMarkdown markdown={charaData?.permissions || ''} />
         </div>,
-        "Battles": <div></div>, //attacks/defences
+        "Battles": <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
+            attackData?.map((attack) => {
+                console.log(attackData)
+                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
+                    <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" 
+                    spoiler = {attack?.warnings}/>
+                    <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
+
+                </Link>
+            })}</div>, //attacks/defences
         "Stats": <div></div>
     }
 
