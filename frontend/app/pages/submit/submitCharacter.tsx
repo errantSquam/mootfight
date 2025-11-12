@@ -242,7 +242,7 @@ export function SubmitCharacterPage() {
 
         data.description = descRef.current?.getMarkdown()
         data.permissions = permsRef.current?.getMarkdown()
-        data.owner = userInfo.uid //can be null
+        data.owner = userInfo?.uid //can be null
 
         //throw error if auth not loaded? somehow?
 
@@ -250,10 +250,10 @@ export function SubmitCharacterPage() {
         data.images = data.images.map((image) => {
             let tempImage = {...image}
             if (image.artist === undefined) {
-                tempImage.artist = userInfo.username
+                tempImage.artist = userInfo?.username
             }
             if (image.artistLink === undefined) {
-                tempImage.artistLink = `/user/profile/${userInfo.username}/${userInfo.uid}`
+                tempImage.artistLink = `/user/profile/${userInfo?.username}/${userInfo?.uid}`
             }
             return tempImage
         })
@@ -264,7 +264,7 @@ export function SubmitCharacterPage() {
         createCharacter(data).then((resp) => {
             handleToast(resp)
             if (resp.toastType === ToastStatus.SUCCESS) {
-                navigate(getProfileLink(userInfo.username, userInfo.uid))
+                navigate(getProfileLink(userInfo?.username, userInfo?.uid))
 
             }
         })

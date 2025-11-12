@@ -281,7 +281,7 @@ export function SubmitAttackPage() {
         console.log(data)
         let owners = await getCharactersOwners(data.characters)
         let filteredArray = owners.filter((id) => {
-            return id === userInfo.uid
+            return id === userInfo?.uid
         })
 
         if (filteredArray.length === owners.length) {
@@ -296,11 +296,11 @@ export function SubmitAttackPage() {
 
         //now filter yourself out
         data.defenders = owners.filter((id) => {
-            return id !== userInfo.uid
+            return id !== userInfo?.uid
         })
 
         data.description = descRef.current?.getMarkdown()
-        data.attacker = userInfo.uid //can be null
+        data.attacker = userInfo?.uid //can be null
 
         data.creationDate = Date.now()
 

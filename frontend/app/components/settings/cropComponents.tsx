@@ -138,7 +138,7 @@ export const ProfilePictureComponent = () => {
         <label htmlFor="fileField">
             <div className="relative group cursor-pointer">
                 <img src={
-                    getPfp(userInfo.profilePicture)
+                    getPfp(userInfo?.profilePicture)
                 }
                     className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
                 <Icon icon="lucide:edit"

@@ -6,7 +6,19 @@ import { getUserInfo } from "~/api/userApi";
 import type { DocumentData } from 'firebase/firestore';
 
 
-const AuthContext = createContext<any>({ state: {}, actions: {} });
+type AuthContextType = {
+    userInfo: DocumentData | null,
+    setUserInfo: React.Dispatch<React.SetStateAction<DocumentData | null>>,
+    authLoaded: boolean,
+    refreshAuthUser: () => void
+}
+
+const AuthContext = createContext<AuthContextType>({ 
+    userInfo: null,
+    authLoaded: false,
+    setUserInfo: () => {},
+    refreshAuthUser: () => {}
+ });
 
 const AuthProvider = ({ children }: { children: any }) => {
 
