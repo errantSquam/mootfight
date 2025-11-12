@@ -9,6 +9,9 @@ Only required if you're contributing to the codebase! Also, do everything mentio
 2. cd into frontend folder
 3. ``npm install``
 
+### Note to Contributors
+PRs are welcome! But please don't make PRs with AI generated code, thanks
+
 ## Hosting Setup
 
 ### Creating a new account
@@ -84,5 +87,3 @@ Here are some things to note:
 - Profile picture is stored as a (base64) string, and the request can be modified to include any string.
 - Image links are stored as strings, and only validated by the frontend. Requests can be modified to include any string, and if the image link breaks in the future, it will not be caught.
 
-## Important Rule
-If u put in chatgpt'd code I will kill you, doubly so if it's ag*ntic ai :nauseated_face: 
