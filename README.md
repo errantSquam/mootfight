@@ -82,7 +82,7 @@ If any of these indexes don't work, please report them. There should be an error
 | ------------- | -------------- | ----------- |
 | attacks | attacker ⬆️, creationDate ⬇️, __name__ ⬇️ | To query attacks belonging to a user, in descending chronological order. |
 | attacks | defenders 🔠, creationDate ⬇️, __name__ ⬇️ | To query defences belonging to a user, in descending chronological order. |
-
+| attacks | characters 🔠, creationDate ⬇️, __name__ ⬇️ | To query defences belonging to a character, in descending chronological order. |
 #### Firebase requirements:
 - Enable 'Authentication' for Email/Password
 - Enable Firestore and create the following collections:
