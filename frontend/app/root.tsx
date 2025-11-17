@@ -16,6 +16,7 @@ import { ToastContainer, toast } from 'react-toastify/unstyled';
 import { LoadScreen } from "./components/loadingScreen";
 import { AuthProvider } from "./provider/authProvider";
 import 'react-toastify/ReactToastify.css';
+import { SearchProvider } from "./provider/searchProvider";
 
 
 
@@ -55,13 +56,16 @@ export default function App() {
 
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
   return <AuthProvider>
+    
     <LoadScreen />
     <div className="w-full">
       <Banner/>
       <Navbar />
       <div className="h-full">
+          <SearchProvider>
         
         <Outlet />
+        </SearchProvider>
       </div>
     </div>
     <ToastContainer theme="dark" />

@@ -6,6 +6,7 @@ import { getProfileLink } from "~/functions/helper";
 import type { DocumentData, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
 import { ImageWithLoader } from "~/components/loaders";
 import { MootButton } from "~/components/button";
+import { SearchBar } from "~/components/search/searchBar";
 
 export function Search() {
 
@@ -26,21 +27,7 @@ export function Search() {
   return (
     <div className="flex items-center justify-center pt-16 pb-4">
       <div className="flex-1 flex flex-col items-center gap-8 min-h-0">
-        <div className="flex flex-col w-full items-center">
-          <h3> Search </h3>
-          <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
-            placeholder="Search user/character..." />
-          <div className="flex flex-row w-1/2 px-8 py-4 justify-center space-x-4">
-            <MootButton>
-                Search User
-            </MootButton>
-
-            <MootButton>
-                Search Character
-            </MootButton>
-          </div>
-
-        </div>
+        <SearchBar/>
         <div className="w-2/3 space-y-6 px-4">
           <h3 className="ml-4">Results</h3>
 
