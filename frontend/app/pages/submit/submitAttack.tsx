@@ -60,9 +60,9 @@ const ImageUploadComponent = ({ register, errors, setValue }:
 
     const [showImage, setShowImage] = useState<boolean>(false)
 
-    const validateImage = async (imageLink: string) => {
+    const validateImage = async (image_link: string) => {
         //change to a handler?
-        let resp = await checkImage(imageLink)
+        let resp = await checkImage(image_link)
         if (resp === true) {
             setValidationVerified(true)
             setValidationError(false)
@@ -287,7 +287,7 @@ export function SubmitAttackPage() {
         if (filteredArray.length === owners.length) {
             console.log("toast should fire")
             handleToast({
-                toastType:"error",
+                toast_type:"error",
                 message:"Attack must contain at least one character from a different user!"
             })
             setIsLoading(false)

@@ -8,7 +8,7 @@ const createCharacter = async (data: CharacterSchema) => {
     try {
         if (auth.currentUser === null) {
             return {
-                toastType: ToastStatus.ERROR,
+                toast_type: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
@@ -16,7 +16,7 @@ const createCharacter = async (data: CharacterSchema) => {
         let collRef = collection(db, "characters")
         let resp = await addDoc(collRef, data);
         return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully created character!"
         }
 

@@ -10,7 +10,7 @@ const createAttack = async (data: AttackSchema) => {
     try {
         if (auth.currentUser === null) {
             return {
-                toastType: ToastStatus.ERROR,
+                toast_type: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
@@ -19,7 +19,7 @@ const createAttack = async (data: AttackSchema) => {
         let resp = await addDoc(collRef, data);
         //TODO: Batch update with notifications to the defenders as well
         return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully created attack!"
         }
 

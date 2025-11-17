@@ -16,7 +16,7 @@ const auth = getAuth()
 const db = getFirestore(app)
 
 
-const handleError = (error: unknown) : {toastType: ToastStatus, message: string}=> {
+const handleError = (error: unknown) : {toast_type: ToastStatus, message: string}=> {
     if (error instanceof FirebaseError) {
         console.log(`GOT ERROR: ` + error.code)
 
@@ -26,13 +26,13 @@ const handleError = (error: unknown) : {toastType: ToastStatus, message: string}
         }
 
         return {
-            toastType: ToastStatus.ERROR,
+            toast_type: ToastStatus.ERROR,
             message: errorMessage
         }
     } else {
         console.log(error)
         return {
-            toastType: ToastStatus.ERROR,
+            toast_type: ToastStatus.ERROR,
             message: "UNKNOWN ERROR"
 
         }
@@ -59,7 +59,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
         }*/
        
         return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully logged in!"
         }
     } catch (error: unknown) {
@@ -73,7 +73,7 @@ const logOut = async () => {
     try {
         await signOut(auth)
         return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully signed out!"
         }
 

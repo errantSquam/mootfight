@@ -40,7 +40,7 @@ export function Login() {
         signIn(data.email, data.password).then((resp) => {
             setLoggingIn(false)
             handleToast(resp)
-            if (resp.toastType === "success") {
+            if (resp.toast_type === "success") {
                 navigate('/')
 
             }

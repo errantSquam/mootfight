@@ -50,9 +50,9 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
     }) => {
 
     const [imageData, setImageData] = useState<RefImage>({
-        imageLink: '',
+        image_link: '',
         artist: undefined,
-        artistLink: undefined,
+        artist_link: undefined,
     })
     const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
@@ -60,9 +60,9 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
     const [showImage, setShowImage] = useState<boolean>(false)
     const [customCreditEnable, setCustomCredit] = useState<boolean>(false)
 
-    const validateImage = async (imageLink: string) => {
+    const validateImage = async (image_link: string) => {
         //change to a handler?
-        let resp = await checkImage(imageLink)
+        let resp = await checkImage(image_link)
         if (resp === true) {
             setValidationVerified(true)
             setValidationError(false)
@@ -95,11 +95,11 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             validationVerified ? "bg-green-300" : "bg-zinc-400"} 
                         rounded text-sm text-zinc-900/100 py-1 px-2`}
                             placeholder="Your image link here..."
-                            value={imageData.imageLink}
+                            value={imageData.image_link}
                             onChange={(e) => {
                                 let updatedData = {
                                     ...imageData,
-                                    imageLink: e.target.value
+                                    image_link: e.target.value
                                 }
                                 setImageData(updatedData)
                                 setValue(`images.${imageIndex}`, updatedData)
@@ -108,7 +108,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             autoComplete="off"
                         />
 
-                        <MootButton onClick={() => { validateImage(imageData.imageLink) }}
+                        <MootButton onClick={() => { validateImage(imageData.image_link) }}
                             >
                             Validate
                         </MootButton>
@@ -125,7 +125,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                         if (e.target.checked === false) {
                             let nulledData = {...imageData,
                                 artist: undefined,
-                                artistLink: undefined
+                                artist_link: undefined
                             }
                             setImageData(nulledData)
                             setValue(`images.${imageIndex}`, nulledData)
@@ -160,7 +160,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             onChange={(e) => {
                                 let updatedData = {
                                     ...imageData,
-                                    artistLink: e.target.value
+                                    artist_link: e.target.value
                                 }
                                 setImageData(updatedData)
                                 setValue(`images.${imageIndex}`, updatedData)
@@ -173,7 +173,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
             //Summon a modal instead...
             <Modal isOpen={showImage} handleClose={handleModalClose} title="Image Verification">
                 <div className={`flex flex-col items-center gap-y-2`}>
-                    <img src={imageData.imageLink} className="w-1/3" />
+                    <img src={imageData.image_link} className="w-1/3" />
                     <div className='text-green-300'>Image is valid!</div>
 
 
@@ -186,13 +186,13 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
-            value={imageData.imageLink}
+            value={imageData.image_link}
             {...register(`images.${imageIndex}`,
                 {
                     required: true,
                     validate: (value) => {
                         //Return false means a-ok in hook forms... why
-                        if (!checkImage(value.imageLink)) { return true }
+                        if (!checkImage(value.image_link)) { return true }
 
                     },
                 }
@@ -252,8 +252,8 @@ export function SubmitCharacterPage() {
             if (image.artist === undefined) {
                 tempImage.artist = userInfo?.username
             }
-            if (image.artistLink === undefined) {
-                tempImage.artistLink = `/user/profile/${userInfo?.username}/${userInfo?.user_id}`
+            if (image.artist_link === undefined) {
+                tempImage.artist_link = `/user/profile/${userInfo?.username}/${userInfo?.user_id}`
             }
             return tempImage
         })
@@ -263,7 +263,7 @@ export function SubmitCharacterPage() {
 
         createCharacter(data).then((resp) => {
             handleToast(resp)
-            if (resp.toastType === ToastStatus.SUCCESS) {
+            if (resp.toast_type === ToastStatus.SUCCESS) {
                 navigate(getProfileLink(userInfo?.username, userInfo?.user_id))
 
             }

@@ -117,13 +117,13 @@ const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 
 
 const updateUserInfo = async (toUpdate: any) => {
     return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully updated info!"
         }
     /*
     if (auth.currentUser === null) {
         return {
-            toastType: ToastStatus.ERROR,
+            toast_type: ToastStatus.ERROR,
             message: "Not logged in!"
         }
     }
@@ -135,13 +135,13 @@ const updateUserInfo = async (toUpdate: any) => {
         //Catch errors here...
 
         return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully updated info!"
         }
     }
     else {
         return {
-            toastType: ToastStatus.ERROR,
+            toast_type: ToastStatus.ERROR,
             message: "User does not exist."
         }
 

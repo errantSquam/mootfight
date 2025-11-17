@@ -29,8 +29,8 @@ export default function CharacterPage() {
             {!charaLoading &&
                 charaData?.images.map((image: RefImage) => {
                     return <div className="flex flex-col gap-y-2 items-center">
-                        <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
-                        <div> by <a href={image.artistLink} className="mootfight-link"
+                        <ImageWithLoader src={image.image_link} className="w-40 h-40 object-cover" />
+                        <div> by <a href={image.artist_link} className="mootfight-link"
                             target="_blank" rel="noopener noreferrer">
                             {image.artist}
                         </a></div>
@@ -71,7 +71,7 @@ export default function CharacterPage() {
                 <div className="flex flex-row items-center gap-x-2 w-full">
                     <div className="p-2">
                         {charaLoading ? <ImageSkeletonComponent className="min-w-20 min-h-20 object-cover" /> :
-                            <ImageWithLoader src={charaData?.images[0].imageLink || ''}
+                            <ImageWithLoader src={charaData?.images[0].image_link || ''}
                                 className="w-20 h-20 object-cover" />
                         }
                     </div>

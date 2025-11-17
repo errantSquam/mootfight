@@ -20,16 +20,16 @@ interface BioUserSchema extends UserSchema {
 
 
 type ToastResponse = {
-    toastType: ToastStatus,
+    toast_type: ToastStatus,
     message: string,
     data?: any
 }
 
 
 type RefImage = {
-    imageLink: string,
+    image_link: string,
     artist?: string,
-    artistLink?: string
+    artist_link?: string
 }
 
 interface CharacterSchema {

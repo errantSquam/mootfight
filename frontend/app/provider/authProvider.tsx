@@ -69,10 +69,11 @@ const AuthProvider = ({ children }: { children: any }) => {
     function handleAuthStateChanged(user: User | null) {
         if (user) {
             if (userInfo === null) {
+                /*
                 getUserInfo(user.user_id).then((resp) => {
                     updateUserInfo(resp, user.user_id)
 
-                })
+                })*/
             }
         } else {
             updateUserInfo(null)

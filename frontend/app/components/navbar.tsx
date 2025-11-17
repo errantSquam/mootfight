@@ -44,7 +44,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
     const handleLogout = async () => {
         let resp = await logOut()
         handleToast(resp)
-        if (resp.toastType === "success") {
+        if (resp.toast_type === "success") {
             navigate("/")
         }
     }
