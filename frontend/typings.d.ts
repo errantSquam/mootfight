@@ -39,13 +39,13 @@ interface CharacterSchema {
     description?: string,
     permissions?: string,
     images: RefImage[],
-    owner: string
+    owner_id: string
     character_id?: string
 }
 
 
 type AttackSchema = {
-    image: string,
+    image_link: string,
     description: string | undefined,
     attacker: string,
     defenders: string[],

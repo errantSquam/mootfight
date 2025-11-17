@@ -23,9 +23,9 @@ export default function AttackPage() {
         <div className={`flex ${enlarge ? "flex-col" : "flex-row"} gap-y-2 ${enlarge ? "items-center" : "items-start"} w-2/3`}>
             <div className="flex flex-col gap-y-2 items-center">
                 <h1> {attackData?.title}</h1>
-                <div className="italic text-zinc-400">{new Date(attackData?.creationDate || 0).toString()}</div>
+                <div className="italic text-zinc-400">{new Date(attackData?.created_at || 0).toString()}</div>
 
-                <img src={attackData?.image} className={`${enlarge ? "w-full" : "w-2/3"} cursor-pointer`}
+                <img src={attackData?.image_link} className={`${enlarge ? "w-full" : "w-2/3"} cursor-pointer`}
                     onClick={() => { setEnlarge(!enlarge) }}
                 />
                 <div className = "italic text-zinc-400">(Click to enlarge; click again to shrink)</div>

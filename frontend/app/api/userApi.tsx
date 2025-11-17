@@ -1,5 +1,5 @@
 import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./firebase"
+import { app, auth, db, handleError } from "./supabase"
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";

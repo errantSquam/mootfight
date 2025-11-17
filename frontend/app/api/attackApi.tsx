@@ -1,5 +1,5 @@
 import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./firebase"
+import { app, auth, db, handleError } from "./supabase"
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError, startAt } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
