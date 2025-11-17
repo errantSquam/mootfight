@@ -15,8 +15,6 @@ const createCharacter = async (data: CharacterSchema) => {
         }
         let collRef = collection(db, "characters")
         let resp = await addDoc(collRef, data);
-        /*let docRef = doc(db, "characters", resp.id)
-        docRef.*/
         return {
             toastType: ToastStatus.SUCCESS,
             message: "Successfully created character!"

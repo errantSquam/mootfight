@@ -9,6 +9,7 @@ import 'react-easy-crop/react-easy-crop.css'
 import { ProfilePictureComponent } from "~/components/settings/cropComponents"
 import { Link } from "react-router"
 import { updateUserSettings } from "~/functions/apiHandlers"
+import { MootButton, MootButtonInput } from "~/components/button"
 
 
 
@@ -101,17 +102,16 @@ export function SettingsPage() {
                                         </div>
 
                                         <div className="py-2 flex flex-row gap-x-2">
-                                            <span className={`${isEditing ? "hidden" : "visible"} cursor-pointer 
-                                    bg-gray-700 hover:bg-gray-600 p-2 rounded`}
+                                            <MootButton className={`${isEditing ? "hidden" : "visible"}`}
                                                 onClick={() => {
                                                     setIsEditing(true)
                                                 }}>
                                                 Edit
-                                            </span>
+                                            </MootButton>
 
-                                            <input type="submit" value="Submit" className="disabled:hidden visible cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded" />
+                                            <MootButtonInput type="submit" value="Submit" className="disabled:hidden visible" />
 
-                                            <input type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
+                                            <MootButtonInput type="reset" className={`${isEditing ? "visible" : "hidden"} cursor-pointer 
                                     bg-gray-700 hover:bg-gray-600 p-2 rounded`}
                                                 onClick={() => {
                                                     setIsEditing(false)
@@ -127,8 +127,8 @@ export function SettingsPage() {
                     </div>
                 </div>
 
-                <Link to="/user/settings/bio" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded">
-                    Edit Bio
+                <Link to="/user/settings/bio">
+                    <MootButton> Edit Bio</MootButton>
                 </Link>
             </div>
         </div >

@@ -5,6 +5,11 @@ import { getPfp } from "~/functions/helper";
 import { getProfileLink } from "~/functions/helper";
 import type { DocumentData, QueryDocumentSnapshot, QuerySnapshot } from "firebase/firestore";
 import { ImageWithLoader } from "~/components/loaders";
+import { MootButton } from "~/components/button";
+import { useContext, useState } from "react";
+import { SearchBar } from "~/components/search/searchBar";
+import { SearchProvider } from "~/provider/searchProvider";
+import { SearchContext } from "~/provider/searchProvider";
 
 export function Welcome() {
 
@@ -22,11 +27,17 @@ export function Welcome() {
 
   }
 
+  const {searchQuery, setSearchQuery} = useContext(SearchContext)
+
+
+
+
   return (
     <div className="flex items-center justify-center pt-16 pb-4">
       <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
+        <SearchBar/>
         <div className="w-2/3 space-y-6 px-4">
-          <h3 className = "ml-4">Active Users</h3>
+          <h3 className="ml-4">Active Users</h3>
 
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
             <div>

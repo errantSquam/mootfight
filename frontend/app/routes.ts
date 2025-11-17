@@ -18,6 +18,7 @@ export default [
     ]),
     ...prefix("attack", [
         route(":attackId", "routes/attack/attack.tsx")
-    ])
+    ]),
+    route("search", "routes/search/search.tsx")
 
 ] satisfies RouteConfig;
