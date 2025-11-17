@@ -17,6 +17,7 @@ import { checkCharacterExists } from "~/api/characterApi"
 import { getUserInfo } from "~/api/userApi"
 import { toast } from "react-toastify/unstyled"
 import { createAttack } from "~/api/attackApi"
+import { MootButton, MootButtonSubmit } from "~/components/button"
 
 
 
@@ -103,10 +104,9 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                             autoComplete="off"
                         />
 
-                        <div onClick={() => { validateImage(imageData) }}
-                            className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                        <MootButton onClick={() => { validateImage(imageData) }}>
                             Validate
-                        </div>
+                        </MootButton>
 
                     </div>
                 </div>
@@ -120,10 +120,10 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                     <div className='text-green-300'>Image is valid!</div>
 
 
-                    <div className="flex bg-zinc-800 hover:bg-zinc-700 cursor-pointer select-none rounded p-2"
+                    <MootButton
                         onClick={() => { handleModalClose() }}>
                         Close
-                    </div>
+                    </MootButton>
                 </div>
             </Modal>
 
@@ -216,19 +216,20 @@ const CharacterUploadComponent = ({ register, index }:
 
         {!isValidated ?
             <div className="flex flex-row gap-x-2">
-                <div onClick={() => { /*search*/ }}
-                    className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                <MootButton onClick={() => { /*search*/ }}
+                    className = "text-sm">
                     Search
-                </div>
-                <div onClick={() => { handleValidate() }}
-                    className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                </MootButton>
+                <MootButton onClick={() => { handleValidate() }}
+                    className = "text-sm">
                     {isLoading ? <Icon icon="eos-icons:loading" className = "text-lg"/> : <span>Validate</span>}
-                </div>
+                </MootButton>
             </div> :
-            <div onClick={() => { handleResubmit() }}
-                className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+            <MootButton onClick={() => { handleResubmit() }}
+            className = "text-sm"
+                >
                 Resubmit
-            </div>
+            </MootButton>
         }
     </div>
 }
@@ -413,8 +414,7 @@ export function SubmitAttackPage() {
                 </div>
             </div>
 
-            <input type="submit" value="Submit"
-                className="w-full bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded" />
+            <MootButtonSubmit/>
         </form>
 
 

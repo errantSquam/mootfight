@@ -50,8 +50,8 @@ export function BioEditPage() {
     return <div className="p-20 flex flex-col space-y-2">
         <div>Please remember to add 'https://' in front of your links!</div>
         <div className="flex flex-row space-x-2">
-            <Link to="/user/settings" className="cursor-pointer bg-gray-700 hover:bg-gray-600 p-2 rounded w-20 flex items-center text-center justify-center">
-                <div>Back</div>
+            <Link to="/user/settings">
+                <MootButton>Back</MootButton>
             </Link>
             <MootButton onClick = {onSubmit}
             isLoading = {isLoading}

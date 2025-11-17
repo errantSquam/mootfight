@@ -11,6 +11,7 @@ import getCroppedImg from "~/functions/crop"
 import { updateUserSettings } from "~/functions/apiHandlers"
 import { getPfp } from "~/functions/helper"
 import { Modal } from "../genericComponents"
+import { MootButton } from "../button"
 
 type ImageInput = {
     profilePicture: File
@@ -60,8 +61,9 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmi
                 setZoom(Number(e.target.value))
             }} />
         <div className="flex flex-row mt-4 gap-x-2">
-            <Button
-                className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+            <MootButton
+                className="inline-flex text-sm/6 
+                font-semibold text-white"
                 onClick={() => {
                     handleSubmission(result)
                     setIsOpen(false)
@@ -69,15 +71,16 @@ const CropModal = ({ isOpen, setIsOpen, modalImage, handleSubmission, resetSubmi
                 }
             >
                 Submit
-            </Button>
-            <Button
-                className="inline-flex items-center gap-2 rounded-md bg-gray-700 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-gray-600 data-open:bg-gray-700"
+            </MootButton>
+            <MootButton
+                className="inline-flex text-sm/6 
+                font-semibold text-white"
                 onClick={() => {
                     handleClose()
                 }}
             >
                 Cancel
-            </Button>
+            </MootButton>
         </div>
     </Modal>
 }

@@ -12,6 +12,7 @@ import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
 import { Modal } from "~/components/genericComponents"
 import { getProfileLink } from "~/functions/helper"
+import { MootButton, MootButtonSubmit } from "~/components/button"
 
 
 async function checkImage(url: string | undefined) {
@@ -107,10 +108,10 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             autoComplete="off"
                         />
 
-                        <div onClick={() => { validateImage(imageData.imageLink) }}
-                            className="text-sm bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded select-none">
+                        <MootButton onClick={() => { validateImage(imageData.imageLink) }}
+                            >
                             Validate
-                        </div>
+                        </MootButton>
 
                     </div>
                 </div>
@@ -176,10 +177,10 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                     <div className='text-green-300'>Image is valid!</div>
 
 
-                    <div className="flex bg-zinc-800 hover:bg-zinc-700 cursor-pointer select-none rounded p-2"
+                    <MootButton
                         onClick={() => { handleModalClose() }}>
                         Close
-                    </div>
+                    </MootButton>
                 </div>
             </Modal>
 
@@ -350,8 +351,7 @@ export function SubmitCharacterPage() {
                 </div>
 
             </div>
-            <input type="submit" value="Submit"
-                className="w-full bg-zinc-700 hover:bg-zinc-600 p-2 cursor-pointer rounded" />
+            <MootButtonSubmit/>
         </form>
 
 
