@@ -7,7 +7,7 @@ import type { DocumentData, QueryDocumentSnapshot, QuerySnapshot } from "firebas
 import { ImageWithLoader } from "~/components/loaders";
 import { MootButton } from "~/components/button";
 
-export function Welcome() {
+export function Search() {
 
   const [snapshot, loading, error] = getUsersHook(99);
 
@@ -25,7 +25,7 @@ export function Welcome() {
 
   return (
     <div className="flex items-center justify-center pt-16 pb-4">
-      <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
+      <div className="flex-1 flex flex-col items-center gap-8 min-h-0">
         <div className="flex flex-col w-full items-center">
           <h3> Search </h3>
           <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
@@ -42,7 +42,7 @@ export function Welcome() {
 
         </div>
         <div className="w-2/3 space-y-6 px-4">
-          <h3 className="ml-4">Active Users</h3>
+          <h3 className="ml-4">Results</h3>
 
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
             <div>
