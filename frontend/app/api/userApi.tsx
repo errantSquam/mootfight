@@ -90,6 +90,27 @@ const getUsersHook = (limitAmount: number = 3) => {
     return useCollection(q)
 }
 
+
+const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 3, pagination = 0):
+ [UserSchema[], boolean, FirebaseError | undefined] => {
+    if (searchQuery === null || searchQuery === '') {
+        return [[] as UserSchema[], true, undefined]
+    }
+    let usersRef = collection(db, "users")
+    //placeholder because firebase fucking SUCKS and doesn't have a contains operation what the HELL
+    const q = query(usersRef, orderBy("username"), limit(limitAmount), where('username', '==', searchQuery));
+    let [userData, userLoading, userError] = useCollection(q)
+
+    let returnedArray: UserSchema[] = []
+
+    userData?.docs.forEach((document) => {
+        returnedArray.push((document.data() as UserSchema))
+    })
+
+    return [returnedArray, userLoading, userError]
+}
+
+
 const updateUserInfo = async (toUpdate: any) => {
     if (auth.currentUser === null) {
         return {
@@ -126,5 +147,6 @@ export {
     getUserInfoByUsernameHook,
     getUsers,
     getUsersHook,
-    updateUserInfo
+    updateUserInfo,
+    usersSearchHook
 }
