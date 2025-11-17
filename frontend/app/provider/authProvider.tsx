@@ -38,7 +38,7 @@ const AuthProvider = ({ children }: { children: any }) => {
         handleAuthStateChanged(user)
     });
 
-    function updateUserInfo(newInfo: DocumentData | null | undefined, uid?:string) {
+    function updateUserInfo(newInfo: DocumentData | null | undefined, user_id?:string) {
 
         if (newInfo === undefined){
             console.log("Failed to fetch user document?")
@@ -46,11 +46,11 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
 
         let tempInfo = newInfo 
-        if (tempInfo !== null  && (uid !== null && uid !== undefined)) {
+        if (tempInfo !== null  && (user_id !== null && user_id !== undefined)) {
             if (userInfo !== null) {
-                tempInfo['uid'] = userInfo.uid
+                tempInfo['user_id'] = userInfo.user_id
             } else {
-                tempInfo['uid'] = uid
+                tempInfo['user_id'] = user_id
             }
         }
         setUserInfo(newInfo)
@@ -69,8 +69,8 @@ const AuthProvider = ({ children }: { children: any }) => {
     function handleAuthStateChanged(user: User | null) {
         if (user) {
             if (userInfo === null) {
-                getUserInfo(user.uid).then((resp) => {
-                    updateUserInfo(resp, user.uid)
+                getUserInfo(user.user_id).then((resp) => {
+                    updateUserInfo(resp, user.user_id)
 
                 })
             }

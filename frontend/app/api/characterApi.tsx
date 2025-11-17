@@ -28,14 +28,14 @@ const createCharacter = async (data: CharacterSchema) => {
 
 }
 
-const getCharactersByUserHook = (uid?: string, limitAmount: number = 99)
+const getCharactersByUserHook = (user_id?: string, limitAmount: number = 99)
     : [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] => {
-    if (uid === undefined) {
+    if (user_id === undefined) {
         return [undefined, true, undefined]
     }
     let charaRef = collection(db, "characters")
     //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
-    const q = query(charaRef, limit(limitAmount), where('owner', '==', uid));
+    const q = query(charaRef, limit(limitAmount), where('owner', '==', user_id));
 
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
     /*let resp = getDocs(q).then((data) => {console.log(data)})*/
@@ -46,26 +46,26 @@ const getCharactersByUserHook = (uid?: string, limitAmount: number = 99)
     let returnArray: CharacterSchema[] = []
     charaData?.forEach((result) => {
         let tempData = result.data()
-        tempData.cid = result.id
+        tempData.character_id = result.id
         returnArray.push(tempData as CharacterSchema)
     })
     return [returnArray, charaLoading, charaError]
 }
 
 
-const getCharacter = async (cid?: string): Promise<CharacterSchema | undefined> => {
-    if (cid === undefined) {
+const getCharacter = async (character_id?: string): Promise<CharacterSchema | undefined> => {
+    if (character_id === undefined) {
         return undefined
     }
-    let charaRef = doc(db, "characters", cid)
+    let charaRef = doc(db, "characters", character_id)
     let resp = await getDoc(charaRef)
 
     return resp.data() as CharacterSchema
 }
 
-const checkCharacterExists = async (cid?: string): Promise<boolean> => {
+const checkCharacterExists = async (character_id?: string): Promise<boolean> => {
     const snap = await getCountFromServer(query(
-            collection(db, 'characters'), where(documentId(), '==', cid)
+            collection(db, 'characters'), where(documentId(), '==', character_id)
         ))
     
     if (snap.data().count > 0) {
@@ -101,15 +101,15 @@ const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
     return tempArray
 }
 
-const getCharacterHook = (cid?: string): [CharacterSchema | undefined, boolean, FirestoreError | undefined] => {
-    if (cid === undefined) {
+const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, boolean, FirestoreError | undefined] => {
+    if (character_id === undefined) {
         return [undefined, true, undefined]
     }
-    let charaRef = doc(db, "characters", cid)
+    let charaRef = doc(db, "characters", character_id)
     let [charaData, charaLoading, charaError] = useDocument(charaRef)
     let dataToReturn = charaData?.data() as CharacterSchema
     if (dataToReturn !== undefined) {
-        dataToReturn.cid = charaRef.id
+        dataToReturn.character_id = charaRef.id
     }
     return [dataToReturn, charaLoading, charaError]
 }

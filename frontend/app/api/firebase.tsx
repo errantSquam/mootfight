@@ -42,8 +42,9 @@ const handleError = (error: unknown) : {toastType: ToastStatus, message: string}
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
+        /*
         let userCredential = await signInWithEmailAndPassword(auth, email, password)
-        let userUid = userCredential.user.uid;
+        let userUid = userCredential.user.user_id;
 
         const snap = await getCountFromServer(query(
             collection(db, 'users'), where(documentId(), '==', userUid)
@@ -52,10 +53,11 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
             let docRef = doc(db, "users", userUid)
             setDoc(docRef, {
                 username: `User #${Math.floor(Math.random() * 100)}`,
-                uid: userUid
+                user_id: userUid
 
             });
-        }
+        }*/
+       
         return {
             toastType: ToastStatus.SUCCESS,
             message: "Successfully logged in!"

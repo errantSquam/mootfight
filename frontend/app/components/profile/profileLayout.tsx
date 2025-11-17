@@ -53,7 +53,7 @@ const MainProfileLayout = () => {
             <div className="flex flex-col items-start justify-center w-full">
                 <div className="flex flex-row items-center gap-x-2 w-full">
                     <div className="p-2">
-                        <img src={getPfp(profileData?.profilePicture)} className="w-30 rounded-full" />
+                        <img src={getPfp(profileData?.profile_picture)} className="w-30 rounded-full" />
                         {/*
                         Put pfp component here if user is editing...
                         <ProfilePictureComponent />
@@ -63,7 +63,7 @@ const MainProfileLayout = () => {
                         <div className="flex flex-col grow items-start">
                             <div className="flex flex-row gap-x-2 items-center justify-center">
                                 <div className="text-xl font-bold">{profileData?.username} </div>
-                                <i className="opacity-70">{`(${profileData?.uid})`}</i>
+                                <i className="opacity-70">{`(${profileData?.user_id})`}</i>
                             </div>
                             <div>{profileData?.pronouns &&
                                 <div className="">{profileData?.pronouns}</div>}

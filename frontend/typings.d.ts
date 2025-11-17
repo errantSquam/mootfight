@@ -1,9 +1,9 @@
 interface UserSchema {
     username:string,
-    profilePicture?:string,
+    profile_picture?:string,
     pronouns?:string,
     status?:string,
-    uid:string,
+    user_id:string,
     bio?:string,
     permissions?: string
 
@@ -11,7 +11,7 @@ interface UserSchema {
 
 interface UserAmbiguousSchema extends UserSchema {
     username?:string,
-    uid?:string
+    user_id?:string
 }
 
 interface BioUserSchema extends UserSchema {
@@ -40,7 +40,7 @@ interface CharacterSchema {
     permissions?: string,
     images: RefImage[],
     owner: string
-    cid?: string
+    character_id?: string
 }
 
 

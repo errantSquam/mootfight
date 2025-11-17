@@ -13,7 +13,7 @@ import { getPfp } from "~/functions/helper"
 import { Modal } from "../genericComponents"
 
 type ImageInput = {
-    profilePicture: File
+    profile_picture: File
 }
 
 
@@ -108,7 +108,7 @@ export const ProfilePictureComponent = () => {
             return
         }
 
-        updateUserSettings({ profilePicture: base64 }, refreshAuthUser).then((resp) => {
+        updateUserSettings({ profile_picture: base64 }, refreshAuthUser).then((resp) => {
             resetImage()
         })
     }
@@ -138,7 +138,7 @@ export const ProfilePictureComponent = () => {
         <label htmlFor="fileField">
             <div className="relative group cursor-pointer">
                 <img src={
-                    getPfp(userInfo?.profilePicture)
+                    getPfp(userInfo?.profile_picture)
                 }
                     className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
                 <Icon icon="lucide:edit"
@@ -149,7 +149,7 @@ export const ProfilePictureComponent = () => {
         </label>
         <input type="file" id="fileField" accept="image/*" hidden={true}
 
-            {...registerImage("profilePicture")}
+            {...registerImage("profile_picture")}
             onChange={(e) => {
                 if (e.target.value !== '') {
                     setModalOpen(true)

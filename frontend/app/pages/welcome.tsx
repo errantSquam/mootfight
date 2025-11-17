@@ -32,9 +32,9 @@ export function Welcome() {
             <div>
               <div className="flex flex-row gap-x-2">
                 {!loading && transformSnapshot(snapshot).map((user) => {
-                  return <Link to={getProfileLink(user.username, user.uid)}>
+                  return <Link to={getProfileLink(user.username, user.user_id)}>
                     <div className="flex flex-col items-center" key={user.username}>
-                      <ImageWithLoader src={getPfp(user.profilePicture)} className="w-20 h-20 object-cover" />
+                      <ImageWithLoader src={getPfp(user.profile_picture)} className="w-20 h-20 object-cover" />
                       <span>{user.username}</span>
                     </div></Link>
                 })}

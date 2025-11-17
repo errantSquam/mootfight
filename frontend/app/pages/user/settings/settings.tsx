@@ -75,8 +75,8 @@ export function SettingsPage() {
                                     <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
                                         <div>
                                             User ID: <span className="italic opacity-70"><SettingsInput
-                                                defaultValue={userInfo.uid}
-                                                value="uid"
+                                                defaultValue={userInfo.user_id}
+                                                value="user_id"
                                                 register={register}
                                                 disabled /></span>
                                         </div>

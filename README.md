@@ -51,19 +51,19 @@ service cloud.firestore {
     }
     match /users/{userId} {
     	allow read: if true;
-      allow update: if request.auth != null && request.auth.uid == userId 
-      && request.resource.data.uid == resource.data.uid;
+      allow update: if request.auth != null && request.auth.user_id == userId 
+      && request.resource.data.user_id == resource.data.user_id;
       allow create: if request.auth != null;
     }
     match /characters/{characterId} {
     	allow read: if true;
-      allow update, delete: if request.auth != null && request.auth.uid == resource.data.owner;
-      allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
+      allow update, delete: if request.auth != null && request.auth.user_id == resource.data.owner;
+      allow create: if request.auth != null && request.resource.data.owner == request.auth.user_id;
     }
     match /attacks/{attackId} {
     	allow read: if true; 
-      allow update, delete: if request.auth != null && request.auth.uid == resource.data.attacker;
-      allow create: if request.auth != null && request.resource.data.attacker == request.auth.uid;
+      allow update, delete: if request.auth != null && request.auth.user_id == resource.data.attacker;
+      allow create: if request.auth != null && request.resource.data.attacker == request.auth.user_id;
     }
   }
 }

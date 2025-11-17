@@ -29,7 +29,7 @@ export function ProfileRedirectPage() {
         if (profileCount !== undefined) {
             if (profileCount <= 1) {
                 let data = profileData[0]
-                navigate(`/user/profile/${encodeURIComponent(data.username || '')}/${data.uid}`)
+                navigate(`/user/profile/${encodeURIComponent(data.username || '')}/${data.user_id}`)
             } else {
                 setHasDuplicate(true)
             }
@@ -47,10 +47,10 @@ export function ProfileRedirectPage() {
                 <div className="grid grid-cols-2 space-x-4">
                     {profileData?.map(
                         (user) => {
-                            return <Link to={getProfileLink(user.username, user.uid)}><div className="flex flex-col items-center">
-                                <img src={getPfp(user.profilePicture)} className="h-20 w-20" />
+                            return <Link to={getProfileLink(user.username, user.user_id)}><div className="flex flex-col items-center">
+                                <img src={getPfp(user.profile_picture)} className="h-20 w-20" />
                                 <div>{user.username}</div>
-                                <div className="text-xs opacity-60 italic">ID: {user.uid}</div>
+                                <div className="text-xs opacity-60 italic">ID: {user.user_id}</div>
 
                             </div>
                             </Link>

@@ -47,21 +47,21 @@ const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, Firest
     let [attackData, attackLoading, attackError] = useDocument(attackRef)
     let dataToReturn = attackData?.data() as AttackSchema
     if (dataToReturn !== undefined) {
-        dataToReturn.aid = attackRef.id
+        dataToReturn.attack_id = attackRef.id
     }
     return [dataToReturn, attackLoading, attackError]
 }
 
 
 
-const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 0)
+const getAttacksByUserHook = (user_id?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
-    if (uid === undefined) {
+    if (user_id === undefined) {
         return [undefined, true, undefined]
     }
     let attackRef = collection(db, "attacks")
     //if we're doing order by, needs a compound index, created in console. 
-    const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), where('attacker', '==', uid));
+    const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), where('attacker', '==', user_id));
 
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
     //let resp = getDocs(q).then((data) => {console.log(data)})
@@ -79,15 +79,15 @@ const getAttacksByUserHook = (uid?: string, limitAmount: number = 4, pagination:
 }
 
 
-const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination:number = 0)
+const getDefencesByUserHook = (user_id?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
-    if (uid === undefined) {
+    if (user_id === undefined) {
         return [undefined, true, undefined]
     }
     let attackRef = collection(db, "attacks")
     //if we're doing order by, needs a compound index, created in console.
     const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), 
-    where("defenders", "array-contains", uid));
+    where("defenders", "array-contains", user_id));
 
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
     //let resp = getDocs(q).then((data) => {console.log(data)})
@@ -104,17 +104,17 @@ const getDefencesByUserHook = (uid?: string, limitAmount: number = 4, pagination
     return [returnArray, attackLoading, attackError]
 }
 
-const getDefencesByCharacterHook = (cid?: string, limitAmount: number = 4, pagination:number = 0)
+const getDefencesByCharacterHook = (character_id?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
-    if (cid === undefined) {
+    if (character_id === undefined) {
         return [undefined, true, undefined]
     }
 
-    console.log("CID:" + cid)
+    console.log("character_id:" + character_id)
     let attackRef = collection(db, "attacks")
     //if we're doing order by, needs a compound index, created in console.
     const q = query(attackRef, limit(limitAmount), orderBy("creationDate", "desc"), 
-    where("characters", "array-contains", cid));
+    where("characters", "array-contains", character_id));
 
     //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
     console.log("Resp")

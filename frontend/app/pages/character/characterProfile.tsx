@@ -50,7 +50,7 @@ export default function CharacterPage() {
         "Battles": <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             attackData?.map((attack) => {
                 console.log(attackData)
-                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
+                return <Link to={`/attack/${attack.attack_id}`} className="flex flex-col items-center">
                     <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
@@ -82,7 +82,7 @@ export default function CharacterPage() {
                                     <div className="text-xl font-bold">
                                         {charaData?.name}
                                     </div>
-                                    <i className="opacity-70">({charaData?.cid})</i>
+                                    <i className="opacity-70">({charaData?.character_id})</i>
                                 </div>
                             }
                             <div>
@@ -100,7 +100,7 @@ export default function CharacterPage() {
             </div>
             <div> {!userLoading &&
                 <div>
-                    Belongs to <Link to={getProfileLink(userData?.username || '', userData?.uid)}>
+                    Belongs to <Link to={getProfileLink(userData?.username || '', userData?.user_id)}>
                         <u>{userData?.username}</u></Link>
                 </div>
             }</div>

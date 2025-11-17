@@ -6,44 +6,48 @@ import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreE
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 import { ToastStatus } from "common";
-const getUserInfo = async (uid?: string) => {
+const getUserInfo = async (user_id?: string) => {
 
     /*if (auth.currentUser === null) {
         return null
     }*/
-    if (uid === undefined) {
+   /*
+    if (user_id === undefined) {
         if (auth.currentUser !== null) {
-            uid = auth.currentUser.uid
+            user_id = auth.currentUser.user_id
         }
         else {
             return {}
         }
     }
-    let docRef = doc(db, "users", uid)
+    let docRef = doc(db, "users", user_id)
     let docSnap = await getDoc(docRef)
-    return docSnap.data()
+    return docSnap.data()*/
+    return {}
 }
 
-const getUserInfoHook = (uid?: string): [UserAmbiguousSchema| undefined, boolean, FirestoreError | undefined] => {
+const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema| undefined, boolean, FirestoreError | undefined] => {
+    return [undefined, true, undefined]
+    /*
 
-    if (uid === null) {
+    if (user_id === null) {
         let [undefinedInfo, returnedLoading, returnedError] = useDocument(undefined) //oops all undefined
         return [undefined, returnedLoading, returnedError]
     }
-    if (uid === undefined) {
+    if (user_id === undefined) {
         if (auth.currentUser !== null) {
-            uid = auth.currentUser.uid
+            user_id = auth.currentUser.user_id
         }
         else {
             //this shouldn't be called...
             console.log("This shouldn't be called...")
-            uid = 'invalid'
+            user_id = 'invalid'
         }
     }
 
-    let [unhandledInfo, returnedLoading, returnedError] = useDocument(doc(db, 'users', uid))
+    let [unhandledInfo, returnedLoading, returnedError] = useDocument(doc(db, 'users', user_id))
     let returnedInfo = unhandledInfo?.data() as UserAmbiguousSchema
-    return [returnedInfo, returnedLoading, returnedError]
+    return [returnedInfo, returnedLoading, returnedError]*/
 }
 
 const getUserInfoByUsername = async (username: string | undefined) => {
@@ -91,6 +95,11 @@ const getUsersHook = (limitAmount: number = 3) => {
 }
 
 const updateUserInfo = async (toUpdate: any) => {
+    return {
+            toastType: ToastStatus.SUCCESS,
+            message: "Successfully updated info!"
+        }
+    /*
     if (auth.currentUser === null) {
         return {
             toastType: ToastStatus.ERROR,
@@ -98,7 +107,7 @@ const updateUserInfo = async (toUpdate: any) => {
         }
     }
 
-    let docRef = doc(db, "users", auth.currentUser.uid)
+    let docRef = doc(db, "users", auth.currentUser.user_id)
     let docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
         updateDoc(docRef, toUpdate);
@@ -115,7 +124,7 @@ const updateUserInfo = async (toUpdate: any) => {
             message: "User does not exist."
         }
 
-    }
+    }*/
 
 }
 

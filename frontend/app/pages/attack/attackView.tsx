@@ -30,8 +30,8 @@ export default function AttackPage() {
                 />
                 <div className = "italic text-zinc-400">(Click to enlarge; click again to shrink)</div>
                 <div className="flex flex-col items-start w-full gap-y-2 mt-2">
-                    <Link to={getProfileLink(userData?.username || '', userData?.uid)} className="flex flex-row gap-x-2">
-                        <img src={getPfp(userData?.profilePicture)} className="w-15" />
+                    <Link to={getProfileLink(userData?.username || '', userData?.user_id)} className="flex flex-row gap-x-2">
+                        <img src={getPfp(userData?.profile_picture)} className="w-15" />
                         <div className="flex flex-col gap-x-1">
                             <div className="font-bold">{userData?.username}</div>
                             {userData?.pronouns && <div className="text-zinc-400 italic">({userData?.pronouns})</div>}
