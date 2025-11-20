@@ -9,14 +9,15 @@ import { getCountFromServer, query, orderBy, limit, documentId, where } from "fi
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { ToastStatus } from "common";
-const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_KEY as string)
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth()
-const db = getFirestore(app)
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://ufiicketzjvyqcfgxbpj.supabase.co'
+const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY as string
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 
-const handleError = (error: unknown) : {toast_type: ToastStatus, message: string}=> {
+const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
     if (error instanceof FirebaseError) {
         console.log(`GOT ERROR: ` + error.code)
 
@@ -42,6 +43,11 @@ const handleError = (error: unknown) : {toast_type: ToastStatus, message: string
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
+
+        let { data, error } = await supabase.auth.signInWithPassword({
+            email: 'someone@email.com',
+            password: 'LdUhMWGpKZKSdodrLJBe'
+        })
         /*
         let userCredential = await signInWithEmailAndPassword(auth, email, password)
         let userUid = userCredential.user.user_id;
@@ -57,7 +63,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
             });
         }*/
-       
+
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully logged in!"
@@ -71,7 +77,7 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
 const logOut = async () => {
     try {
-        await signOut(auth)
+        //await signOut(auth)
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully signed out!"
@@ -87,9 +93,7 @@ const logOut = async () => {
 
 //we should refactor this into different API call files...
 export {
-    app,
-    auth,
-    db,
+    supabase,
     handleError,
     signIn,
     logOut

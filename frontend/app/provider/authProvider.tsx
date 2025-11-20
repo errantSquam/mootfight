@@ -1,9 +1,10 @@
 import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
-import { signIn, auth, logOut } from "~/api/supabase"
+import { signIn, supabase, logOut } from "~/api/supabase"
 import { getUserInfo } from "~/api/userApi";
 import type { DocumentData } from 'firebase/firestore';
+import type { UserResponse } from '@supabase/supabase-js';
 
 
 type AuthContextType = {
@@ -34,8 +35,8 @@ const AuthProvider = ({ children }: { children: any }) => {
     }, [])
 
 
-    onAuthStateChanged(auth, (user) => {
-        handleAuthStateChanged(user)
+    supabase.auth.onAuthStateChange((event, session) => {
+        supabase.auth.getUser().then((user) => handleAuthStateChanged(user))
     });
 
     function updateUserInfo(newInfo: DocumentData | null | undefined, user_id?:string) {
@@ -66,7 +67,7 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
     }
 
-    function handleAuthStateChanged(user: User | null) {
+    function handleAuthStateChanged(user: UserResponse | null) {
         if (user) {
             if (userInfo === null) {
                 /*

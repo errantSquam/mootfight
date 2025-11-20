@@ -1,24 +1,25 @@
 import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./supabase"
+import { handleError, supabase } from "./supabase"
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
 import { ToastStatus } from "common";
 const createCharacter = async (data: CharacterSchema) => {
     try {
-        if (auth.currentUser === null) {
+        if (!supabase.auth.getSession()) {
             return {
                 toast_type: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
         }
+        /*
         let collRef = collection(db, "characters")
         let resp = await addDoc(collRef, data);
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully created character!"
-        }
+        }*/
 
     } catch (error: unknown) {
         return handleError(error)
@@ -28,15 +29,14 @@ const createCharacter = async (data: CharacterSchema) => {
 
 const getCharactersByUserHook = (user_id?: string, limitAmount: number = 99)
     : [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    
+        /*
     if (user_id === undefined) {
         return [undefined, true, undefined]
     }
     let charaRef = collection(db, "characters")
     //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
     const q = query(charaRef, limit(limitAmount), where('owner', '==', user_id));
-
-    //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
-    /*let resp = getDocs(q).then((data) => {console.log(data)})*/
 
     let [charaData, charaLoading, charaError] = useCollection(q)
 
@@ -47,21 +47,25 @@ const getCharactersByUserHook = (user_id?: string, limitAmount: number = 99)
         tempData.character_id = result.id
         returnArray.push(tempData as CharacterSchema)
     })
-    return [returnArray, charaLoading, charaError]
+    return [returnArray, charaLoading, charaError]*/
+    return [undefined, true, undefined]
 }
 
 
 const getCharacter = async (character_id?: string): Promise<CharacterSchema | undefined> => {
+    /*
     if (character_id === undefined) {
         return undefined
     }
     let charaRef = doc(db, "characters", character_id)
     let resp = await getDoc(charaRef)
 
-    return resp.data() as CharacterSchema
+    return resp.data() as CharacterSchema*/
+    return undefined
 }
 
 const checkCharacterExists = async (character_id?: string): Promise<boolean> => {
+    /*
     const snap = await getCountFromServer(query(
             collection(db, 'characters'), where(documentId(), '==', character_id)
         ))
@@ -70,11 +74,13 @@ const checkCharacterExists = async (character_id?: string): Promise<boolean> => 
         return true
     } else {
         return false
-    }
+    }*/
+   return false
 
 }
 
 const checkCharactersExist = async (cidArray: string[]): Promise<boolean> => {
+    /*
     const snap = await getCountFromServer(query(
             collection(db, 'characters'), where(documentId(), 'in', cidArray)
         ))
@@ -82,10 +88,12 @@ const checkCharactersExist = async (cidArray: string[]): Promise<boolean> => {
         return true
     } else {
         return false
-    }
+    }*/
+   return false
 }
 
 const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
+    /*
     let resp = await getDocs(query(
             collection(db, 'characters'), where(documentId(), 'in', cidArray)
         ))
@@ -96,10 +104,12 @@ const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
         tempArray.push(owner)
     })
 
-    return tempArray
+    return tempArray*/
+    return []
 }
 
 const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, boolean, FirestoreError | undefined] => {
+    /*
     if (character_id === undefined) {
         return [undefined, true, undefined]
     }
@@ -109,13 +119,13 @@ const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, 
     if (dataToReturn !== undefined) {
         dataToReturn.character_id = charaRef.id
     }
-    return [dataToReturn, charaLoading, charaError]
+    return [dataToReturn, charaLoading, charaError]*/
+    return [undefined, true, undefined]
 }
 
 
 
 
-//we should refactor this into different API call files...
 export {
     createCharacter,
     getCharacterHook,

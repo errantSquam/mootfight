@@ -1,5 +1,5 @@
 import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./supabase"
+import { handleError, supabase } from "./supabase"
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError, startAt } from "firebase/firestore";
 import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
 import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
@@ -8,15 +8,16 @@ import { ToastStatus } from "common";
 
 const createAttack = async (data: AttackSchema) => {
     try {
-        if (auth.currentUser === null) {
+        if (!supabase.auth.getSession()) {
             return {
                 toast_type: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
         }
+        /*
         let collRef = collection(db, "attacks")
-        let resp = await addDoc(collRef, data);
+        let resp = await addDoc(collRef, data);*/
         //TODO: Batch update with notifications to the defenders as well
         return {
             toast_type: ToastStatus.SUCCESS,
@@ -30,16 +31,20 @@ const createAttack = async (data: AttackSchema) => {
 }
 
 const getAttack = async (aid?: string): Promise<AttackSchema | undefined> => {
+    /*
     if (aid === undefined) {
         return undefined
     }
     let attackRef = doc(db, "attacks", aid)
     let resp = await getDoc(attackRef)
 
-    return resp.data() as AttackSchema
+    return resp.data() as AttackSchema*/
+    return undefined
 }
 
 const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, FirestoreError | undefined] => {
+    return [undefined, true, undefined]
+    /*
     if (aid === undefined) {
         return [undefined, true, undefined]
     }
@@ -49,13 +54,15 @@ const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, Firest
     if (dataToReturn !== undefined) {
         dataToReturn.attack_id = attackRef.id
     }
-    return [dataToReturn, attackLoading, attackError]
+    return [dataToReturn, attackLoading, attackError]*/
 }
 
 
 
 const getAttacksByUserHook = (user_id?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    return [undefined, true, undefined]
+    /*
     if (user_id === undefined) {
         return [undefined, true, undefined]
     }
@@ -75,12 +82,14 @@ const getAttacksByUserHook = (user_id?: string, limitAmount: number = 4, paginat
         tempData.aid = result.id
         returnArray.push(tempData as AttackSchema)
     })
-    return [returnArray, attackLoading, attackError]
+    return [returnArray, attackLoading, attackError]*/
 }
 
 
 const getDefencesByUserHook = (user_id?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+        return [undefined, true, undefined]
+    /*
     if (user_id === undefined) {
         return [undefined, true, undefined]
     }
@@ -101,11 +110,13 @@ const getDefencesByUserHook = (user_id?: string, limitAmount: number = 4, pagina
         tempData.aid = result.id
         returnArray.push(tempData as AttackSchema)
     })
-    return [returnArray, attackLoading, attackError]
+    return [returnArray, attackLoading, attackError]*/
 }
 
 const getDefencesByCharacterHook = (character_id?: string, limitAmount: number = 4, pagination:number = 0)
     : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+        return [undefined, true, undefined]
+        /*
     if (character_id === undefined) {
         return [undefined, true, undefined]
     }
@@ -131,7 +142,7 @@ const getDefencesByCharacterHook = (character_id?: string, limitAmount: number =
         tempData.aid = result.id
         returnArray.push(tempData as AttackSchema)
     })
-    return [returnArray, attackLoading, attackError]
+    return [returnArray, attackLoading, attackError]*/
 }
 
 export {

@@ -1,5 +1,5 @@
 import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./supabase"
+import { supabase, handleError } from "./supabase"
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { signOut } from "firebase/auth";
 import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
@@ -51,18 +51,22 @@ const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema| undefined, boo
 }
 
 const getUserInfoByUsername = async (username: string | undefined) => {
+    return [undefined, true, undefined]
+    /*
     if (username === undefined) {
         return [undefined, true, undefined]
     }
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), where('username', '==', username));
     const querySnapshot = await getDocs(q);
-    return querySnapshot
+    return querySnapshot*/
 
 }
 
 const getUserInfoByUsernameHook = (username: string | undefined):
  [UserSchema[], boolean, FirebaseError | undefined] => {
+    return [[] as UserSchema[], true, undefined]
+    /*
     if (username === undefined) {
         return [[] as UserSchema[], true, undefined]
     }
@@ -77,26 +81,32 @@ const getUserInfoByUsernameHook = (username: string | undefined):
         returnedArray.push((document.data() as UserSchema))
     })
 
-    return [returnedArray, userLoading, userError]
+    return [returnedArray, userLoading, userError]*/
 }
 
 const getUsers = async (limitAmount: number = 3) => {
     //possible issue. it DOES include the emails as well, which might be a privacy issue...
+    return []
+    /*
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), limit(limitAmount));
     const querySnapshot = await getDocs(q);
-    return querySnapshot
+    return querySnapshot*/
 }
 
 const getUsersHook = (limitAmount: number = 3) => {
+    return []
+    /*
     let usersRef = collection(db, "users")
     const q = query(usersRef, orderBy("username"), limit(limitAmount));
-    return useCollection(q)
+    return useCollection(q)*/
 }
 
 
 const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 3, pagination = 0):
  [UserSchema[], boolean, FirebaseError | undefined] => {
+    return [[] as UserSchema[], true, undefined]
+    /*
     if (searchQuery === null || searchQuery === '') {
         return [[] as UserSchema[], true, undefined]
     }
@@ -111,7 +121,7 @@ const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 
         returnedArray.push((document.data() as UserSchema))
     })
 
-    return [returnedArray, userLoading, userError]
+    return [returnedArray, userLoading, userError]*/
 }
 
 

@@ -10,12 +10,6 @@ import { ProfileProvider } from "~/provider/profileProvider";
 export function ProfilePage() {
     let params = useParams();
 
-    const [profileData, loading, error] = getUserInfoHook(params.userId)
-
-    const [charaData, charaLoading, charaError] = getCharactersByUserHook(params.userId)
-    const [attackData, attackLoading, attackError] = getAttacksByUserHook(params.userId)
-
-
 
 
 
