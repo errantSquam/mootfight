@@ -3,7 +3,7 @@ interface UserSchema {
     profile_picture?:string,
     pronouns?:string,
     status?:string,
-    user_id:string,
+    id:string,
     bio?:string,
     permissions?: string
 
@@ -11,7 +11,7 @@ interface UserSchema {
 
 interface UserAmbiguousSchema extends UserSchema {
     username?:string,
-    user_id?:string
+    id?:string
 }
 
 interface BioUserSchema extends UserSchema {
@@ -40,7 +40,7 @@ interface CharacterSchema {
     permissions?: string,
     images: RefImage[],
     owner_id: string
-    character_id?: string
+    id?: string
 }
 
 
@@ -53,6 +53,6 @@ type AttackSchema = {
     title: string,
     warnings: string | undefined,
     created_at: number,
-    attack_id?: string
+    id?: string
 }
 

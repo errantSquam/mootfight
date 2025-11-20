@@ -43,12 +43,13 @@ const handleError = (error: unknown): { toast_type: ToastStatus, message: string
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
+        /*
 
         let { data, error } = await supabase.auth.signInWithPassword({
             email: 'someone@email.com',
             password: 'LdUhMWGpKZKSdodrLJBe'
         })
-        /*
+        
         let userCredential = await signInWithEmailAndPassword(auth, email, password)
         let userUid = userCredential.user.user_id;
 
