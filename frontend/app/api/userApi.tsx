@@ -4,6 +4,23 @@ import { checkLoggedIn, handleError, pb } from "./pocketbase";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { ListResult, RecordModel } from "pocketbase";
+
+const parseUserInfo = (userInfo: UserRecord) => {
+    let returnInfo = userInfo as UserAmbiguousSchema
+    returnInfo.characters = userInfo.expand.characters_via_owner
+    delete returnInfo.expand
+    returnInfo.characters.map((character: any) => {
+
+        let images = character.expand.images
+        character.images = images 
+        delete character.expand 
+        return character
+    })
+
+    console.log(returnInfo)
+    return returnInfo
+
+}
 const getUserInfo = async (user_id?: string) => {
 
     if (user_id === undefined) {
@@ -18,15 +35,11 @@ const getUserInfo = async (user_id?: string) => {
     }
 
     let userInfo = await pb.collection('users').getOne(user_id, {
-        expand: 'characters_via_owner, attacks_via_attacker, attacks_via_characters_via_owner'
+        expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
     }) as UserRecord
 
 
-    let returnInfo = userInfo as UserAmbiguousSchema
-    returnInfo.characters = userInfo.expand.characters_via_owner
-
-    console.log(returnInfo)
-    return returnInfo
+    return parseUserInfo(userInfo)
 }
 
 const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema | undefined, boolean, Error | null] => {
