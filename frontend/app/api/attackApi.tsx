@@ -1,20 +1,16 @@
-import type { FirebaseError } from "firebase/app";
-import { handleError, supabase } from "./supabase"
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError, startAt } from "firebase/firestore";
-import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
+import { handleError  } from "./pocketbase"
 import { ToastStatus } from "common";
 
 
 const createAttack = async (data: AttackSchema) => {
     try {
-        if (!supabase.auth.getSession()) {
+        /*if (!supabase.auth.getSession()) {
             return {
                 toast_type: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
-        }
+        }*/
         /*
         let collRef = collection(db, "attacks")
         let resp = await addDoc(collRef, data);*/
@@ -42,7 +38,7 @@ const getAttack = async (aid?: string): Promise<AttackSchema | undefined> => {
     return undefined
 }
 
-const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, FirestoreError | undefined] => {
+const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, undefined] => {
     return [undefined, true, undefined]
     /*
     if (aid === undefined) {
@@ -60,7 +56,7 @@ const getAttackHook = (aid?: string): [AttackSchema | undefined, boolean, Firest
 
 
 const getAttacksByUserHook = (user_id?: string, limitAmount: number = 4, pagination:number = 0)
-    : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    : [AttackSchema[] | undefined, boolean, undefined] => {
     return [undefined, true, undefined]
     /*
     if (user_id === undefined) {
@@ -87,7 +83,7 @@ const getAttacksByUserHook = (user_id?: string, limitAmount: number = 4, paginat
 
 
 const getDefencesByUserHook = (user_id?: string, limitAmount: number = 4, pagination:number = 0)
-    : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    : [AttackSchema[] | undefined, boolean, undefined] => {
         return [undefined, true, undefined]
     /*
     if (user_id === undefined) {
@@ -114,7 +110,7 @@ const getDefencesByUserHook = (user_id?: string, limitAmount: number = 4, pagina
 }
 
 const getDefencesByCharacterHook = (character_id?: string, limitAmount: number = 4, pagination:number = 0)
-    : [AttackSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    : [AttackSchema[] | undefined, boolean, undefined] => {
         return [undefined, true, undefined]
         /*
     if (character_id === undefined) {

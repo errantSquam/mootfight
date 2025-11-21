@@ -1,7 +1,7 @@
 import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
-import { signIn, auth, logOut } from "~/api/supabase"
+import { signIn,  logOut } from "~/api/pocketbase"
 import { getUserInfo } from "~/api/userApi";
 import type { DocumentData } from 'firebase/firestore';
 

@@ -63,7 +63,7 @@ const MainProfileLayout = () => {
                         <div className="flex flex-col grow items-start">
                             <div className="flex flex-row gap-x-2 items-center justify-center">
                                 <div className="text-xl font-bold">{profileData?.username} </div>
-                                <i className="opacity-70">{`(${profileData?.user_id})`}</i>
+                                <i className="opacity-70">{`(${profileData?.id})`}</i>
                             </div>
                             <div>{profileData?.pronouns &&
                                 <div className="">{profileData?.pronouns}</div>}

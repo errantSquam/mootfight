@@ -1,4 +1,4 @@
-import { signIn, auth, logOut } from "~/api/supabase"
+import { signIn,  logOut } from "~/api/pocketbase"
 import { Link } from "react-router"
 import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"

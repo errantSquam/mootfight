@@ -42,6 +42,8 @@ export function SettingsPage() {
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
     const [isEditing, setIsEditing] = useState(false)
 
+    console.log(userInfo)
+
 
     const onSubmit: SubmitHandler<UserSchema> = (data, e) => {
         updateUserSettings(data, refreshAuthUser).then(() => {
@@ -76,7 +78,7 @@ export function SettingsPage() {
                                     <fieldset disabled={!isEditing} className="flex flex-col space-y-2">
                                         <div>
                                             User ID: <span className="italic opacity-70"><SettingsInput
-                                                defaultValue={userInfo.user_id}
+                                                defaultValue={userInfo.id}
                                                 value="user_id"
                                                 register={register}
                                                 disabled /></span>

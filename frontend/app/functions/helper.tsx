@@ -1,5 +1,5 @@
 export function getPfp(src: string | undefined) {
-    return src === undefined ? "/assets/images/default owlcroraptor.png" : src
+    return src === undefined || src === '' ? "/assets/images/default owlcroraptor.png" : src
 
 }
 

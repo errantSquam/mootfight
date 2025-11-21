@@ -1,18 +1,16 @@
-import type { FirebaseError } from "firebase/app";
-import { handleError, supabase } from "./supabase"
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
-import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
+
+import { handleError } from "./pocketbase"
 import { ToastStatus } from "common";
 const createCharacter = async (data: CharacterSchema) => {
     try {
+        /*
         if (!supabase.auth.getSession()) {
             return {
                 toast_type: ToastStatus.ERROR,
                 message: "Not logged in!"
             }
 
-        }
+        }*/
         /*
         let collRef = collection(db, "characters")
         let resp = await addDoc(collRef, data);
@@ -28,7 +26,7 @@ const createCharacter = async (data: CharacterSchema) => {
 }
 
 const getCharactersByUserHook = (user_id?: string, limitAmount: number = 99)
-    : [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] => {
+    : [CharacterSchema[] | undefined, boolean,  undefined] => {
     
         /*
     if (user_id === undefined) {
@@ -108,7 +106,7 @@ const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
     return []
 }
 
-const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, boolean, FirestoreError | undefined] => {
+const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, boolean, undefined] => {
     /*
     if (character_id === undefined) {
         return [undefined, true, undefined]

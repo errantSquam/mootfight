@@ -14,6 +14,16 @@ interface UserAmbiguousSchema extends UserSchema {
     id?:string
 }
 
+interface UserRecord extends UserSchema {
+    collectionId: string,
+    collectionName: string,
+    created: string,
+    updated: string,
+    email: string,
+    emailVisibility: boolean,
+    verified: boolean
+}
+
 interface BioUserSchema extends UserSchema {
     bio: string
 }

@@ -1,34 +1,23 @@
-import { initializeApp } from "firebase/app";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { signOut } from "firebase/auth";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc } from "firebase/firestore";
-import { FirebaseError } from "firebase/app";
-import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
-import { useAuthState } from 'react-firebase-hooks/auth';
+
 import { ToastStatus } from "common";
 
-import { createClient } from '@supabase/supabase-js'
+import PocketBase from 'pocketbase';
 
-const supabaseUrl = 'https://ufiicketzjvyqcfgxbpj.supabase.co'
-const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY as string
-const supabase = createClient(supabaseUrl, supabaseKey)
 
+const pb = new PocketBase('http://127.0.0.1:8090');
 
 const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
-    if (error instanceof FirebaseError) {
-        console.log(`GOT ERROR: ` + error.code)
+    if (error instanceof String) {
+        /*console.log(`GOT ERROR: ` + error.code)
 
         let errorMessage = "ERROR: " + error.code
         if (error.code === "auth/invalid-credential") {
             errorMessage = "Invalid email or password."
-        }
+        }*/
 
         return {
             toast_type: ToastStatus.ERROR,
-            message: errorMessage
+            message: ''
         }
     } else {
         console.log(error)
@@ -43,6 +32,20 @@ const handleError = (error: unknown): { toast_type: ToastStatus, message: string
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
+
+        const authData = await pb.collection('users').authWithPassword(
+            email,
+            password,
+        );
+
+        // after the above you can also access the auth data from the authStore
+        console.log(pb.authStore.isValid);
+        console.log(pb.authStore.token);
+        console.log(pb.authStore.record?.id);
+        console.log(authData)
+
+        let userId = authData.record.id
+
         /*
 
         let { data, error } = await supabase.auth.signInWithPassword({
@@ -94,7 +97,7 @@ const logOut = async () => {
 
 //we should refactor this into different API call files...
 export {
-    supabase,
+    pb,
     handleError,
     signIn,
     logOut

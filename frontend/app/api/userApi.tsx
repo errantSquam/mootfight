@@ -1,32 +1,24 @@
-import type { FirebaseError } from "firebase/app";
-import { supabase, handleError } from "./supabase"
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { signOut } from "firebase/auth";
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
-import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
+
 import { ToastStatus } from "common";
+import { pb } from "./pocketbase";
 const getUserInfo = async (user_id?: string) => {
 
-    /*if (auth.currentUser === null) {
-        return null
-    }*/
-   /*
-    if (user_id === undefined) {
-        if (auth.currentUser !== null) {
-            user_id = auth.currentUser.user_id
+
+
+        if (user_id === undefined) {
+        if (pb.authStore.record !== null) {
+            user_id = pb.authStore.record.id
         }
         else {
-            return {}
+            return {} as UserRecord
         }
     }
-    let docRef = doc(db, "users", user_id)
-    let docSnap = await getDoc(docRef)
-    return docSnap.data()*/
-    return {}
+ 
+    let userInfo = await pb.collection('users').getOne(user_id) as UserRecord
+    return userInfo
 }
 
-const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema| undefined, boolean, FirestoreError | undefined] => {
+const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema| undefined, boolean, undefined] => {
     return [undefined, true, undefined]
     /*
 
@@ -64,7 +56,7 @@ const getUserInfoByUsername = async (username: string | undefined) => {
 }
 
 const getUserInfoByUsernameHook = (username: string | undefined):
- [UserSchema[], boolean, FirebaseError | undefined] => {
+ [UserSchema[], boolean,  undefined] => {
     return [[] as UserSchema[], true, undefined]
     /*
     if (username === undefined) {
@@ -104,7 +96,7 @@ const getUsersHook = (limitAmount: number = 3) => {
 
 
 const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 3, pagination = 0):
- [UserSchema[], boolean, FirebaseError | undefined] => {
+ [UserSchema[], boolean, undefined] => {
     return [[] as UserSchema[], true, undefined]
     /*
     if (searchQuery === null || searchQuery === '') {

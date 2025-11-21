@@ -1,7 +1,7 @@
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { type UseFormRegister } from "react-hook-form"
 import { toast } from "react-toastify"
-import { signIn } from "~/api/supabase"
+import { signIn } from "~/api/pocketbase"
 import { useNavigate } from "react-router"
 import { useState } from "react"
 import { handleToast } from "~/functions/handleToast"

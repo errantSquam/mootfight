@@ -1,15 +1,12 @@
 import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
-import { onAuthStateChanged, type User } from "firebase/auth";
-import { signIn, supabase, logOut } from "~/api/supabase"
+import { signIn, logOut } from "~/api/pocketbase"
 import { getUserInfo } from "~/api/userApi";
-import type { DocumentData } from 'firebase/firestore';
-import type { UserResponse } from '@supabase/supabase-js';
-
+import { pb } from '~/api/pocketbase';
 
 type AuthContextType = {
-    userInfo: DocumentData | null,
-    setUserInfo: React.Dispatch<React.SetStateAction<DocumentData | null>>,
+    userInfo: UserRecord | null,
+    setUserInfo: React.Dispatch<React.SetStateAction<UserRecord | null>>,
     authLoaded: boolean,
     refreshAuthUser: () => void
 }
@@ -24,7 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({ children }: { children: any }) => {
 
     const [authLoaded, setAuthLoaded] = useState(false)
-    const [userInfo, setUserInfo] = useState<DocumentData | null>(null)
+    const [userInfo, setUserInfo] = useState<UserRecord | null>(null)
 
     useEffect(() => {
         let localInfo = localStorage.getItem('userInfo')
@@ -35,11 +32,16 @@ const AuthProvider = ({ children }: { children: any }) => {
     }, [])
 
 
+    /*
     supabase.auth.onAuthStateChange((event, session) => {
         supabase.auth.getUser().then((user) => handleAuthStateChanged(user))
-    });
+    });*/
 
-    function updateUserInfo(newInfo: DocumentData | null | undefined, user_id?:string) {
+    pb.authStore.onChange((token, record) => {
+        handleAuthStateChanged(record as UserRecord), true
+    })
+
+    function updateUserInfo(newInfo:UserRecord | null | undefined, user_id?:string) {
 
         if (newInfo === undefined){
             console.log("Failed to fetch user document?")
@@ -47,13 +49,15 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
 
         let tempInfo = newInfo 
+        
         if (tempInfo !== null  && (user_id !== null && user_id !== undefined)) {
             if (userInfo !== null) {
-                tempInfo['user_id'] = userInfo.user_id
+                tempInfo['id'] = userInfo.id
             } else {
-                tempInfo['user_id'] = user_id
+                tempInfo['id'] = user_id
             }
         }
+
         setUserInfo(newInfo)
         setAuthLoaded(true)
         try {
@@ -67,14 +71,14 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
     }
 
-    function handleAuthStateChanged(user: UserResponse | null) {
+    function handleAuthStateChanged(user: UserRecord | null) {
         if (user) {
             if (userInfo === null) {
-                /*
-                getUserInfo(user.user_id).then((resp) => {
-                    updateUserInfo(resp, user.user_id)
+                
+                getUserInfo(user.id).then((resp) => {
+                    updateUserInfo(resp, user.id)
 
-                })*/
+                })
             }
         } else {
             updateUserInfo(null)

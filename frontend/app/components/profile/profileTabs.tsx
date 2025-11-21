@@ -26,7 +26,7 @@ export const ProfileCharactersTab = () => {
             {
                 charaData?.map((chara) => {
                     console.log(charaData)
-                    return <Link to={`/character/${chara.character_id}`} className="flex flex-col items-center">
+                    return <Link to={`/character/${chara.id}`} className="flex flex-col items-center">
                         <ImageWithLoader src={chara.images[0].image_link} className="w-40 h-40 object-cover" />
                         <div className="w-40 text-center text-ellipsis overflow-hidden">{chara.name.substring(0, characterLimit)}</div>
 
@@ -43,7 +43,7 @@ const AttacksArray = ({attackData}: {attackData: AttackSchema[] | undefined}) =>
     return <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             attackData?.map((attack) => {
                 console.log(attackData)
-                return <Link to={`/attack/${attack.attack_id}`} className="flex flex-col items-center">
+                return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center">
                     <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
