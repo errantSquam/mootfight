@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { ListResult, RecordModel } from "pocketbase";
 
-const parseUserInfo = (userInfo: UserRecord) => {
+const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
     let returnInfo = userInfo as UserAmbiguousSchema
     returnInfo.characters = userInfo.expand.characters_via_owner
     delete returnInfo.expand
@@ -17,7 +17,6 @@ const parseUserInfo = (userInfo: UserRecord) => {
         return character
     })
 
-    console.log(returnInfo)
     return returnInfo
 
 }
@@ -30,7 +29,7 @@ const getUserInfo = async (user_id?: string) => {
             user_id = pb.authStore.record.id
         }
         else {
-            return {} as UserRecord
+            return {} as UserAmbiguousSchema
         }
     }
 
@@ -62,11 +61,11 @@ const getUserInfoByUsername = async (username: string | undefined) => {
         expand: 'characters_via_owner, attacks_via_attacker, attacks_via_characters_via_owner'
     }) as UserRecord
 
-    return userInfo
+    return parseUserInfo(userInfo)
 }
 
 const getUserInfoByUsernameHook = (username: string | undefined):
-    [UserRecord | undefined, boolean, Error | null] => {
+    [UserAmbiguousSchema | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
         queryKey: ['userInfo'],
@@ -79,8 +78,10 @@ const getUserInfoByUsernameHook = (username: string | undefined):
 }
 
 const getUsers = async (page: number = 1, limitAmount: number = 3) => {
-    let users = await pb.collection("users").getList(page, limitAmount)
-    return users
+    let users = await pb.collection("users").getList(page, limitAmount) as any
+
+    users.items = users.items.map((user: UserRecord) => {return parseUserInfo(user)})
+    return users 
 }
 
 const getUsersHook = (page: number = 1, limitAmount: number = 3):
