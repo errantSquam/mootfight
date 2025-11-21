@@ -64,7 +64,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
             ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
             <MenuItem>
-                <Link to={getProfileLink(userInfo.username, userInfo.user_id)} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                <Link to={getProfileLink(userInfo.username)} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
                     Profile
                 </Link>
             </MenuItem>

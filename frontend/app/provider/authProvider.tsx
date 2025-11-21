@@ -5,8 +5,8 @@ import { getUserInfo } from "~/api/userApi";
 import { pb } from '~/api/pocketbase';
 
 type AuthContextType = {
-    userInfo: UserRecord | null,
-    setUserInfo: React.Dispatch<React.SetStateAction<UserRecord | null>>,
+    userInfo: UserAmbiguousSchema | null,
+    setUserInfo: React.Dispatch<React.SetStateAction<UserAmbiguousSchema | null>>,
     authLoaded: boolean,
     refreshAuthUser: () => void
 }
@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({ children }: { children: any }) => {
 
     const [authLoaded, setAuthLoaded] = useState(false)
-    const [userInfo, setUserInfo] = useState<UserRecord | null>(null)
+    const [userInfo, setUserInfo] = useState<UserAmbiguousSchema | null>(null)
 
     useEffect(() => {
         let localInfo = localStorage.getItem('userInfo')
@@ -38,10 +38,10 @@ const AuthProvider = ({ children }: { children: any }) => {
     });*/
 
     pb.authStore.onChange((token, record) => {
-        handleAuthStateChanged(record as UserRecord), true
+        handleAuthStateChanged(record as UserAmbiguousSchema), true
     })
 
-    function updateUserInfo(newInfo:UserRecord | null | undefined, user_id?:string) {
+    function updateUserInfo(newInfo:UserAmbiguousSchema | null | undefined, user_id?:string) {
 
         if (newInfo === undefined){
             console.log("Failed to fetch user document?")
@@ -71,7 +71,7 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
     }
 
-    function handleAuthStateChanged(user: UserRecord | null) {
+    function handleAuthStateChanged(user: UserAmbiguousSchema | null) {
         if (user) {
             if (userInfo === null) {
                 

@@ -3,7 +3,7 @@ export function getPfp(src: string | undefined) {
 
 }
 
-export function getProfileLink(username: string, user_id?: string) {
+export function getProfileLink(username: string) {
     
     let link = '/user/profile/' + encodeURIComponent(username) 
     return link

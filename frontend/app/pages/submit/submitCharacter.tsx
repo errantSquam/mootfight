@@ -250,7 +250,7 @@ export function SubmitCharacterPage() {
             })
             return
         }
-        data.owner = userInfo.id
+        data.owner = userInfo.id!
 
         //throw error if auth not loaded? somehow?
 
@@ -272,7 +272,7 @@ export function SubmitCharacterPage() {
         createCharacter(data).then((resp) => {
             handleToast(resp)
             if (resp.toast_type === ToastStatus.SUCCESS) {
-                navigate(getProfileLink(userInfo?.username, userInfo.id))
+                navigate(getProfileLink(userInfo?.username!))
 
             }
         })

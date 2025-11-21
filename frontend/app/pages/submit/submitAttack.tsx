@@ -296,13 +296,11 @@ export function SubmitAttackPage() {
 
         //now filter yourself out
         data.defenders = owners.filter((id) => {
-            return id !== userInfo?.user_id
+            return id !== userInfo?.id
         })
 
         data.description = descRef.current?.getMarkdown()
-        data.attacker = userInfo?.user_id //can be null
-
-        data.creationDate = Date.now()
+        data.attacker = userInfo?.id 
 
         //check for empty
         if (!data.warnings) {

@@ -7,15 +7,21 @@ import type { ListResult, RecordModel } from "pocketbase";
 
 const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
     let returnInfo = userInfo as UserAmbiguousSchema
-    returnInfo.characters = userInfo.expand.characters_via_owner
-    delete returnInfo.expand
-    returnInfo.characters.map((character: any) => {
 
-        let images = character.expand.images
-        character.images = images 
-        delete character.expand 
-        return character
-    })
+    //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
+    try {
+        returnInfo.characters = userInfo.expand.characters_via_owner
+        delete returnInfo.expand
+        returnInfo.characters.map((character: any) => {
+
+            let images = character.expand.images
+            character.images = images
+            delete character.expand
+            return character
+        })
+    } catch (error) {
+        console.log(error)
+    }
 
     return returnInfo
 
@@ -58,7 +64,7 @@ const getUserInfoByUsername = async (username: string | undefined) => {
         return undefined
     }
     let userInfo = await pb.collection('posts').getFirstListItem(`username="${username}"`, {
-        expand: 'characters_via_owner, attacks_via_attacker, attacks_via_characters_via_owner'
+        expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
     }) as UserRecord
 
     return parseUserInfo(userInfo)
@@ -78,21 +84,23 @@ const getUserInfoByUsernameHook = (username: string | undefined):
 }
 
 const getUsers = async (page: number = 1, limitAmount: number = 3) => {
-    let users = await pb.collection("users").getList(page, limitAmount) as any
+    let users = await pb.collection("users").getList(page, limitAmount, {
+        expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
+    }) as any
 
-    users.items = users.items.map((user: UserRecord) => {return parseUserInfo(user)})
-    return users 
+
+    users.items = users.items.map((user: UserRecord) => { return parseUserInfo(user) })
+    return users
 }
 
 const getUsersHook = (page: number = 1, limitAmount: number = 3):
     [ListResult<RecordModel> | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
-        queryKey: ['userInfo'],
+        queryKey: ['usersInfo'],
         queryFn: () => {
             return getUsers(page, limitAmount)
-        },
-        placeholderData: { items: [] } as any
+        }
     })
     return [data, isLoading, error]
 
