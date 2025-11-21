@@ -1,51 +1,74 @@
 
-import { handleError } from "./pocketbase"
+import { checkLoggedIn, handleError, pb } from "./pocketbase"
 import { ToastStatus } from "common";
 const createCharacter = async (data: CharacterSchema) => {
     try {
-        /*
-        if (!supabase.auth.getSession()) {
-            return {
-                toast_type: ToastStatus.ERROR,
-                message: "Not logged in!"
-            }
 
-        }*/
+        let tempData: CharacterRecord = data 
+        let imagesData: RefImage[] = data.images 
+
+        const batch = pb.createBatch()
+
+        let imageIds: string[] = []
+
+        imagesData.forEach((image) => {
+            let newId = crypto.randomUUID().toString().replaceAll("-", "").substring(0, 15)
+            imageIds.push(newId)
+            image.id = newId
+            image.uploader = pb.authStore.record?.id
+
+            batch.collection('ref_images').create(image)
+        })
+
         /*
-        let collRef = collection(db, "characters")
-        let resp = await addDoc(collRef, data);
+        console.log({
+            ...tempData,
+            images: imageIds
+        })*/
+
+        const record = batch.collection('characters').create({
+            ...tempData,
+            images: imageIds
+        })
+
+        const results = await batch.send()
+
+
+
         return {
             toast_type: ToastStatus.SUCCESS,
-            message: "Successfully created character!"
-        }*/
+            message: "Successfully created character!",
+            data: record
+        }
 
     } catch (error: unknown) {
+
         return handleError(error)
     }
 
 }
 
 const getCharactersByUserHook = (user_id?: string, limitAmount: number = 99)
-    : [CharacterSchema[] | undefined, boolean,  undefined] => {
-    
-        /*
-    if (user_id === undefined) {
-        return [undefined, true, undefined]
-    }
-    let charaRef = collection(db, "characters")
-    //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
-    const q = query(charaRef, limit(limitAmount), where('owner', '==', user_id));
+    : [CharacterSchema[] | undefined, boolean, undefined] => {
 
-    let [charaData, charaLoading, charaError] = useCollection(q)
+    /*
+if (user_id === undefined) {
+    return [undefined, true, undefined]
+}
+let charaRef = collection(db, "characters")
+//if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
+const q = query(charaRef, limit(limitAmount), where('owner', '==', user_id));
+
+let [charaData, charaLoading, charaError] = useCollection(q)
 
 
-    let returnArray: CharacterSchema[] = []
-    charaData?.forEach((result) => {
-        let tempData = result.data()
-        tempData.character_id = result.id
-        returnArray.push(tempData as CharacterSchema)
-    })
-    return [returnArray, charaLoading, charaError]*/
+let returnArray: CharacterSchema[] = []
+charaData?.forEach((result) => {
+    let tempData = result.data()
+    tempData.character_id = result.id
+    returnArray.push(tempData as CharacterSchema)
+})
+return [returnArray, charaLoading, charaError]*/
     return [undefined, true, undefined]
 }
 
@@ -73,7 +96,7 @@ const checkCharacterExists = async (character_id?: string): Promise<boolean> => 
     } else {
         return false
     }*/
-   return false
+    return false
 
 }
 
@@ -87,7 +110,7 @@ const checkCharactersExist = async (cidArray: string[]): Promise<boolean> => {
     } else {
         return false
     }*/
-   return false
+    return false
 }
 
 const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
@@ -132,4 +155,8 @@ export {
     checkCharactersExist,
     getCharactersByUserHook,
     getCharactersOwners
+}
+
+function isLoggedIn() {
+    throw new Error("Function not implemented.");
 }

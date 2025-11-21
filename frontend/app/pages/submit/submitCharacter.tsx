@@ -51,8 +51,8 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
     const [imageData, setImageData] = useState<RefImage>({
         image_link: '',
-        artist: undefined,
-        artist_link: undefined,
+        artist_name: undefined,
+        artist_link: undefined
     })
     const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
@@ -124,7 +124,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                         setCustomCredit(e.target.checked) 
                         if (e.target.checked === false) {
                             let nulledData = {...imageData,
-                                artist: undefined,
+                                artist_name: undefined,
                                 artist_link: undefined
                             }
                             setImageData(nulledData)
@@ -146,7 +146,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             onChange={(e) => {
                                 let updatedData = {
                                     ...imageData,
-                                    artist: e.target.value
+                                    artist_name: e.target.value
                                 }
                                 setImageData(updatedData)
                                 setValue(`images.${imageIndex}`, updatedData)
@@ -242,18 +242,26 @@ export function SubmitCharacterPage() {
 
         data.description = descRef.current?.getMarkdown()
         data.permissions = permsRef.current?.getMarkdown()
-        data.owner = userInfo?.user_id //can be null
+
+        if (userInfo === null) {
+            handleToast({
+                toast_type: "error",
+                message: "Userinfo not found error?"
+            })
+            return
+        }
+        data.owner = userInfo.id
 
         //throw error if auth not loaded? somehow?
 
         //Map artist to self if unset
         data.images = data.images.map((image) => {
             let tempImage = {...image}
-            if (image.artist === undefined) {
-                tempImage.artist = userInfo?.username
+            if (image.artist_name === undefined) {
+                tempImage.artist_name = userInfo?.username
             }
             if (image.artist_link === undefined) {
-                tempImage.artist_link = `/user/profile/${userInfo?.username}/${userInfo?.user_id}`
+                tempImage.artist_link = `/user/profile/${userInfo?.username}/${userInfo.id}`
             }
             return tempImage
         })
@@ -264,7 +272,7 @@ export function SubmitCharacterPage() {
         createCharacter(data).then((resp) => {
             handleToast(resp)
             if (resp.toast_type === ToastStatus.SUCCESS) {
-                navigate(getProfileLink(userInfo?.username, userInfo?.user_id))
+                navigate(getProfileLink(userInfo?.username, userInfo.id))
 
             }
         })

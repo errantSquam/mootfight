@@ -1,23 +1,20 @@
 
 import { ToastStatus } from "common";
 
-import PocketBase from 'pocketbase';
+import PocketBase, { ClientResponseError } from 'pocketbase';
+import { type RecordModel } from "pocketbase";
 
 
 const pb = new PocketBase('http://127.0.0.1:8090');
 
 const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
-    if (error instanceof String) {
-        /*console.log(`GOT ERROR: ` + error.code)
-
-        let errorMessage = "ERROR: " + error.code
-        if (error.code === "auth/invalid-credential") {
-            errorMessage = "Invalid email or password."
-        }*/
+    if (error instanceof ClientResponseError) {
+       console.log(error)
+       console.log(error.data)
 
         return {
             toast_type: ToastStatus.ERROR,
-            message: ''
+            message: error.message
         }
     } else {
         console.log(error)
@@ -29,6 +26,15 @@ const handleError = (error: unknown): { toast_type: ToastStatus, message: string
     }
 }
 
+
+const checkLoggedIn = async () => {
+    await pb.collection('users').authRefresh();
+
+    if (pb.authStore.record === null) {
+        return false
+    }
+    return true
+}
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
@@ -79,6 +85,7 @@ const logOut = async () => {
 //we should refactor this into different API call files...
 export {
     pb,
+    checkLoggedIn,
     handleError,
     signIn,
     logOut

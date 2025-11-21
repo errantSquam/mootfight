@@ -9,9 +9,10 @@ interface UserSchema {
 
 }
 
-interface UserAmbiguousSchema extends UserSchema {
+interface UserAmbiguousSchema extends UserRecord {
     username?:string,
-    id?:string
+    id?:string,
+    characters: CharacterSchema[]
 }
 
 interface UserRecord extends UserSchema {
@@ -21,7 +22,8 @@ interface UserRecord extends UserSchema {
     updated: string,
     email: string,
     emailVisibility: boolean,
-    verified: boolean
+    verified: boolean,
+    expand: any
 }
 
 interface BioUserSchema extends UserSchema {
@@ -37,20 +39,28 @@ type ToastResponse = {
 
 
 type RefImage = {
+    id?: string
     image_link: string,
-    artist?: string,
-    artist_link?: string
+    artist_name?: string,
+    artist_link?: string,
+    uploader?: string
 }
 
-interface CharacterSchema {
+
+
+interface CharacterRecord {
     name: string,
     pronouns?: string,
     status?: string,
     description?: string,
     permissions?: string,
-    images: RefImage[],
-    owner_id: string
+    images?: RefImage[],
+    owner: string
     id?: string
+}
+
+interface CharacterSchema extends CharacterRecord {
+    images: RefImage[],
 }
 
 

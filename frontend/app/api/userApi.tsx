@@ -1,6 +1,6 @@
 
 import { ToastStatus } from "common";
-import { pb } from "./pocketbase";
+import { checkLoggedIn, handleError, pb } from "./pocketbase";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import type { ListResult, RecordModel } from "pocketbase";
@@ -20,7 +20,13 @@ const getUserInfo = async (user_id?: string) => {
     let userInfo = await pb.collection('users').getOne(user_id, {
         expand: 'characters_via_owner, attacks_via_attacker, attacks_via_characters_via_owner'
     }) as UserRecord
-    return userInfo
+
+
+    let returnInfo = userInfo as UserAmbiguousSchema
+    returnInfo.characters = userInfo.expand.characters_via_owner
+
+    console.log(returnInfo)
+    return returnInfo
 }
 
 const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema | undefined, boolean, Error | null] => {
@@ -65,14 +71,14 @@ const getUsers = async (page: number = 1, limitAmount: number = 3) => {
 }
 
 const getUsersHook = (page: number = 1, limitAmount: number = 3):
-[ListResult<RecordModel> | undefined, boolean, Error|null] => {
+    [ListResult<RecordModel> | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
         queryKey: ['userInfo'],
         queryFn: () => {
             return getUsers(page, limitAmount)
         },
-        placeholderData: {items: []} as any
+        placeholderData: { items: [] } as any
     })
     return [data, isLoading, error]
 
@@ -105,30 +111,24 @@ const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 
 const updateUserInfo = async (toUpdate: any) => {
 
 
-    await pb.collection('users').authRefresh();
-
-    if (pb.authStore.record === null) {
-        return {
-            toast_type: ToastStatus.ERROR,
-            message: "Not logged in!"
+    try {
+        const isLoggedIn = await checkLoggedIn()
+        if (!isLoggedIn) {
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: "Not logged in!"
+            }
         }
-    }
 
-    const record = await pb.collection('users').update(pb.authStore.record.id, toUpdate);
-
-    if (record.status !== undefined) {
+        const record = await pb.collection('users').update(pb.authStore.record!.id, toUpdate);
 
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully updated info!"
         }
-    }
-    else {
-        console.log(record)
-        return {
-            toast_type: ToastStatus.ERROR,
-            message: record.message
-        }
+    } catch (error) {
+        console.log(error)
+        return handleError(error)
 
     }
 
