@@ -1,9 +1,6 @@
 import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
-import { onAuthStateChanged, type User } from "firebase/auth";
-import { signIn, auth, logOut } from "~/api/pocketbase"
 import { getUserInfo, getUserInfoHook } from "~/api/userApi";
-import type { DocumentData, Firestore, FirestoreError } from 'firebase/firestore';
 import { useParams } from 'react-router';
 import { getCharactersByUserHook } from '~/api/characterApi';
 import { getAttacksByUserHook } from '~/api/attackApi';
@@ -36,15 +33,15 @@ const ProfileProvider = ({ children }: { children: any }) => {
     let params = useParams();
 
     const [profileData, profileLoading, error]:
-        [UserAmbiguousSchema | undefined, boolean, FirestoreError | undefined] = getUserInfoHook(params.userId)
+        [UserAmbiguousSchema | undefined, boolean, Error | null] = getUserInfoHook(params.userId)
 
     const [charaData, charaLoading, charaError]:
-        [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] = getCharactersByUserHook(params.userId)
+        [CharacterSchema[] | undefined, boolean, undefined] = getCharactersByUserHook(params.userId)
     const [attackData, attackLoading, attackError]:
-        [AttackSchema[] | undefined, boolean, FirestoreError | undefined] = getAttacksByUserHook(params.userId)
+        [AttackSchema[] | undefined, boolean, undefined] = getAttacksByUserHook(params.userId)
 
     const [defenceData, defenceLoading, defenceError]:
-        [AttackSchema[] | undefined, boolean, FirestoreError | undefined] = getDefencesByUserHook(params.userId)
+        [AttackSchema[] | undefined, boolean, undefined] = getDefencesByUserHook(params.userId)
 
 
 

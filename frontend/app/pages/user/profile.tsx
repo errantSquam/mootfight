@@ -1,8 +1,6 @@
 import { useParams } from "react-router";
 import { getUserInfoHook } from "~/api/userApi";
 import { ProfileLayout } from "~/components/profile/profileLayout";
-import { DocumentSnapshot } from "firebase/firestore";
-import type { DocumentData, QuerySnapshot } from "firebase/firestore";
 import { getCharactersByUserHook } from "~/api/characterApi";
 import { getAttacksByUserHook } from "~/api/attackApi"
 import { ProfileProvider } from "~/provider/profileProvider";
