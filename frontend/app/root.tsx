@@ -18,7 +18,13 @@ import { AuthProvider } from "./provider/authProvider";
 import 'react-toastify/ReactToastify.css';
 import { SearchProvider } from "./provider/searchProvider";
 
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query'
 
+const queryClient = new QueryClient()
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -55,21 +61,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
 
   //potential future implementation: navbar fades when scrolled down, comes back when scrolled up
-  return <AuthProvider>
-    
-    <LoadScreen />
-    <div className="w-full">
-      <Banner/>
-      <Navbar />
-      <div className="h-full">
+  return <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+
+      <LoadScreen />
+      <div className="w-full">
+        <Banner />
+        <Navbar />
+        <div className="h-full">
           <SearchProvider>
-        
-        <Outlet />
-        </SearchProvider>
+
+            <Outlet />
+          </SearchProvider>
+        </div>
       </div>
-    </div>
-    <ToastContainer theme="dark" />
-  </AuthProvider>
+      <ToastContainer theme="dark" />
+    </AuthProvider>
+  </QueryClientProvider>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

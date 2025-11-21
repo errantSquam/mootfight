@@ -1,9 +1,8 @@
 
 import { ToastStatus } from "common";
 import { pb } from "./pocketbase";
+import { useQuery } from "@tanstack/react-query";
 const getUserInfo = async (user_id?: string) => {
-
-
 
         if (user_id === undefined) {
         if (pb.authStore.record !== null) {
@@ -14,66 +13,46 @@ const getUserInfo = async (user_id?: string) => {
         }
     }
  
-    let userInfo = await pb.collection('users').getOne(user_id) as UserRecord
+    let userInfo = await pb.collection('users').getOne(user_id, {
+        expand: 'characters_via_owner, attacks_via_attacker, attacks_via_characters_via_owner'
+    }) as UserRecord
     return userInfo
 }
 
-const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema| undefined, boolean, undefined] => {
-    return [undefined, true, undefined]
-    /*
+const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema| undefined, boolean, Error | null] => {
 
-    if (user_id === null) {
-        let [undefinedInfo, returnedLoading, returnedError] = useDocument(undefined) //oops all undefined
-        return [undefined, returnedLoading, returnedError]
-    }
-    if (user_id === undefined) {
-        if (auth.currentUser !== null) {
-            user_id = auth.currentUser.user_id
+    const {isLoading, error, data} = useQuery({
+        queryKey: ['userInfo'],
+        queryFn: () => {
+            return getUserInfo(user_id)
         }
-        else {
-            //this shouldn't be called...
-            console.log("This shouldn't be called...")
-            user_id = 'invalid'
-        }
-    }
+    })
 
-    let [unhandledInfo, returnedLoading, returnedError] = useDocument(doc(db, 'users', user_id))
-    let returnedInfo = unhandledInfo?.data() as UserAmbiguousSchema
-    return [returnedInfo, returnedLoading, returnedError]*/
+    return [data, isLoading, error]
 }
 
 const getUserInfoByUsername = async (username: string | undefined) => {
-    return [undefined, true, undefined]
-    /*
     if (username === undefined) {
-        return [undefined, true, undefined]
+        return undefined
     }
-    let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), where('username', '==', username));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot*/
+    let userInfo = await pb.collection('posts').getFirstListItem(`username="${username}"`,{
+        expand: 'characters_via_owner, attacks_via_attacker, attacks_via_characters_via_owner'
+    }) as UserRecord
 
+    return userInfo
 }
 
 const getUserInfoByUsernameHook = (username: string | undefined):
- [UserSchema[], boolean,  undefined] => {
-    return [[] as UserSchema[], true, undefined]
-    /*
-    if (username === undefined) {
-        return [[] as UserSchema[], true, undefined]
-    }
+ [UserRecord | undefined, boolean, Error | null] => {
 
-    let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), where('username', '==', username));
-    let [userData, userLoading, userError] = useCollection(q)
-
-    let returnedArray: UserSchema[] = []
-
-    userData?.docs.forEach((document) => {
-        returnedArray.push((document.data() as UserSchema))
+    const {isLoading, error, data} = useQuery({
+        queryKey: ['userInfo'],
+        queryFn: () => {
+            return getUserInfoByUsername(username)
+        }
     })
 
-    return [returnedArray, userLoading, userError]*/
+    return [data, isLoading, error]
 }
 
 const getUsers = async (limitAmount: number = 3) => {
