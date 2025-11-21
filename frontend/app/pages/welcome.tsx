@@ -13,8 +13,9 @@ import { SearchContext } from "~/provider/searchProvider";
 
 export function Welcome() {
 
-  const [snapshot, loading, error] = getUsersHook(99);
+  const [users, loading, error] = getUsersHook(1, 99);
 
+  /*
   function transformSnapshot(snapshotData: QuerySnapshot<DocumentData, DocumentData> | undefined) {
     if (snapshotData === undefined) {
       return []
@@ -25,9 +26,11 @@ export function Welcome() {
     })
     return tempArray
 
-  }
+  }*/
 
   const {searchQuery, setSearchQuery} = useContext(SearchContext)
+
+  console.log(users)
 
 
 
@@ -42,7 +45,7 @@ export function Welcome() {
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
             <div>
               <div className="flex flex-row gap-x-2">
-                {!loading && transformSnapshot(snapshot).map((user) => {
+                {!loading && users?.items.map((user) => {
                   return <Link to={getProfileLink(user.username, user.user_id)}>
                     <div className="flex flex-col items-center" key={user.username}>
                       <ImageWithLoader src={getPfp(user.profile_picture)} className="w-20 h-20 object-cover" />

@@ -44,29 +44,8 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
         console.log(pb.authStore.record?.id);
         console.log(authData)
 
-        let userId = authData.record.id
-
-        /*
-
-        let { data, error } = await supabase.auth.signInWithPassword({
-            email: 'someone@email.com',
-            password: 'LdUhMWGpKZKSdodrLJBe'
-        })
-        
-        let userCredential = await signInWithEmailAndPassword(auth, email, password)
-        let userUid = userCredential.user.user_id;
-
-        const snap = await getCountFromServer(query(
-            collection(db, 'users'), where(documentId(), '==', userUid)
-        ))
-        if (snap.data().count === 0) {
-            let docRef = doc(db, "users", userUid)
-            setDoc(docRef, {
-                username: `User #${Math.floor(Math.random() * 100)}`,
-                user_id: userUid
-
-            });
-        }*/
+        localStorage.setItem("token", authData.token)
+        localStorage.setItem("userInfo", JSON.stringify(authData.record))
 
         return {
             toast_type: ToastStatus.SUCCESS,
@@ -81,7 +60,9 @@ const signIn = async (email: string, password: string): Promise<ToastResponse> =
 
 const logOut = async () => {
     try {
-        //await signOut(auth)
+        pb.authStore.clear()
+        localStorage.removeItem("token")
+        localStorage.removeItem("userInfo")
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully signed out!"
