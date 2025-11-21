@@ -12,7 +12,15 @@ interface UserSchema {
 interface UserAmbiguousSchema extends UserRecord {
     username?:string,
     id?:string,
-    characters: CharacterSchema[]
+    characters?: CharacterSchema[]
+    collectionId?: string,
+    collectionName?: string,
+    created?: string,
+    updated?: string,
+    email?: string,
+    emailVisibility?: boolean,
+    verified?: boolean,
+    expand?: any
 }
 
 interface UserRecord extends UserSchema {

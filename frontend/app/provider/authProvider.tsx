@@ -32,11 +32,6 @@ const AuthProvider = ({ children }: { children: any }) => {
     }, [])
 
 
-    /*
-    supabase.auth.onAuthStateChange((event, session) => {
-        supabase.auth.getUser().then((user) => handleAuthStateChanged(user))
-    });*/
-
     pb.authStore.onChange((token, record) => {
         handleAuthStateChanged(record as UserAmbiguousSchema), true
     })
