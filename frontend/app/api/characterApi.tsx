@@ -29,6 +29,7 @@ const parseCharacterInfo = (characterInfo: CharacterSchema): CharacterSchema => 
     return returnInfo
 
 }
+
 const createCharacter = async (data: CharacterSchema) => {
     try {
 
@@ -66,7 +67,6 @@ const createCharacter = async (data: CharacterSchema) => {
 
         return {...handleError(error), data: {}}
     }
-
 }
 
 const getCharacter = async (character_id?: string): Promise<CharacterSchema | undefined> => {
@@ -123,7 +123,35 @@ const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, 
 
 }
 
+const getCharactersBySearch = async (substring: string, page: number = 1, limitAmount: number = 3) => {
+    let chara = await pb.collection("characters").getList(page, limitAmount, {
+        filter: `name~'${substring}'`,
+        expand: 'images'
+    }) as any
 
+
+    chara.items = chara.items.map((char: CharacterAmbiguousSchema) => { return parseCharacterInfo(char) })
+    return chara
+}
+
+const charactersSearchHook = (searchQuery: string | null = "", page: number = 1, limitAmount: number = 3, enabled : boolean = true):
+    [CharacterSchema[], boolean, Error | null] => {
+
+
+    if (searchQuery === null) {
+        searchQuery = ''
+    }
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['characterSearch', searchQuery],
+        queryFn: () => {
+            return getCharactersBySearch(searchQuery, page, limitAmount)
+        },
+        enabled: enabled
+    })
+
+    return [data?.items, isLoading, error]
+}
 
 
 export {
@@ -132,6 +160,7 @@ export {
     getCharacter,
     checkCharacterExists,
     checkCharactersExist,
-    getCharactersOwners
+    getCharactersOwners,
+    charactersSearchHook
 }
 

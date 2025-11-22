@@ -136,7 +136,7 @@ const getUsersBySearch = async (substring: string, page: number = 1, limitAmount
     return users
 }
 
-const usersSearchHook = (searchQuery: string | null = "", page: number = 1, limitAmount: number = 3):
+const usersSearchHook = (searchQuery: string | null = "", page: number = 1, limitAmount: number = 3, enabled : boolean = true):
     [UserSchema[], boolean, Error | null] => {
 
 
@@ -148,7 +148,8 @@ const usersSearchHook = (searchQuery: string | null = "", page: number = 1, limi
         queryKey: ['usersSearch', searchQuery],
         queryFn: () => {
             return getUsersBySearch(searchQuery, page, limitAmount)
-        }
+        },
+        enabled: enabled
     })
 
     return [data?.items, isLoading, error]
