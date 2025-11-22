@@ -8,7 +8,6 @@ import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 import { getUserInfoHook } from "~/api/userApi";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
-import { getDefencesByCharacterHook } from "~/api/attackApi";
 
 
 export default function CharacterPage() {

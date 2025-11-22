@@ -24,8 +24,6 @@ export const ImageWithLoader = ({ src, className, spoiler = undefined }:
             className={`${className} ${isLoading ? "opacity-0 absolute" : "opacity-100 relative"}
         ${(spoiler !== undefined && spoiler !== "") ? "blur-md" : "blur-none"}`} />
         <ImageSkeletonComponent className={`${className} ${isLoading ? "visible" : "hidden"}`} />
-
-
     </div>
 
 
