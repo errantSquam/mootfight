@@ -46,8 +46,12 @@ export function SettingsPage() {
 
 
     const onSubmit: SubmitHandler<UserSchema> = (data, e) => {
-        updateUserSettings(data as UserAmbiguousSchema, refreshAuthUser).then(() => {
+        updateUserSettings(data as UserAmbiguousSchema, refreshAuthUser).then((status) => {
+
+            if (status) {
+            
             setIsEditing(false)
+            }
         })
 
     }

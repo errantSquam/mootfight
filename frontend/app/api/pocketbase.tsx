@@ -9,8 +9,28 @@ const pb = new PocketBase('http://127.0.0.1:8090');
 
 const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
     if (error instanceof ClientResponseError) {
+        console.log("LOGGING")
         console.log(error)
         console.log(error.data)
+
+        if (error.data.data.username) {
+
+            if (error.data.data.username.code === "validation_not_unique") {
+
+
+                return {
+                    toast_type: ToastStatus.ERROR,
+                    message: "Username is taken. Please choose a different username."
+
+                }
+            }
+
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: `${error.message} ${error.data.data.username.message}`
+            }
+
+        }
 
         return {
             toast_type: ToastStatus.ERROR,

@@ -6,5 +6,8 @@ export async function updateUserSettings(data: UserAmbiguousSchema, refreshAuthU
     let resp = await updateUserInfo(data)
     handleToast(resp)
     refreshAuthUser()
+    if (resp.toast_type === "error") {
+        return false
+    }
     return true
 }

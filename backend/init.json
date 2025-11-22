@@ -176,7 +176,7 @@
     "listRule": "",
     "viewRule": "",
     "createRule": null,
-    "updateRule": "id = @request.auth.id",
+    "updateRule": "id = @request.auth.id &&\nusername ?!= @collection.users.username",
     "deleteRule": "id = @request.auth.id",
     "name": "users",
     "type": "auth",
