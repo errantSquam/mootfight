@@ -6,8 +6,8 @@ import type { MDXEditorMethods } from "@mdxeditor/editor"
 import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { handleToast } from "~/functions/handleToast"
-import { createCharacter, getCharactersOwners } from "~/api/characterApi"
-import { useNavigate } from "react-router"
+import { createCharacter, getCharactersBySearch, getCharactersOwners } from "~/api/characterApi"
+import { Link, useNavigate } from "react-router"
 import { ToastStatus } from "common"
 import { Modal } from "~/components/genericComponents"
 import { getCharacter } from "~/api/characterApi"
@@ -15,6 +15,7 @@ import { checkCharacterExists } from "~/api/characterApi"
 import { toast } from "react-toastify/unstyled"
 import { createAttack } from "~/api/attackApi"
 import { MootButton, MootButtonSubmit } from "~/components/button"
+import { ImageWithLoader } from "~/components/loaders"
 
 
 
@@ -166,6 +167,11 @@ const CharacterUploadComponent = ({ register, index }:
 
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
+    const [searchModalOpen, setSearchModal] = useState<boolean>(false)
+
+    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [searchResults, setSearchResults] = useState<CharacterAmbiguousSchema[]>([])
+
 
 
     const handleValidate = async () => {
@@ -203,30 +209,72 @@ const CharacterUploadComponent = ({ register, index }:
         text-green-300`}
             defaultValue={`${validatedValue.user}'s ${validatedValue.character}`}
             disabled
-            key = {validatedValue.user + validatedValue.character}
+            key={validatedValue.user + validatedValue.character}
         />
+
+        <Modal
+            isOpen={searchModalOpen}
+            handleClose={() => setSearchModal(false)}
+            title="Character Search"
+        >
+            <div className="flex flex-col w-full items-center">
+                <h3> Search</h3>
+                <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
+                    placeholder="Search character..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                        setSearchQuery(e.target.value)
+                    }} />
+                <div className="flex flex-row w-1/2 px-8 py-4 justify-center space-x-4">
+
+                    <MootButton onClick={() => {
+                        getCharactersBySearch(searchQuery).then((resp) => {
+                            console.log(resp)
+                            setSearchResults(resp.items)
+                        })
+                    }}>
+                        Submit
+                    </MootButton>
+                </div>
+
+                <div className = "flex flex-row flex-wrap">
+                    {searchResults.map((chara) => {
+                                    return <div className="flex flex-col text-center items-center cursor-pointer" key={chara.name}
+                                    onClick = {() => {
+                                        setInputValue(chara.id!)
+                                        setSearchModal(false)
+
+                                    }}>
+                                            <ImageWithLoader src={chara.images[0].image_link} className="w-20 h-20 object-cover" />
+                                            <span className="w-20 text-ellipsis overflow-hidden">{chara.name}</span>
+                                        </div>
+                                })}
+                </div>
+            </div>
+
+        </Modal>
 
         <input className={`${isValidated ? "hidden" : "visible"} w-full border border-zinc-500 rounded-md p-1 bg-zinc-900`}
             {...register(`characters.${index}`, { required: true })}
             onChange={(e) => { setInputValue(e.target.value) }}
-            value = {inputValue}
+            value={inputValue}
         />
 
 
         {!isValidated ?
             <div className="flex flex-row gap-x-2">
-                <MootButton onClick={() => { /*search*/ }}
-                    className = "text-sm">
+                <MootButton onClick={() => { setSearchModal(true) }}
+                    className="text-sm">
                     Search
                 </MootButton>
                 <MootButton onClick={() => { handleValidate() }}
-                    className = "text-sm">
-                    {isLoading ? <Icon icon="eos-icons:loading" className = "text-lg"/> : <span>Validate</span>}
+                    className="text-sm">
+                    {isLoading ? <Icon icon="eos-icons:loading" className="text-lg" /> : <span>Validate</span>}
                 </MootButton>
             </div> :
             <MootButton onClick={() => { handleResubmit() }}
-            className = "text-sm"
-                >
+                className="text-sm"
+            >
                 Resubmit
             </MootButton>
         }
@@ -279,7 +327,7 @@ export function SubmitAttackPage() {
         setIsLoading(true)
         console.log(data)
 
-        
+
         if (userInfo === null) {
             handleToast({
                 toast_type: "error",
@@ -296,12 +344,12 @@ export function SubmitAttackPage() {
         if (filteredArray.length === owners.length) {
             console.log("toast should fire")
             handleToast({
-                toast_type:"error",
-                message:"Attack must contain at least one character from a different user!"
+                toast_type: "error",
+                message: "Attack must contain at least one character from a different user!"
             })
             setIsLoading(false)
             return
-        } 
+        }
 
         //now filter yourself out
         data.defenders = owners.filter((id) => {
@@ -421,7 +469,7 @@ export function SubmitAttackPage() {
                 </div>
             </div>
 
-            <MootButtonSubmit/>
+            <MootButtonSubmit />
         </form>
 
 

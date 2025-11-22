@@ -161,6 +161,7 @@ export {
     checkCharacterExists,
     checkCharactersExist,
     getCharactersOwners,
+    getCharactersBySearch,
     charactersSearchHook
 }
 
