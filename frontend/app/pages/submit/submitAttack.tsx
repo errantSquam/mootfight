@@ -177,7 +177,8 @@ const CharacterUploadComponent = ({ register, index }:
         let characterValidity = await isCharacterValid(inputValue)
         if (characterValidity) {
             let resp = await getCharacter(inputValue)
-            let userResp = await getUserInfo(resp?.owner || '')
+            console.log(resp)
+            let userResp = resp?.owner
 
             let tempValue = {
                 user: userResp?.username || '',
@@ -205,6 +206,7 @@ const CharacterUploadComponent = ({ register, index }:
         text-green-300`}
             defaultValue={`${validatedValue.user}'s ${validatedValue.character}`}
             disabled
+            key = {validatedValue.user + validatedValue.character}
         />
 
         <input className={`${isValidated ? "hidden" : "visible"} w-full border border-zinc-500 rounded-md p-1 bg-zinc-900`}
