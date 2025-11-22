@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useParams } from "react-router";
 import { getUserInfoHook } from "~/api/userApi";
 import { ProfileLayout } from "~/components/profile/profileLayout";
@@ -5,6 +6,7 @@ import { ProfileProvider } from "~/provider/profileProvider";
 
 export function ProfilePage() {
     let params = useParams();
+    
 
 
 

@@ -29,6 +29,7 @@ const AuthProvider = ({ children }: { children: any }) => {
             setUserInfo(JSON.parse(localInfo))
             setAuthLoaded(true)
         }
+
     }, [])
 
 

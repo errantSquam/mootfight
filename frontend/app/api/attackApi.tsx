@@ -1,20 +1,12 @@
-import { handleError  } from "./pocketbase"
+import { handleError, pb  } from "./pocketbase"
 import { ToastStatus } from "common";
 
 
 const createAttack = async (data: AttackSchema) => {
     try {
-        /*if (!supabase.auth.getSession()) {
-            return {
-                toast_type: ToastStatus.ERROR,
-                message: "Not logged in!"
-            }
+        //TODO: Batch update with notifications to the defenders as well? Or perhaps a Hook.
 
-        }*/
-        /*
-        let collRef = collection(db, "attacks")
-        let resp = await addDoc(collRef, data);*/
-        //TODO: Batch update with notifications to the defenders as well
+        pb.collection('attacks').create(data)
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully created attack!"

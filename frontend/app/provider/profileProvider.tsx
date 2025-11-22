@@ -1,6 +1,6 @@
 import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
-import { getUserInfo, getUserInfoHook } from "~/api/userApi";
+import { getUserInfo, getUserInfoByUsernameHook, getUserInfoHook } from "~/api/userApi";
 import { useParams } from 'react-router';
 
 type ProfileContextType = {
@@ -18,7 +18,7 @@ const ProfileProvider = ({ children }: { children: any }) => {
     let params = useParams();
 
     const [profileData, profileLoading, error]:
-        [UserAmbiguousSchema | undefined, boolean, Error | null] = getUserInfoHook(params.userId)
+        [UserAmbiguousSchema | undefined, boolean, Error | null] = getUserInfoByUsernameHook(params.username)
 
 
 

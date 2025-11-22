@@ -50,7 +50,7 @@ const getUserInfo = async (user_id?: string) => {
 const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
-        queryKey: ['userInfo'],
+        queryKey: ['userInfo', user_id],
         queryFn: () => {
             return getUserInfo(user_id)
         }
@@ -63,9 +63,11 @@ const getUserInfoByUsername = async (username: string | undefined) => {
     if (username === undefined) {
         return undefined
     }
-    let userInfo = await pb.collection('posts').getFirstListItem(`username="${username}"`, {
+    let userInfo = await pb.collection('users').getFirstListItem(`username="${username}"`, {
         expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
     }) as UserRecord
+
+    console.log(userInfo)
 
     return parseUserInfo(userInfo)
 }
@@ -74,7 +76,7 @@ const getUserInfoByUsernameHook = (username: string | undefined):
     [UserAmbiguousSchema | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
-        queryKey: ['userInfo'],
+        queryKey: ['userInfo', username],
         queryFn: () => {
             return getUserInfoByUsername(username)
         }
