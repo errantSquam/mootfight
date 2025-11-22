@@ -20,7 +20,11 @@ interface UserAmbiguousSchema extends UserRecord {
     email?: string,
     emailVisibility?: boolean,
     verified?: boolean,
-    expand?: any
+    expand?: any,
+    
+    attacks?: AttackSchema[],
+    
+    defences?: AttackSchema[],
 }
 
 interface UserRecord extends UserSchema {
@@ -70,6 +74,7 @@ interface CharacterRecord {
 interface CharacterSchema extends CharacterRecord {
     images: RefImage[],
     attacks?: AttackSchema[],
+    
     
     owner: UserAmbiguousSchema
 }
