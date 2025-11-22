@@ -42,7 +42,7 @@ export const ProfileCharactersTab = () => {
 const AttacksArray = ({attackData}: {attackData: AttackSchema[] | undefined}) => {
     return <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             attackData?.map((attack) => {
-                return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center">
+                return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center" key = {attack.id}>
                     <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>

@@ -41,7 +41,10 @@ For production, run `pocketbase serve yourdomain.com`
 
 Remember to edit frontend .env `VITE_POCKETBASE_ENDPOINT` to match the backend API, then re-deploy frontend.
 
-# Misc
+# Misc Dev Notes
+
+### API functions
+In arguments such as `expand` or `filter`, **DO NOT** use **NEWLINES!!!** The Pocketbase library does not play nice with newlines and doesn't appear to sanitize arguments with them. Stick to a Long String even if it looks a little ugly.
 
 ### Note to Contributors
 PRs are welcome! But please don't make PRs with AI generated code, thanks
