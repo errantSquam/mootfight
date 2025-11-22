@@ -218,22 +218,30 @@ const CharacterUploadComponent = ({ register, index }:
         <Modal
             isOpen={searchModalOpen}
             handleClose={() => setSearchModal(false)}
-            title="Character Search"
+            title=""
         >
             <div className="flex flex-col w-full items-center gap-y-2">
                 <h3> Search</h3>
-                <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
-                    placeholder="Username"
-                    value={searchQuery.user}
-                    onChange={(e) => {
-                        setSearchQuery({...searchQuery, user: e.target.value})
-                    }} />
-                <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
-                    placeholder="Character"
-                    value={searchQuery.character}
-                    onChange={(e) => {
-                        setSearchQuery({...searchQuery, character: e.target.value})
-                    }} />
+                <div className="flex flex-row gap-x-2">
+                    <div className="flex flex-col gap-y-2 items-center justify-center">
+                        <span>Username</span>
+                        <input type="text" className="py-1 px-2 w-2/3 border border-zinc-500"
+                            placeholder="Username"
+                            value={searchQuery.user}
+                            onChange={(e) => {
+                                setSearchQuery({ ...searchQuery, user: e.target.value })
+                            }} />
+                    </div>
+                    <div className="flex flex-col gap-y-2 items-center justify-center">
+                        <span>Character</span>
+                        <input type="text" className="py-1 px-2 w-2/3 border border-zinc-500"
+                            placeholder="Character"
+                            value={searchQuery.character}
+                            onChange={(e) => {
+                                setSearchQuery({ ...searchQuery, character: e.target.value })
+                            }} />
+                    </div>
+                </div>
                 <div className="flex flex-row w-1/2 px-8 py-4 justify-center space-x-4">
 
                     <MootButton onClick={() => {
@@ -246,18 +254,18 @@ const CharacterUploadComponent = ({ register, index }:
                     </MootButton>
                 </div>
 
-                <div className = "flex flex-row flex-wrap">
+                <div className="flex flex-row flex-wrap gap-x-2 p-2 w-full border-2 border-zinc-500">
                     {searchResults.map((chara) => {
-                                    return <div className="flex flex-col text-center items-center cursor-pointer" key={chara.name}
-                                    onClick = {() => {
-                                        setInputValue(chara.id!)
-                                        setSearchModal(false)
+                        return <div className="flex flex-col text-center items-center cursor-pointer" key={chara.name}
+                            onClick={() => {
+                                setInputValue(chara.id!)
+                                setSearchModal(false)
 
-                                    }}>
-                                            <ImageWithLoader src={chara.images[0].image_link} className="w-20 h-20 object-cover" />
-                                            <span className="w-20 text-ellipsis overflow-hidden">{chara.name}</span>
-                                        </div>
-                                })}
+                            }}>
+                            <ImageWithLoader src={chara.images[0].image_link} className="w-20 h-20 object-cover" />
+                            <span className="w-20 text-ellipsis overflow-hidden">{chara.name}</span>
+                        </div>
+                    })}
                 </div>
             </div>
 
