@@ -254,7 +254,7 @@ const CharacterUploadComponent = ({ register, index }:
                     </MootButton>
                 </div>
 
-                <div className="flex flex-row flex-wrap gap-x-2 p-2 w-full border-2 border-zinc-500">
+                <div className="flex flex-row flex-wrap gap-x-2 p-2 w-full border-2 border-zinc-500 h-50 overflow-y-scroll">
                     {searchResults.map((chara) => {
                         return <div className="flex flex-col text-center items-center cursor-pointer" key={chara.name}
                             onClick={() => {
