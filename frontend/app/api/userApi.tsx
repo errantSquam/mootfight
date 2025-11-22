@@ -7,18 +7,33 @@ import type { ListResult, RecordModel } from "pocketbase";
 
 const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
     let returnInfo = userInfo as UserAmbiguousSchema
+    console.log("hi")
+    console.log(userInfo)
 
     //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
     try {
         returnInfo.characters = userInfo.expand.characters_via_owner
-        delete returnInfo.expand
-        returnInfo.characters?.map((character: any) => {
+        
+        returnInfo.attacks = userInfo.expand.attacks_via_attacker 
 
+        let defencesArray: AttackSchema[] = []
+    
+        returnInfo.characters?.map((character: any) => {
             let images = character.expand.images
             character.images = images
+
+
+            defencesArray = [...defencesArray, character.expand.attacks_via_characters]
+
             delete character.expand
             return character
         })
+
+        returnInfo.defences = defencesArray
+
+
+        delete returnInfo.expand
+
     } catch (error) {
         console.log(error)
     }
@@ -40,7 +55,7 @@ const getUserInfo = async (user_id?: string) => {
     }
 
     let userInfo = await pb.collection('users').getOne(user_id, {
-        expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
+        expand: `characters_via_owner, characters_via_owner.images, characters_via_owner.attacks_via_characters, attacks_via_attacker`
     }) as UserRecord
 
 
@@ -64,9 +79,11 @@ const getUserInfoByUsername = async (username: string | undefined) => {
         return undefined
     }
     let userInfo = await pb.collection('users').getFirstListItem(`username="${username}"`, {
-        expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
+        expand: `characters_via_owner, characters_via_owner.images, attacks_via_attacker, characters_via_owner.attacks_via_characters`
     }) as UserRecord
+    //note: pocketbase doesn't like backtick newlines
 
+    console.log("this one has characters_via_owner")
     console.log(userInfo)
 
     return parseUserInfo(userInfo)

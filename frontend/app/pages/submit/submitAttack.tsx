@@ -4,7 +4,6 @@ import { Icon } from "@iconify/react"
 import { MarkdownEditor } from "~/components/markdownEditor"
 import type { MDXEditorMethods } from "@mdxeditor/editor"
 import { useContext } from "react"
-import { useFieldArray } from "react-hook-form"
 import { AuthContext } from "~/provider/authProvider"
 import { handleToast } from "~/functions/handleToast"
 import { createCharacter, getCharactersOwners } from "~/api/characterApi"
@@ -12,9 +11,7 @@ import { useNavigate } from "react-router"
 import { ToastStatus } from "common"
 import { Modal } from "~/components/genericComponents"
 import { getCharacter } from "~/api/characterApi"
-import { getCharacterHook } from "~/api/characterApi"
 import { checkCharacterExists } from "~/api/characterApi"
-import { getUserInfo } from "~/api/userApi"
 import { toast } from "react-toastify/unstyled"
 import { createAttack } from "~/api/attackApi"
 import { MootButton, MootButtonSubmit } from "~/components/button"
@@ -98,7 +95,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
                             value={imageData}
                             onChange={(e) => {
                                 setImageData(e.target.value)
-                                setValue(`image`, e.target.value)
+                                setValue(`image_link`, e.target.value)
 
                             }}
                             autoComplete="off"
@@ -130,7 +127,7 @@ const ImageUploadComponent = ({ register, errors, setValue }:
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
             value={imageData}
-            {...register(`image`,
+            {...register(`image_link`,
                 {
                     required: true,
                     validate: (value) => {
@@ -281,9 +278,19 @@ export function SubmitAttackPage() {
 
         setIsLoading(true)
         console.log(data)
+
+        
+        if (userInfo === null) {
+            handleToast({
+                toast_type: "error",
+                message: "Maybe you're not logged in?"
+            })
+            return
+        }
+
         let owners = await getCharactersOwners(data.characters)
         let filteredArray = owners.filter((id) => {
-            return id === userInfo?.user_id
+            return id === userInfo.id
         })
 
         if (filteredArray.length === owners.length) {
@@ -298,11 +305,11 @@ export function SubmitAttackPage() {
 
         //now filter yourself out
         data.defenders = owners.filter((id) => {
-            return id !== userInfo?.id
+            return id !== userInfo.id
         })
 
         data.description = descRef.current?.getMarkdown()
-        data.attacker = userInfo?.id 
+        data.attacker = userInfo.id as string
 
         //check for empty
         if (!data.warnings) {
@@ -337,7 +344,7 @@ export function SubmitAttackPage() {
                 <h3>Upload Image</h3>
 
                 <ImageUploadComponent register={register} errors={errors} setValue={setValue} />
-                {errors.image && <div className="text-red-400">This field is required.</div>}
+                {errors.image_link && <div className="text-red-400">This field is required.</div>}
 
             </div>
             <div className="flex flex-col gap-y-2">

@@ -1,5 +1,6 @@
 import { handleError, pb  } from "./pocketbase"
 import { ToastStatus } from "common";
+import { getUserInfo } from "./userApi";
 
 
 const createAttack = async (data: AttackSchema) => {
