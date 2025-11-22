@@ -14,7 +14,7 @@ const parseCharacterInfo = (characterInfo: CharacterSchema): CharacterSchema => 
 
         let owner = returnInfo.expand.owner
         returnInfo.owner = owner
-        
+
         delete returnInfo.expand
         return returnInfo
 
@@ -28,7 +28,7 @@ const parseCharacterInfo = (characterInfo: CharacterSchema): CharacterSchema => 
 const createCharacter = async (data: CharacterSchema) => {
     try {
 
-        let tempData: CharacterRecord = data
+        let tempData: CharacterRecord = data as CharacterRecord
         let imagesData: RefImage[] = data.images
 
         const batch = pb.createBatch()
@@ -52,12 +52,10 @@ const createCharacter = async (data: CharacterSchema) => {
 
         const results = await batch.send()
 
-
-
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully created character!",
-            data: record
+            data: results
         }
 
     } catch (error: unknown) {
@@ -66,33 +64,6 @@ const createCharacter = async (data: CharacterSchema) => {
     }
 
 }
-
-const getCharactersByUserHook = (user_id?: string, limitAmount: number = 99)
-    : [CharacterSchema[] | undefined, boolean, undefined] => {
-
-    //is this needed anymore?
-
-    /*
-if (user_id === undefined) {
-    return [undefined, true, undefined]
-}
-let charaRef = collection(db, "characters")
-//if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
-const q = query(charaRef, limit(limitAmount), where('owner', '==', user_id));
-
-let [charaData, charaLoading, charaError] = useCollection(q)
-
-
-let returnArray: CharacterSchema[] = []
-charaData?.forEach((result) => {
-    let tempData = result.data()
-    tempData.character_id = result.id
-    returnArray.push(tempData as CharacterSchema)
-})
-return [returnArray, charaLoading, charaError]*/
-    return [undefined, true, undefined]
-}
-
 
 const getCharacter = async (character_id?: string): Promise<CharacterSchema | undefined> => {
 
@@ -108,47 +79,32 @@ const getCharacter = async (character_id?: string): Promise<CharacterSchema | un
 }
 
 const checkCharacterExists = async (character_id?: string): Promise<boolean> => {
-    /*
-    const snap = await getCountFromServer(query(
-            collection(db, 'characters'), where(documentId(), '==', character_id)
-        ))
-    
-    if (snap.data().count > 0) {
+    try {
+        await getCharacter(character_id)
         return true
-    } else {
+    } catch (error) {
+        console.log(error)
         return false
-    }*/
-    return false
+    }
 
 }
 
 const checkCharactersExist = async (cidArray: string[]): Promise<boolean> => {
-    /*
-    const snap = await getCountFromServer(query(
-            collection(db, 'characters'), where(documentId(), 'in', cidArray)
-        ))
-    if (snap.data().count === cidArray.length) {
+    const resultList = await pb.collection('characters').getList(1, cidArray.length);
+
+    if (resultList.totalItems === cidArray.length) {
         return true
-    } else {
-        return false
-    }*/
+    }
     return false
 }
 
 const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
-    /*
-    let resp = await getDocs(query(
-            collection(db, 'characters'), where(documentId(), 'in', cidArray)
-        ))
-    
-    let tempArray: string[] = []
-    resp.forEach((data) => {
-        let owner = data.data().owner
-        tempArray.push(owner)
-    })
 
-    return tempArray*/
-    return []
+    const resultList = await pb.collection('characters').getList(1, cidArray.length, {
+        expand: 'owner, images, attacks_via_characters_via_owner'
+    });
+
+    return resultList.items.map((chara) => {return chara.owner.id})
 }
 
 const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, boolean, Error | null] => {
@@ -172,10 +128,6 @@ export {
     getCharacter,
     checkCharacterExists,
     checkCharactersExist,
-    getCharactersByUserHook,
     getCharactersOwners
 }
 
-function isLoggedIn() {
-    throw new Error("Function not implemented.");
-}
