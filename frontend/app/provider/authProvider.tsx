@@ -33,6 +33,7 @@ const AuthProvider = ({ children }: { children: any }) => {
     }, [])
 
 
+
     pb.authStore.onChange((token, record) => {
         handleAuthStateChanged(record as UserAmbiguousSchema), true
     })
@@ -68,6 +69,10 @@ const AuthProvider = ({ children }: { children: any }) => {
     }
 
     function handleAuthStateChanged(user: UserAmbiguousSchema | null) {
+
+        if (!pb.authStore.isValid) {
+            updateUserInfo(null)
+        }
         if (user) {
             if (userInfo === null) {
                 

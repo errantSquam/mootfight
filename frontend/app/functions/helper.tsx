@@ -7,7 +7,7 @@ export function getPfp(id: string | undefined, src: string | undefined) {
     }
     
 
-    let pfp = `${import.meta.env.VITE_POCKETBASE_ENDPOINT}/files/users/${id}/${src}`
+    let pfp = `${import.meta.env.VITE_POCKETBASE_ENDPOINT}/api/files/users/${id}/${src}`
     console.log(pfp)
 
     return src === undefined || src === '' ? "/assets/images/default owlcroraptor.png" : pfp
