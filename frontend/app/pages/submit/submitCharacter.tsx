@@ -239,9 +239,11 @@ export function SubmitCharacterPage() {
 
     const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
         setIsLoading(true)
+        
+        let submitData: any = data
 
-        data.description = descRef.current?.getMarkdown()
-        data.permissions = permsRef.current?.getMarkdown()
+        submitData.description = descRef.current?.getMarkdown()
+        submitData.permissions = permsRef.current?.getMarkdown()
 
         if (userInfo === null) {
             handleToast({
@@ -250,27 +252,28 @@ export function SubmitCharacterPage() {
             })
             return
         }
-        data.owner = userInfo.id!
+        submitData.owner = userInfo.id!
 
         //throw error if auth not loaded? somehow?
 
         //Map artist to self if unset
-        data.images = data.images.map((image) => {
+        submitData.images = data.images.map((image) => {
             let tempImage = {...image}
             if (image.artist_name === undefined) {
                 tempImage.artist_name = userInfo?.username
             }
             if (image.artist_link === undefined) {
-                tempImage.artist_link = `/user/profile/${userInfo?.username}/${userInfo.id}`
+                tempImage.artist_link = getProfileLink(`${userInfo?.username}`)
             }
             return tempImage
         })
 
         console.log("Data:")
-        console.log(data)
+        console.log(submitData)
 
-        createCharacter(data).then((resp) => {
+        createCharacter(submitData).then((resp) => {
             handleToast(resp)
+            console.log(resp.data)
             if (resp.toast_type === ToastStatus.SUCCESS) {
                 navigate(getProfileLink(userInfo?.username!))
 

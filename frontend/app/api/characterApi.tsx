@@ -60,7 +60,7 @@ const createCharacter = async (data: CharacterSchema) => {
 
     } catch (error: unknown) {
 
-        return handleError(error)
+        return {...handleError(error), data: {}}
     }
 
 }

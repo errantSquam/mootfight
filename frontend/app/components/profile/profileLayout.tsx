@@ -8,14 +8,12 @@ import { AuthContext } from "~/provider/authProvider"
 import { updateUserInfo } from "~/api/userApi"
 import { ProfilePictureComponent } from "../settings/cropComponents"
 import { ProfileBioTab, ProfileCharactersTab, ProfileBattlesTab, ProfileStatsTab } from "./profileTabs"
-import { getCharactersByUserHook } from "~/api/characterApi"
-import type { DocumentData, QuerySnapshot } from "firebase/firestore"
 import { ProfileContext } from "~/provider/profileProvider"
 
 
 
 const MainProfileLayout = () => {
-    const {profileLoading, profileData, charaLoading, charaData, attackLoading, attackData} = useContext(ProfileContext)
+    const {profileLoading, profileData} = useContext(ProfileContext)
     const { userInfo, refreshAuthUser } = useContext(AuthContext)
 
     const [profileTab, setProfileTab] = useState("Bio")
