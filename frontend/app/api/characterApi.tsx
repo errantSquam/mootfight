@@ -6,7 +6,7 @@ import { ToastStatus } from "common";
 
 const parseCharacterInfo = (characterInfo: CharacterSchema): CharacterSchema => {
     let returnInfo = characterInfo as CharacterAmbiguousSchema
-    console.log(returnInfo.expand)
+    //console.log(returnInfo.expand)
 
     //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
     try {
@@ -78,7 +78,6 @@ const getCharacter = async (character_id?: string): Promise<CharacterSchema | un
     let charaInfo = await pb.collection('characters').getOne(character_id, {
         expand: 'owner, images, attacks_via_characters'
     }) as CharacterSchema
-    //this one works fine
 
     return parseCharacterInfo(charaInfo)
 }

@@ -7,9 +7,6 @@ import type { ListResult, RecordModel } from "pocketbase";
 
 const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
     let returnInfo = userInfo as UserAmbiguousSchema
-    console.log("hi")
-    console.log(userInfo)
-
     //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
     try {
         returnInfo.characters = userInfo.expand.characters_via_owner
@@ -23,7 +20,10 @@ const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
             character.images = images
 
 
-            defencesArray = [...defencesArray, character.expand.attacks_via_characters]
+            if (character.expand.attacks_via_characters) {
+                let defences = character.expand.attacks_via_characters.filter((defence: AttackSchema) => defence !== undefined)
+                defencesArray = [...defencesArray, ...defences]
+            }
 
             delete character.expand
             return character
@@ -83,8 +83,7 @@ const getUserInfoByUsername = async (username: string | undefined) => {
     }) as UserRecord
     //note: pocketbase doesn't like backtick newlines
 
-    console.log("this one has characters_via_owner")
-    console.log(userInfo)
+    
 
     return parseUserInfo(userInfo)
 }

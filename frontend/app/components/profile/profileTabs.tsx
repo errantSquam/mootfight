@@ -19,8 +19,6 @@ export const ProfileCharactersTab = () => {
     characters should be an array of IDs pointing to said character, maybe?
     or maybe characters should have an owner id and we query from there...
     */
-   console.log("Profile Data:")
-   console.log(profileData)
     const characterLimit = 30
     return <div>
         <h1>Characters</h1>
@@ -44,7 +42,6 @@ export const ProfileCharactersTab = () => {
 const AttacksArray = ({attackData}: {attackData: AttackSchema[] | undefined}) => {
     return <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             attackData?.map((attack) => {
-                console.log(attackData)
                 return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center">
                     <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
@@ -59,9 +56,8 @@ export const ProfileBattlesTab = () => {
     const { profileLoading, profileData } = useContext(ProfileContext)
 
     //todo: battles — attacks and defences!
-    /*
-    Might need to come up with a firebase query to find all attacks and defences per user...
-    */
+
+
     return <div>
         <h3>Attacks</h3>
         <AttacksArray attackData = {profileData?.attacks}/>
