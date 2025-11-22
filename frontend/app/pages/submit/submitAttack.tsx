@@ -245,7 +245,7 @@ const CharacterUploadComponent = ({ register, index }:
                 <div className="flex flex-row w-1/2 px-8 py-4 justify-center space-x-4">
 
                     <MootButton onClick={() => {
-                        getCharactersBySearchQueries(searchQuery).then((resp) => {
+                        getCharactersBySearchQueries(searchQuery, 1, 99).then((resp) => {
                             console.log(resp)
                             setSearchResults(resp.items)
                         })
