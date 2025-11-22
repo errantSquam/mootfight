@@ -12,19 +12,8 @@ export function Search() {
 
     const [searchParams, setSearchParams] = useSearchParams();
     // maybe optimize this into two different pages with two different calls later.
-    const [usersSnapshot, usersLoading, usersError] = usersSearchHook(searchParams.get("query"));
+    const [users, usersLoading, usersError] = usersSearchHook(searchParams.get("query"));
 
-    function transformSnapshot(snapshotData: QuerySnapshot<DocumentData, DocumentData> | undefined) {
-        if (snapshotData === undefined) {
-            return []
-        }
-        let tempArray: DocumentData[] = []
-        snapshotData.forEach((user: QueryDocumentSnapshot<DocumentData, DocumentData>) => {
-            tempArray = [...tempArray, user.data()]
-        })
-        return tempArray
-
-    }
 
     return (
         <div className="flex items-center justify-center pt-16 pb-4">
@@ -36,10 +25,10 @@ export function Search() {
                     <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
                         <div>
                             <div className="flex flex-row gap-x-2">
-                                {!usersLoading && usersSnapshot?.map((user) => {
-                                    return <Link to={getProfileLink(user.username, user.user_id)}>
+                                {!usersLoading && users?.map((user) => {
+                                    return <Link to={getProfileLink(user.username)}>
                                         <div className="flex flex-col items-center" key={user.username}>
-                                            <ImageWithLoader src={getPfp(user.profile_picture)} className="w-20 h-20 object-cover" />
+                                            <ImageWithLoader src={getPfp(user.id, user.profile_picture)} className="w-20 h-20 object-cover" />
                                             <span className="w-20 text-ellipsis overflow-hidden">{user.username}</span>
                                         </div></Link>
                                 })}
