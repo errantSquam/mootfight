@@ -248,7 +248,7 @@ export function SubmitCharacterPage() {
         if (userInfo === null) {
             handleToast({
                 toast_type: "error",
-                message: "Userinfo not found error?"
+                message: "Maybe you're not logged in?"
             })
             return
         }

@@ -28,16 +28,19 @@ const handleError = (error: unknown): { toast_type: ToastStatus, message: string
 
 
 const checkLoggedIn = async () => {
-    await pb.collection('users').authRefresh();
-
-    if (pb.authStore.record === null) {
-        return false
-    }
-    return true
+    return pb.authStore.isValid
 }
 
 const signIn = async (email: string, password: string): Promise<ToastResponse> => {
     try {
+        const isLoggedIn = await checkLoggedIn()
+
+        if (isLoggedIn) {
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: "Already logged in! Please refresh the page."
+            }
+        }
 
         const authData = await pb.collection('users').authWithPassword(
             email,
@@ -82,7 +85,7 @@ const logOut = async () => {
 
 }
 
-const resetPassword = async (user_id:string, oldPassword: string, password: string, confirmPassword: string) => {
+const resetPassword = async (user_id: string, oldPassword: string, password: string, confirmPassword: string) => {
     await pb.collection("users").update(user_id, {
         oldPassword: oldPassword, // superusers and auth records with manager access can skip this
         password: password,
