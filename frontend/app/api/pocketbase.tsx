@@ -9,8 +9,8 @@ const pb = new PocketBase('http://127.0.0.1:8090');
 
 const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
     if (error instanceof ClientResponseError) {
-       console.log(error)
-       console.log(error.data)
+        console.log(error)
+        console.log(error.data)
 
         return {
             toast_type: ToastStatus.ERROR,
@@ -80,6 +80,14 @@ const logOut = async () => {
 
     }
 
+}
+
+const resetPassword = async (user_id:string, oldPassword: string, password: string, confirmPassword: string) => {
+    await pb.collection("users").update(user_id, {
+        oldPassword: oldPassword, // superusers and auth records with manager access can skip this
+        password: password,
+        passwordConfirm: confirmPassword,
+    })
 }
 
 //we should refactor this into different API call files...

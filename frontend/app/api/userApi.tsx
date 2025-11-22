@@ -12,7 +12,7 @@ const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
     try {
         returnInfo.characters = userInfo.expand.characters_via_owner
         delete returnInfo.expand
-        returnInfo.characters.map((character: any) => {
+        returnInfo.characters?.map((character: any) => {
 
             let images = character.expand.images
             character.images = images

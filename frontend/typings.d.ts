@@ -69,6 +69,13 @@ interface CharacterRecord {
 
 interface CharacterSchema extends CharacterRecord {
     images: RefImage[],
+    attacks?: AttackSchema[],
+    
+    owner: UserAmbiguousSchema
+}
+
+interface CharacterAmbiguousSchema extends CharacterSchema {
+    expand?: any
 }
 
 

@@ -18,10 +18,6 @@ export default function CharacterPage() {
 
     const [charaData, charaLoading, charaError] = getCharacterHook(params.characterId)
 
-    const [userData, userLoading, userError] = getUserInfoHook(charaData?.owner_id)
-
-    const [attackData, attackLoading, attackError] = getDefencesByCharacterHook(params.characterId)
-
 
 
     const CharaTabs: { [index: string]: JSX.Element } = {
@@ -32,7 +28,7 @@ export default function CharacterPage() {
                         <ImageWithLoader src={image.image_link} className="w-40 h-40 object-cover" />
                         <div> by <a href={image.artist_link} className="mootfight-link"
                             target="_blank" rel="noopener noreferrer">
-                            {image.artist}
+                            {image.artist_name}
                         </a></div>
                     </div>
                 })
@@ -48,9 +44,8 @@ export default function CharacterPage() {
             <SanitizedMarkdown markdown={charaData?.permissions || ''} />
         </div>,
         "Battles": <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
-            attackData?.map((attack) => {
-                console.log(attackData)
-                return <Link to={`/attack/${attack.attack_id}`} className="flex flex-col items-center">
+            charaData?.attacks?.map((attack) => {
+                return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center">
                     <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
@@ -82,7 +77,7 @@ export default function CharacterPage() {
                                     <div className="text-xl font-bold">
                                         {charaData?.name}
                                     </div>
-                                    <i className="opacity-70">({charaData?.character_id})</i>
+                                    <i className="opacity-70">({charaData?.id})</i>
                                 </div>
                             }
                             <div>
@@ -98,10 +93,10 @@ export default function CharacterPage() {
                     </div>
                 </div>
             </div>
-            <div> {!userLoading &&
+            <div> {!charaLoading &&
                 <div>
-                    Belongs to <Link to={getProfileLink(userData?.username || '', userData?.user_id)}>
-                        <u>{userData?.username}</u></Link>
+                    Belongs to <Link to={getProfileLink(charaData?.owner.username || '')}>
+                        <u>{charaData?.owner.username}</u></Link>
                 </div>
             }</div>
             <div className="w-full flex flex-row">
