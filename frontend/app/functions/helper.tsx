@@ -1,5 +1,16 @@
-export function getPfp(src: string | undefined) {
-    return src === undefined || src === '' ? "/assets/images/default owlcroraptor.png" : src
+import { pb } from "~/api/pocketbase"
+
+export function getPfp(id: string | undefined, src: string | undefined) {
+
+    if (src === undefined || id === undefined) {
+        return "/assets/images/default owlcroraptor.png"
+    }
+    
+
+    let pfp = `${import.meta.env.VITE_POCKETBASE_ENDPOINT}/files/users/${id}/${src}`
+    console.log(pfp)
+
+    return src === undefined || src === '' ? "/assets/images/default owlcroraptor.png" : pfp
 
 }
 

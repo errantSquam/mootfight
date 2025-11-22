@@ -48,7 +48,7 @@ export function Welcome() {
                 {!loading && users?.items?.map((user) => {
                   return <Link to={getProfileLink(user.username)}>
                     <div className="flex flex-col items-center" key={user.username}>
-                      <ImageWithLoader src={getPfp(user.profile_picture)} className="w-20 h-20 object-cover" />
+                      <ImageWithLoader src={getPfp(user.id, user.profile_picture)} className="w-20 h-20 object-cover" />
                       <span>{user.username}</span>
                     </div></Link>
                 })}

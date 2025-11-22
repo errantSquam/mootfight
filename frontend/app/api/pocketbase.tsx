@@ -5,7 +5,7 @@ import PocketBase, { ClientResponseError } from 'pocketbase';
 import { type RecordModel } from "pocketbase";
 
 
-const pb = new PocketBase('http://127.0.0.1:8090');
+const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_ENDPOINT);
 
 const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
     if (error instanceof ClientResponseError) {

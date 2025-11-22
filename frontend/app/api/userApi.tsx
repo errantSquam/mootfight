@@ -174,6 +174,30 @@ const updateUserInfo = async (toUpdate: any) => {
 
 }
 
+const updateProfilePicture = async (pfp: File) => {
+
+       try {
+        const isLoggedIn = await checkLoggedIn()
+        if (!isLoggedIn) {
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: "Not logged in!"
+            }
+        }
+
+        const record = await pb.collection('users').update(pb.authStore.record!.id, {profile_picture: pfp});
+
+        return {
+            toast_type: ToastStatus.SUCCESS,
+            message: "Successfully updated info!"
+        }
+    } catch (error) {
+        console.log(error)
+        return handleError(error)
+
+    }
+
+}
 //we should refactor this into different API call files...
 export {
     getUserInfo,
@@ -182,5 +206,6 @@ export {
     getUsers,
     getUsersHook,
     updateUserInfo,
+    updateProfilePicture,
     usersSearchHook
 }

@@ -51,7 +51,7 @@ const MainProfileLayout = () => {
             <div className="flex flex-col items-start justify-center w-full">
                 <div className="flex flex-row items-center gap-x-2 w-full">
                     <div className="p-2">
-                        <img src={getPfp(profileData?.profile_picture)} className="w-30 rounded-full" />
+                        <img src={getPfp(profileData?.id, profileData?.profile_picture)} className="w-30 rounded-full" />
                         {/*
                         Put pfp component here if user is editing...
                         <ProfilePictureComponent />

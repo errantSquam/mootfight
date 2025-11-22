@@ -123,7 +123,7 @@ export function Navbar() {
             <div className="flex flex-row gap-x-4 h-full items-center">
                 {userInfo === null && <div><Link to="login">Login </Link></div>}
                 <div>
-                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profile_picture)} />}
+                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.id, userInfo?.profile_picture)} />}
                 </div>
             </div>
 
