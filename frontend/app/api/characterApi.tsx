@@ -134,6 +134,19 @@ const getCharactersBySearch = async (substring: string, page: number = 1, limitA
     return chara
 }
 
+//username and character
+const getCharactersBySearchQueries = async (searchQuery: any, page: number = 1, limitAmount: number = 3) => {
+    console.log(`name~'${searchQuery.character}' && owner.username~'${searchQuery.user}'`)
+    let chara = await pb.collection("characters").getList(page, limitAmount, {
+        filter: `name~'${searchQuery.character}' && owner.username~'${searchQuery.user}'`,
+        expand: 'owner, images'
+    }) as any
+
+
+    chara.items = chara.items.map((char: CharacterAmbiguousSchema) => { return parseCharacterInfo(char) })
+    return chara
+}
+
 const charactersSearchHook = (searchQuery: string | null = "", page: number = 1, limitAmount: number = 3, enabled : boolean = true):
     [CharacterSchema[], boolean, Error | null] => {
 
@@ -162,6 +175,7 @@ export {
     checkCharactersExist,
     getCharactersOwners,
     getCharactersBySearch,
+    getCharactersBySearchQueries,
     charactersSearchHook
 }
 

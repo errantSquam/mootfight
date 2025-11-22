@@ -6,7 +6,7 @@ import type { MDXEditorMethods } from "@mdxeditor/editor"
 import { useContext } from "react"
 import { AuthContext } from "~/provider/authProvider"
 import { handleToast } from "~/functions/handleToast"
-import { createCharacter, getCharactersBySearch, getCharactersOwners } from "~/api/characterApi"
+import { createCharacter, getCharactersBySearch, getCharactersBySearchQueries, getCharactersOwners } from "~/api/characterApi"
 import { Link, useNavigate } from "react-router"
 import { ToastStatus } from "common"
 import { Modal } from "~/components/genericComponents"
@@ -169,7 +169,10 @@ const CharacterUploadComponent = ({ register, index }:
 
     const [searchModalOpen, setSearchModal] = useState<boolean>(false)
 
-    const [searchQuery, setSearchQuery] = useState<string>('')
+    const [searchQuery, setSearchQuery] = useState<any>({
+        user: '',
+        character: ''
+    })
     const [searchResults, setSearchResults] = useState<CharacterAmbiguousSchema[]>([])
 
 
@@ -217,18 +220,24 @@ const CharacterUploadComponent = ({ register, index }:
             handleClose={() => setSearchModal(false)}
             title="Character Search"
         >
-            <div className="flex flex-col w-full items-center">
+            <div className="flex flex-col w-full items-center gap-y-2">
                 <h3> Search</h3>
                 <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
-                    placeholder="Search character..."
-                    value={searchQuery}
+                    placeholder="Username"
+                    value={searchQuery.user}
                     onChange={(e) => {
-                        setSearchQuery(e.target.value)
+                        setSearchQuery({...searchQuery, user: e.target.value})
+                    }} />
+                <input type="text" className="py-1 px-2 w-1/2 border border-zinc-500"
+                    placeholder="Character"
+                    value={searchQuery.character}
+                    onChange={(e) => {
+                        setSearchQuery({...searchQuery, character: e.target.value})
                     }} />
                 <div className="flex flex-row w-1/2 px-8 py-4 justify-center space-x-4">
 
                     <MootButton onClick={() => {
-                        getCharactersBySearch(searchQuery).then((resp) => {
+                        getCharactersBySearchQueries(searchQuery).then((resp) => {
                             console.log(resp)
                             setSearchResults(resp.items)
                         })
