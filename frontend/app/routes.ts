@@ -10,8 +10,7 @@ export default [
     ...prefix("user",[
         route("settings", "routes/user/settings.tsx"),
         route("settings/bio", "routes/user/settingsBioEdit.tsx"),
-        route("profile/:username", "routes/user/profileRedirect.tsx"),
-        route("profile/:username/:userId", "routes/user/profile.tsx"),
+        route("profile/:username", "routes/user/profile.tsx"),
     ]),
     ...prefix("character", [
         route(":characterId", "routes/character/character.tsx")

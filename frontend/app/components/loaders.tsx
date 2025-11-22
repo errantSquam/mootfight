@@ -18,14 +18,12 @@ export const ImageWithLoader = ({ src, className, spoiler = undefined }:
         text-ellipsis p-6`}>
             {spoiler}
             </div>
-        {spoiler !== undefined && 
+        {(spoiler !== undefined && spoiler !== "") && 
         <div className="absolute opacity-0 group-hover:opacity-50 transition bg-zinc-900 z-98 w-full h-full" />}
         <img src={src} onLoad={() => setIsLoading(false)}
             className={`${className} ${isLoading ? "opacity-0 absolute" : "opacity-100 relative"}
-        ${spoiler !== undefined ? "blur-md" : "blur-none"}`} />
+        ${(spoiler !== undefined && spoiler !== "") ? "blur-md" : "blur-none"}`} />
         <ImageSkeletonComponent className={`${className} ${isLoading ? "visible" : "hidden"}`} />
-
-
     </div>
 
 

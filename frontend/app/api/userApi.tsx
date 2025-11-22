@@ -1,70 +1,141 @@
-import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./firebase"
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { signOut } from "firebase/auth";
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
-import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
-import { ToastStatus } from "common";
-const getUserInfo = async (uid?: string) => {
 
-    /*if (auth.currentUser === null) {
-        return null
-    }*/
-    if (uid === undefined) {
-        if (auth.currentUser !== null) {
-            uid = auth.currentUser.uid
+import { ToastStatus } from "common";
+import { checkLoggedIn, handleError, pb } from "./pocketbase";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import type { ListResult, RecordModel } from "pocketbase";
+
+const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
+    let returnInfo = userInfo as UserAmbiguousSchema
+    //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
+    try {
+        returnInfo.characters = userInfo.expand.characters_via_owner
+        
+        returnInfo.attacks = userInfo.expand.attacks_via_attacker 
+
+        let defencesArray: AttackSchema[] = []
+    
+        returnInfo.characters?.map((character: any) => {
+            let images = character.expand.images
+            character.images = images
+
+
+            if (character.expand.attacks_via_characters) {
+                let defences = character.expand.attacks_via_characters.filter((defence: AttackSchema) => defence !== undefined)
+                defencesArray = [...defencesArray, ...defences]
+            }
+
+            delete character.expand
+            return character
+        })
+
+        returnInfo.defences = defencesArray
+
+
+        delete returnInfo.expand
+
+    } catch (error) {
+        console.log(error)
+    }
+
+    return returnInfo
+
+}
+const getUserInfo = async (user_id?: string) => {
+
+    if (user_id === undefined) {
+        await pb.collection('users').authRefresh();
+
+        if (pb.authStore.record !== null) {
+            user_id = pb.authStore.record.id
         }
         else {
-            return {}
+            return {} as UserAmbiguousSchema
         }
     }
-    let docRef = doc(db, "users", uid)
-    let docSnap = await getDoc(docRef)
-    return docSnap.data()
+
+    let userInfo = await pb.collection('users').getOne(user_id, {
+        expand: `characters_via_owner, characters_via_owner.images, characters_via_owner.attacks_via_characters, attacks_via_attacker`
+    }) as UserRecord
+
+
+    return parseUserInfo(userInfo)
 }
 
-const getUserInfoHook = (uid?: string): [UserAmbiguousSchema| undefined, boolean, FirestoreError | undefined] => {
+const getUserInfoHook = (user_id?: string): [UserAmbiguousSchema | undefined, boolean, Error | null] => {
 
-    if (uid === null) {
-        let [undefinedInfo, returnedLoading, returnedError] = useDocument(undefined) //oops all undefined
-        return [undefined, returnedLoading, returnedError]
-    }
-    if (uid === undefined) {
-        if (auth.currentUser !== null) {
-            uid = auth.currentUser.uid
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['userInfo', user_id],
+        queryFn: () => {
+            return getUserInfo(user_id)
         }
-        else {
-            //this shouldn't be called...
-            console.log("This shouldn't be called...")
-            uid = 'invalid'
-        }
-    }
+    })
 
-    let [unhandledInfo, returnedLoading, returnedError] = useDocument(doc(db, 'users', uid))
-    let returnedInfo = unhandledInfo?.data() as UserAmbiguousSchema
-    return [returnedInfo, returnedLoading, returnedError]
+    return [data, isLoading, error]
 }
 
 const getUserInfoByUsername = async (username: string | undefined) => {
     if (username === undefined) {
-        return [undefined, true, undefined]
+        return undefined
     }
-    let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), where('username', '==', username));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot
+    let userInfo = await pb.collection('users').getFirstListItem(`username="${username}"`, {
+        expand: `characters_via_owner, characters_via_owner.images, attacks_via_attacker, characters_via_owner.attacks_via_characters`
+    }) as UserRecord
+    //note: pocketbase doesn't like backtick newlines
 
+    
+
+    return parseUserInfo(userInfo)
 }
 
 const getUserInfoByUsernameHook = (username: string | undefined):
- [UserSchema[], boolean, FirebaseError | undefined] => {
-    if (username === undefined) {
+    [UserAmbiguousSchema | undefined, boolean, Error | null] => {
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['userInfo', username],
+        queryFn: () => {
+            return getUserInfoByUsername(username)
+        }
+    })
+
+    return [data, isLoading, error]
+}
+
+const getUsers = async (page: number = 1, limitAmount: number = 3) => {
+    let users = await pb.collection("users").getList(page, limitAmount, {
+        expand: 'characters_via_owner, characters_via_owner.images, attacks_via_attacker, attacks_via_characters_via_owner'
+    }) as any
+
+
+    users.items = users.items.map((user: UserRecord) => { return parseUserInfo(user) })
+    return users
+}
+
+const getUsersHook = (page: number = 1, limitAmount: number = 3):
+    [ListResult<RecordModel> | undefined, boolean, Error | null] => {
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['usersInfo'],
+        queryFn: () => {
+            return getUsers(page, limitAmount)
+        }
+    })
+    return [data, isLoading, error]
+
+
+}
+
+
+const usersSearchHook = (searchQuery: string | null = "", limitAmount: number = 3, pagination = 0):
+    [UserSchema[], boolean, undefined] => {
+    return [[] as UserSchema[], true, undefined]
+    /*
+    if (searchQuery === null || searchQuery === '') {
         return [[] as UserSchema[], true, undefined]
     }
-
     let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), where('username', '==', username));
+    //placeholder because firebase fucking SUCKS and doesn't have a contains operation what the HELL
+    const q = query(usersRef, orderBy("username"), limit(limitAmount), where('username', '==', searchQuery));
     let [userData, userLoading, userError] = useCollection(q)
 
     let returnedArray: UserSchema[] = []
@@ -73,52 +144,60 @@ const getUserInfoByUsernameHook = (username: string | undefined):
         returnedArray.push((document.data() as UserSchema))
     })
 
-    return [returnedArray, userLoading, userError]
+    return [returnedArray, userLoading, userError]*/
 }
 
-const getUsers = async (limitAmount: number = 3) => {
-    //possible issue. it DOES include the emails as well, which might be a privacy issue...
-    let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), limit(limitAmount));
-    const querySnapshot = await getDocs(q);
-    return querySnapshot
-}
-
-const getUsersHook = (limitAmount: number = 3) => {
-    let usersRef = collection(db, "users")
-    const q = query(usersRef, orderBy("username"), limit(limitAmount));
-    return useCollection(q)
-}
 
 const updateUserInfo = async (toUpdate: any) => {
-    if (auth.currentUser === null) {
-        return {
-            toastType: ToastStatus.ERROR,
-            message: "Not logged in!"
+
+
+    try {
+        const isLoggedIn = await checkLoggedIn()
+        if (!isLoggedIn) {
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: "Not logged in!"
+            }
         }
-    }
 
-    let docRef = doc(db, "users", auth.currentUser.uid)
-    let docSnap = await getDoc(docRef)
-    if (docSnap.exists()) {
-        updateDoc(docRef, toUpdate);
-        //Catch errors here...
+        const record = await pb.collection('users').update(pb.authStore.record!.id, toUpdate);
 
         return {
-            toastType: ToastStatus.SUCCESS,
+            toast_type: ToastStatus.SUCCESS,
             message: "Successfully updated info!"
         }
-    }
-    else {
-        return {
-            toastType: ToastStatus.ERROR,
-            message: "User does not exist."
-        }
+    } catch (error) {
+        console.log(error)
+        return handleError(error)
 
     }
 
 }
 
+const updateProfilePicture = async (pfp: File) => {
+
+       try {
+        const isLoggedIn = await checkLoggedIn()
+        if (!isLoggedIn) {
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: "Not logged in!"
+            }
+        }
+
+        const record = await pb.collection('users').update(pb.authStore.record!.id, {profile_picture: pfp});
+
+        return {
+            toast_type: ToastStatus.SUCCESS,
+            message: "Successfully updated info!"
+        }
+    } catch (error) {
+        console.log(error)
+        return handleError(error)
+
+    }
+
+}
 //we should refactor this into different API call files...
 export {
     getUserInfo,
@@ -126,5 +205,7 @@ export {
     getUserInfoByUsernameHook,
     getUsers,
     getUsersHook,
-    updateUserInfo
+    updateUserInfo,
+    updateProfilePicture,
+    usersSearchHook
 }

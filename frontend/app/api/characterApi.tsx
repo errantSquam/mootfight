@@ -1,127 +1,137 @@
-import type { FirebaseError } from "firebase/app";
-import { app, auth, db, handleError } from "./firebase"
-import { collection, doc, setDoc, addDoc, getDoc, getDocs, updateDoc, FirestoreError } from "firebase/firestore";
-import { getCountFromServer, query, orderBy, limit, documentId, where } from "firebase/firestore";
-import { useDocument, useCollection } from 'react-firebase-hooks/firestore'
+
+import { useQuery } from "@tanstack/react-query";
+import { checkLoggedIn, handleError, pb } from "./pocketbase"
 import { ToastStatus } from "common";
+
+
+const parseCharacterInfo = (characterInfo: CharacterSchema): CharacterSchema => {
+    let returnInfo = characterInfo as CharacterAmbiguousSchema
+    //console.log(returnInfo.expand)
+
+    //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
+    try {
+        let images = returnInfo.expand.images
+        returnInfo.images = images
+
+        let owner = returnInfo.expand.owner
+        returnInfo.owner = owner
+
+        let attacks = returnInfo.expand.attacks_via_characters
+        returnInfo.attacks = attacks
+
+        delete returnInfo.expand
+        return returnInfo
+
+    } catch (error) {
+        console.log(error)
+    }
+
+    return returnInfo
+
+}
 const createCharacter = async (data: CharacterSchema) => {
     try {
-        if (auth.currentUser === null) {
-            return {
-                toastType: ToastStatus.ERROR,
-                message: "Not logged in!"
-            }
 
-        }
-        let collRef = collection(db, "characters")
-        let resp = await addDoc(collRef, data);
+        let tempData: CharacterRecord = data as CharacterRecord
+        let imagesData: RefImage[] = data.images
+
+        const batch = pb.createBatch()
+
+        let imageIds: string[] = []
+
+        imagesData.forEach((image) => {
+            let newId = crypto.randomUUID().toString().replaceAll("-", "").substring(0, 15)
+            imageIds.push(newId)
+            image.id = newId
+            image.uploader = pb.authStore.record?.id
+
+            batch.collection('ref_images').create(image)
+        })
+
+
+        const record = batch.collection('characters').create({
+            ...tempData,
+            images: imageIds
+        })
+
+        const results = await batch.send()
+
         return {
-            toastType: ToastStatus.SUCCESS,
-            message: "Successfully created character!"
+            toast_type: ToastStatus.SUCCESS,
+            message: "Successfully created character!",
+            data: results
         }
 
     } catch (error: unknown) {
-        return handleError(error)
+
+        return {...handleError(error), data: {}}
     }
 
 }
 
-const getCharactersByUserHook = (uid?: string, limitAmount: number = 99)
-    : [CharacterSchema[] | undefined, boolean, FirestoreError | undefined] => {
-    if (uid === undefined) {
-        return [undefined, true, undefined]
-    }
-    let charaRef = collection(db, "characters")
-    //if we're doing order by, needs a compound index, created in console. Gonna turn that off for now!
-    const q = query(charaRef, limit(limitAmount), where('owner', '==', uid));
+const getCharacter = async (character_id?: string): Promise<CharacterSchema | undefined> => {
 
-    //Debug string... Or we could call the error that's, you know, returned by useCollection but shh it's okay.
-    /*let resp = getDocs(q).then((data) => {console.log(data)})*/
-
-    let [charaData, charaLoading, charaError] = useCollection(q)
-
-
-    let returnArray: CharacterSchema[] = []
-    charaData?.forEach((result) => {
-        let tempData = result.data()
-        tempData.cid = result.id
-        returnArray.push(tempData as CharacterSchema)
-    })
-    return [returnArray, charaLoading, charaError]
-}
-
-
-const getCharacter = async (cid?: string): Promise<CharacterSchema | undefined> => {
-    if (cid === undefined) {
+    if (character_id === undefined) {
         return undefined
     }
-    let charaRef = doc(db, "characters", cid)
-    let resp = await getDoc(charaRef)
 
-    return resp.data() as CharacterSchema
+    let charaInfo = await pb.collection('characters').getOne(character_id, {
+        expand: 'owner, images, attacks_via_characters'
+    }) as CharacterSchema
+
+    return parseCharacterInfo(charaInfo)
 }
 
-const checkCharacterExists = async (cid?: string): Promise<boolean> => {
-    const snap = await getCountFromServer(query(
-            collection(db, 'characters'), where(documentId(), '==', cid)
-        ))
-    
-    if (snap.data().count > 0) {
+const checkCharacterExists = async (character_id?: string): Promise<boolean> => {
+    try {
+        await getCharacter(character_id)
         return true
-    } else {
+    } catch (error) {
+        console.log(error)
         return false
     }
 
 }
 
 const checkCharactersExist = async (cidArray: string[]): Promise<boolean> => {
-    const snap = await getCountFromServer(query(
-            collection(db, 'characters'), where(documentId(), 'in', cidArray)
-        ))
-    if (snap.data().count === cidArray.length) {
+    const resultList = await pb.collection('characters').getList(1, cidArray.length);
+
+    if (resultList.totalItems === cidArray.length) {
         return true
-    } else {
-        return false
     }
+    return false
 }
 
 const getCharactersOwners = async (cidArray: string[]): Promise<string[]> => {
-    let resp = await getDocs(query(
-            collection(db, 'characters'), where(documentId(), 'in', cidArray)
-        ))
-    
-    let tempArray: string[] = []
-    resp.forEach((data) => {
-        let owner = data.data().owner
-        tempArray.push(owner)
+
+    const resultList = await pb.collection('characters').getList(1, cidArray.length, {
+        expand: 'owner, images, characters_via_owner.attacks_via_character'
+    });
+
+    return resultList.items.map((chara) => {return chara.owner.id})
+}
+
+const getCharacterHook = (character_id?: string): [CharacterSchema | undefined, boolean, Error | null] => {
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['characterInfo'],
+        queryFn: () => {
+            return getCharacter(character_id)
+        }
     })
 
-    return tempArray
-}
+    return [data, isLoading, error]
 
-const getCharacterHook = (cid?: string): [CharacterSchema | undefined, boolean, FirestoreError | undefined] => {
-    if (cid === undefined) {
-        return [undefined, true, undefined]
-    }
-    let charaRef = doc(db, "characters", cid)
-    let [charaData, charaLoading, charaError] = useDocument(charaRef)
-    let dataToReturn = charaData?.data() as CharacterSchema
-    if (dataToReturn !== undefined) {
-        dataToReturn.cid = charaRef.id
-    }
-    return [dataToReturn, charaLoading, charaError]
 }
 
 
 
 
-//we should refactor this into different API call files...
 export {
     createCharacter,
     getCharacterHook,
     getCharacter,
     checkCharacterExists,
     checkCharactersExist,
-    getCharactersByUserHook,
     getCharactersOwners
 }
+

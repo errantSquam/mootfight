@@ -50,9 +50,9 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
     }) => {
 
     const [imageData, setImageData] = useState<RefImage>({
-        imageLink: '',
-        artist: undefined,
-        artistLink: undefined,
+        image_link: '',
+        artist_name: undefined,
+        artist_link: undefined
     })
     const [validationVerified, setValidationVerified] = useState<boolean>(false)
     const [validationError, setValidationError] = useState<boolean>(false)
@@ -60,9 +60,9 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
     const [showImage, setShowImage] = useState<boolean>(false)
     const [customCreditEnable, setCustomCredit] = useState<boolean>(false)
 
-    const validateImage = async (imageLink: string) => {
+    const validateImage = async (image_link: string) => {
         //change to a handler?
-        let resp = await checkImage(imageLink)
+        let resp = await checkImage(image_link)
         if (resp === true) {
             setValidationVerified(true)
             setValidationError(false)
@@ -95,11 +95,11 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             validationVerified ? "bg-green-300" : "bg-zinc-400"} 
                         rounded text-sm text-zinc-900/100 py-1 px-2`}
                             placeholder="Your image link here..."
-                            value={imageData.imageLink}
+                            value={imageData.image_link}
                             onChange={(e) => {
                                 let updatedData = {
                                     ...imageData,
-                                    imageLink: e.target.value
+                                    image_link: e.target.value
                                 }
                                 setImageData(updatedData)
                                 setValue(`images.${imageIndex}`, updatedData)
@@ -108,7 +108,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             autoComplete="off"
                         />
 
-                        <MootButton onClick={() => { validateImage(imageData.imageLink) }}
+                        <MootButton onClick={() => { validateImage(imageData.image_link) }}
                             >
                             Validate
                         </MootButton>
@@ -124,8 +124,8 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                         setCustomCredit(e.target.checked) 
                         if (e.target.checked === false) {
                             let nulledData = {...imageData,
-                                artist: undefined,
-                                artistLink: undefined
+                                artist_name: undefined,
+                                artist_link: undefined
                             }
                             setImageData(nulledData)
                             setValue(`images.${imageIndex}`, nulledData)
@@ -146,7 +146,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             onChange={(e) => {
                                 let updatedData = {
                                     ...imageData,
-                                    artist: e.target.value
+                                    artist_name: e.target.value
                                 }
                                 setImageData(updatedData)
                                 setValue(`images.${imageIndex}`, updatedData)
@@ -160,7 +160,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
                             onChange={(e) => {
                                 let updatedData = {
                                     ...imageData,
-                                    artistLink: e.target.value
+                                    artist_link: e.target.value
                                 }
                                 setImageData(updatedData)
                                 setValue(`images.${imageIndex}`, updatedData)
@@ -173,7 +173,7 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
             //Summon a modal instead...
             <Modal isOpen={showImage} handleClose={handleModalClose} title="Image Verification">
                 <div className={`flex flex-col items-center gap-y-2`}>
-                    <img src={imageData.imageLink} className="w-1/3" />
+                    <img src={imageData.image_link} className="w-1/3" />
                     <div className='text-green-300'>Image is valid!</div>
 
 
@@ -186,13 +186,13 @@ const ImageUploadComponent = ({ register, errors, setValue, imageIndex }:
 
         }
         <input hidden className="border border-zinc-500 rounded-md p-1 bg-zinc-900 w-full"
-            value={imageData.imageLink}
+            value={imageData.image_link}
             {...register(`images.${imageIndex}`,
                 {
                     required: true,
                     validate: (value) => {
                         //Return false means a-ok in hook forms... why
-                        if (!checkImage(value.imageLink)) { return true }
+                        if (!checkImage(value.image_link)) { return true }
 
                     },
                 }
@@ -239,32 +239,43 @@ export function SubmitCharacterPage() {
 
     const onSubmit: SubmitHandler<CharacterSchema> = (data, e) => {
         setIsLoading(true)
+        
+        let submitData: any = data
 
-        data.description = descRef.current?.getMarkdown()
-        data.permissions = permsRef.current?.getMarkdown()
-        data.owner = userInfo?.uid //can be null
+        submitData.description = descRef.current?.getMarkdown()
+        submitData.permissions = permsRef.current?.getMarkdown()
+
+        if (userInfo === null) {
+            handleToast({
+                toast_type: "error",
+                message: "Maybe you're not logged in?"
+            })
+            return
+        }
+        submitData.owner = userInfo.id!
 
         //throw error if auth not loaded? somehow?
 
         //Map artist to self if unset
-        data.images = data.images.map((image) => {
+        submitData.images = data.images.map((image) => {
             let tempImage = {...image}
-            if (image.artist === undefined) {
-                tempImage.artist = userInfo?.username
+            if (image.artist_name === undefined) {
+                tempImage.artist_name = userInfo?.username
             }
-            if (image.artistLink === undefined) {
-                tempImage.artistLink = `/user/profile/${userInfo?.username}/${userInfo?.uid}`
+            if (image.artist_link === undefined) {
+                tempImage.artist_link = getProfileLink(`${userInfo?.username}`)
             }
             return tempImage
         })
 
         console.log("Data:")
-        console.log(data)
+        console.log(submitData)
 
-        createCharacter(data).then((resp) => {
+        createCharacter(submitData).then((resp) => {
             handleToast(resp)
-            if (resp.toastType === ToastStatus.SUCCESS) {
-                navigate(getProfileLink(userInfo?.username, userInfo?.uid))
+            console.log(resp.data)
+            if (resp.toast_type === ToastStatus.SUCCESS) {
+                navigate(getProfileLink(userInfo?.username!))
 
             }
         })

@@ -3,7 +3,7 @@ import { ProfilePage } from "~/pages/user/profile";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Mootfight!" },
+    { title: "(User)'s Profile" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }

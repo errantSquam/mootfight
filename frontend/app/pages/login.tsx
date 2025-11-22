@@ -1,7 +1,7 @@
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { type UseFormRegister } from "react-hook-form"
 import { toast } from "react-toastify"
-import { signIn } from "~/api/firebase"
+import { signIn } from "~/api/pocketbase"
 import { useNavigate } from "react-router"
 import { useState } from "react"
 import { handleToast } from "~/functions/handleToast"
@@ -40,7 +40,7 @@ export function Login() {
         signIn(data.email, data.password).then((resp) => {
             setLoggingIn(false)
             handleToast(resp)
-            if (resp.toastType === "success") {
+            if (resp.toast_type === "success") {
                 navigate('/')
 
             }

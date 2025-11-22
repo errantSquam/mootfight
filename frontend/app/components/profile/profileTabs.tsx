@@ -5,14 +5,14 @@ import { ProfileContext } from "~/provider/profileProvider"
 import { useContext } from "react"
 
 export const ProfileBioTab = () => {
-    const { profileLoading, profileData, charaLoading, charaData, attackLoading, attackData } = useContext(ProfileContext)
+    const { profileLoading, profileData} = useContext(ProfileContext)
 
     return <SanitizedMarkdown markdown={profileData?.bio || ''} />
 
 }
 
 export const ProfileCharactersTab = () => {
-    const { profileLoading, profileData, charaLoading, charaData, attackLoading, attackData } = useContext(ProfileContext)
+    const { profileLoading, profileData} = useContext(ProfileContext)
 
     //todo: characters
     /*
@@ -24,10 +24,10 @@ export const ProfileCharactersTab = () => {
         <h1>Characters</h1>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">
             {
-                charaData?.map((chara) => {
-                    console.log(charaData)
-                    return <Link to={`/character/${chara.cid}`} className="flex flex-col items-center">
-                        <ImageWithLoader src={chara.images[0].imageLink} className="w-40 h-40 object-cover" />
+                profileData?.characters?.map((chara) => {
+                    console.log(chara)
+                    return <Link to={`/character/${chara.id}`} className="flex flex-col items-center">
+                        <ImageWithLoader src={chara.images[0].image_link} className="w-40 h-40 object-cover" />
                         <div className="w-40 text-center text-ellipsis overflow-hidden">{chara.name.substring(0, characterLimit)}</div>
 
                     </Link>
@@ -42,9 +42,8 @@ export const ProfileCharactersTab = () => {
 const AttacksArray = ({attackData}: {attackData: AttackSchema[] | undefined}) => {
     return <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             attackData?.map((attack) => {
-                console.log(attackData)
-                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
-                    <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" 
+                return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center" key = {attack.id}>
+                    <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
 
@@ -54,23 +53,22 @@ const AttacksArray = ({attackData}: {attackData: AttackSchema[] | undefined}) =>
 }
 
 export const ProfileBattlesTab = () => {
-    const { profileLoading, profileData, defenceLoading, defenceData, attackLoading, attackData } = useContext(ProfileContext)
+    const { profileLoading, profileData } = useContext(ProfileContext)
 
     //todo: battles — attacks and defences!
-    /*
-    Might need to come up with a firebase query to find all attacks and defences per user...
-    */
+
+
     return <div>
         <h3>Attacks</h3>
-        <AttacksArray attackData = {attackData}/>
+        <AttacksArray attackData = {profileData?.attacks}/>
         <h3>Defences</h3>
-        <AttacksArray attackData = {defenceData}/>
+        <AttacksArray attackData = {profileData?.defences}/>
     </div>
 
 }
 
 export const ProfileStatsTab = () => {
-    const { profileLoading, profileData, charaLoading, charaData, attackLoading, attackData } = useContext(ProfileContext)
+    const { profileLoading, profileData} = useContext(ProfileContext)
 
     //todo: stats
     /*

@@ -1,14 +1,12 @@
 import { useState, useContext, createContext } from 'react';
 import { useEffect } from "react";
-import { onAuthStateChanged, type User } from "firebase/auth";
-import { signIn, auth, logOut } from "~/api/firebase"
+import { signIn, logOut } from "~/api/pocketbase"
 import { getUserInfo } from "~/api/userApi";
-import type { DocumentData } from 'firebase/firestore';
-
+import { pb } from '~/api/pocketbase';
 
 type AuthContextType = {
-    userInfo: DocumentData | null,
-    setUserInfo: React.Dispatch<React.SetStateAction<DocumentData | null>>,
+    userInfo: UserAmbiguousSchema | null,
+    setUserInfo: React.Dispatch<React.SetStateAction<UserAmbiguousSchema | null>>,
     authLoaded: boolean,
     refreshAuthUser: () => void
 }
@@ -23,7 +21,7 @@ const AuthContext = createContext<AuthContextType>({
 const AuthProvider = ({ children }: { children: any }) => {
 
     const [authLoaded, setAuthLoaded] = useState(false)
-    const [userInfo, setUserInfo] = useState<DocumentData | null>(null)
+    const [userInfo, setUserInfo] = useState<UserAmbiguousSchema | null>(null)
 
     useEffect(() => {
         let localInfo = localStorage.getItem('userInfo')
@@ -31,14 +29,15 @@ const AuthProvider = ({ children }: { children: any }) => {
             setUserInfo(JSON.parse(localInfo))
             setAuthLoaded(true)
         }
+
     }, [])
 
 
-    onAuthStateChanged(auth, (user) => {
-        handleAuthStateChanged(user)
-    });
+    pb.authStore.onChange((token, record) => {
+        handleAuthStateChanged(record as UserAmbiguousSchema), true
+    })
 
-    function updateUserInfo(newInfo: DocumentData | null | undefined, uid?:string) {
+    function updateUserInfo(newInfo:UserAmbiguousSchema | null | undefined, user_id?:string) {
 
         if (newInfo === undefined){
             console.log("Failed to fetch user document?")
@@ -46,13 +45,15 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
 
         let tempInfo = newInfo 
-        if (tempInfo !== null  && (uid !== null && uid !== undefined)) {
+        
+        if (tempInfo !== null  && (user_id !== null && user_id !== undefined)) {
             if (userInfo !== null) {
-                tempInfo['uid'] = userInfo.uid
+                tempInfo['id'] = userInfo.id
             } else {
-                tempInfo['uid'] = uid
+                tempInfo['id'] = user_id
             }
         }
+
         setUserInfo(newInfo)
         setAuthLoaded(true)
         try {
@@ -66,11 +67,12 @@ const AuthProvider = ({ children }: { children: any }) => {
         }
     }
 
-    function handleAuthStateChanged(user: User | null) {
+    function handleAuthStateChanged(user: UserAmbiguousSchema | null) {
         if (user) {
             if (userInfo === null) {
-                getUserInfo(user.uid).then((resp) => {
-                    updateUserInfo(resp, user.uid)
+                
+                getUserInfo(user.id).then((resp) => {
+                    updateUserInfo(resp, user.id)
 
                 })
             }

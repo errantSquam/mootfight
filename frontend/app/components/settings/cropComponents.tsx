@@ -8,13 +8,13 @@ import React, { useRef } from "react";
 import Cropper, { type Area } from 'react-easy-crop'
 import 'react-easy-crop/react-easy-crop.css'
 import getCroppedImg from "~/functions/crop"
-import { updateUserSettings } from "~/functions/apiHandlers"
+import { updateUserProfilePicture, updateUserSettings } from "~/functions/apiHandlers"
 import { getPfp } from "~/functions/helper"
 import { Modal } from "../genericComponents"
 import { MootButton } from "../button"
 
 type ImageInput = {
-    profilePicture: File
+    profile_picture: File
 }
 
 
@@ -111,7 +111,23 @@ export const ProfilePictureComponent = () => {
             return
         }
 
-        updateUserSettings({ profilePicture: base64 }, refreshAuthUser).then((resp) => {
+        //maybe for later?
+        
+        function dataURLtoFile(dataurl:string) {
+            var arr = dataurl.split(','),
+                mime = arr[0].match(/:(.*?);/)![1],
+                bstr = atob(arr[arr.length - 1]),
+                n = bstr.length,
+                u8arr = new Uint8Array(n);
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+
+            let filename = userInfo?.id || ''
+            return new File([u8arr], filename, { type: mime });
+        }
+
+        updateUserProfilePicture(dataURLtoFile(base64), refreshAuthUser).then((resp) => {
             resetImage()
         })
     }
@@ -141,7 +157,7 @@ export const ProfilePictureComponent = () => {
         <label htmlFor="fileField">
             <div className="relative group cursor-pointer">
                 <img src={
-                    getPfp(userInfo?.profilePicture)
+                    getPfp(userInfo?.id, userInfo?.profile_picture)
                 }
                     className="w-30 rounded-full brightness-100 group-hover:brightness-70 transition" />
                 <Icon icon="lucide:edit"
@@ -152,7 +168,7 @@ export const ProfilePictureComponent = () => {
         </label>
         <input type="file" id="fileField" accept="image/*" hidden={true}
 
-            {...registerImage("profilePicture")}
+            {...registerImage("profile_picture")}
             onChange={(e) => {
                 if (e.target.value !== '') {
                     setModalOpen(true)

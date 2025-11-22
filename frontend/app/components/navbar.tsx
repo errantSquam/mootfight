@@ -1,4 +1,4 @@
-import { signIn, auth, logOut } from "~/api/firebase"
+import { signIn,  logOut } from "~/api/pocketbase"
 import { Link } from "react-router"
 import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"
@@ -44,7 +44,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
     const handleLogout = async () => {
         let resp = await logOut()
         handleToast(resp)
-        if (resp.toastType === "success") {
+        if (resp.toast_type === "success") {
             navigate("/")
         }
     }
@@ -64,7 +64,7 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
             ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
             <MenuItem>
-                <Link to={getProfileLink(userInfo.username, userInfo.uid)} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                <Link to={getProfileLink(userInfo.username)} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
                     Profile
                 </Link>
             </MenuItem>
@@ -123,7 +123,7 @@ export function Navbar() {
             <div className="flex flex-row gap-x-4 h-full items-center">
                 {userInfo === null && <div><Link to="login">Login </Link></div>}
                 <div>
-                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.profilePicture)} />}
+                    {userInfo !== null && <UserDropdown userInfo={userInfo} userPfp={getPfp(userInfo?.id, userInfo?.profile_picture)} />}
                 </div>
             </div>
 

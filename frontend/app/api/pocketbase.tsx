@@ -1,0 +1,123 @@
+
+import { ToastStatus } from "common";
+
+import PocketBase, { ClientResponseError } from 'pocketbase';
+import { type RecordModel } from "pocketbase";
+
+
+const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_ENDPOINT);
+
+const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
+    if (error instanceof ClientResponseError) {
+        console.log("LOGGING")
+        console.log(error)
+        console.log(error.data)
+
+        if (error.data.data.username) {
+
+            if (error.data.data.username.code === "validation_not_unique") {
+
+
+                return {
+                    toast_type: ToastStatus.ERROR,
+                    message: "Username is taken. Please choose a different username."
+
+                }
+            }
+
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: `${error.message} ${error.data.data.username.message}`
+            }
+
+        }
+
+        return {
+            toast_type: ToastStatus.ERROR,
+            message: error.message
+        }
+    } else {
+        console.log(error)
+        return {
+            toast_type: ToastStatus.ERROR,
+            message: "UNKNOWN ERROR"
+
+        }
+    }
+}
+
+
+const checkLoggedIn = async () => {
+    return pb.authStore.isValid
+}
+
+const signIn = async (email: string, password: string): Promise<ToastResponse> => {
+    try {
+        const isLoggedIn = await checkLoggedIn()
+
+        if (isLoggedIn) {
+            return {
+                toast_type: ToastStatus.ERROR,
+                message: "Already logged in! Please refresh the page."
+            }
+        }
+
+        const authData = await pb.collection('users').authWithPassword(
+            email,
+            password,
+        );
+
+        // after the above you can also access the auth data from the authStore
+        console.log(pb.authStore.isValid);
+        console.log(pb.authStore.token);
+        console.log(pb.authStore.record?.id);
+        console.log(authData)
+
+        localStorage.setItem("token", authData.token)
+        localStorage.setItem("userInfo", JSON.stringify(authData.record))
+
+        return {
+            toast_type: ToastStatus.SUCCESS,
+            message: "Successfully logged in!"
+        }
+    } catch (error: unknown) {
+        return handleError(error)
+    }
+
+
+}
+
+const logOut = async () => {
+    try {
+        pb.authStore.clear()
+        localStorage.removeItem("token")
+        localStorage.removeItem("userInfo")
+        return {
+            toast_type: ToastStatus.SUCCESS,
+            message: "Successfully signed out!"
+        }
+
+    }
+    catch (error: unknown) {
+        return handleError(error)
+
+    }
+
+}
+
+const resetPassword = async (user_id: string, oldPassword: string, password: string, confirmPassword: string) => {
+    await pb.collection("users").update(user_id, {
+        oldPassword: oldPassword, // superusers and auth records with manager access can skip this
+        password: password,
+        passwordConfirm: confirmPassword,
+    })
+}
+
+//we should refactor this into different API call files...
+export {
+    pb,
+    checkLoggedIn,
+    handleError,
+    signIn,
+    logOut
+}

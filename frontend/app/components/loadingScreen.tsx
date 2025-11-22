@@ -3,7 +3,8 @@ import { AuthContext } from "~/provider/authProvider"
 import { useContext } from "react"
 
 export function LoadScreen() {
-    const {authLoaded} = useContext(AuthContext)
+    //const {authLoaded} = useContext(AuthContext)
+    const authLoaded = true
 
     return <div className = {`fixed flex w-full h-full flex-col items-center justify-center transition duration-200
         bg-zinc-900 z-99 pointer-events-none ${authLoaded ? 'opacity-0' : 'opacity-100'}`}>

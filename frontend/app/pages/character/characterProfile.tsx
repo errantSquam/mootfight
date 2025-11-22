@@ -8,7 +8,6 @@ import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 import { getUserInfoHook } from "~/api/userApi";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
-import { getDefencesByCharacterHook } from "~/api/attackApi";
 
 
 export default function CharacterPage() {
@@ -18,10 +17,6 @@ export default function CharacterPage() {
 
     const [charaData, charaLoading, charaError] = getCharacterHook(params.characterId)
 
-    const [userData, userLoading, userError] = getUserInfoHook(charaData?.owner)
-
-    const [attackData, attackLoading, attackError] = getDefencesByCharacterHook(params.characterId)
-
 
 
     const CharaTabs: { [index: string]: JSX.Element } = {
@@ -29,10 +24,10 @@ export default function CharacterPage() {
             {!charaLoading &&
                 charaData?.images.map((image: RefImage) => {
                     return <div className="flex flex-col gap-y-2 items-center">
-                        <ImageWithLoader src={image.imageLink} className="w-40 h-40 object-cover" />
-                        <div> by <a href={image.artistLink} className="mootfight-link"
+                        <ImageWithLoader src={image.image_link} className="w-40 h-40 object-cover" />
+                        <div> by <a href={image.artist_link} className="mootfight-link"
                             target="_blank" rel="noopener noreferrer">
-                            {image.artist}
+                            {image.artist_name}
                         </a></div>
                     </div>
                 })
@@ -48,10 +43,9 @@ export default function CharacterPage() {
             <SanitizedMarkdown markdown={charaData?.permissions || ''} />
         </div>,
         "Battles": <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
-            attackData?.map((attack) => {
-                console.log(attackData)
-                return <Link to={`/attack/${attack.aid}`} className="flex flex-col items-center">
-                    <ImageWithLoader src={attack.image} className="w-40 h-40 object-cover" 
+            charaData?.attacks?.map((attack) => {
+                return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center">
+                    <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
                     spoiler = {attack?.warnings}/>
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
 
@@ -71,7 +65,7 @@ export default function CharacterPage() {
                 <div className="flex flex-row items-center gap-x-2 w-full">
                     <div className="p-2">
                         {charaLoading ? <ImageSkeletonComponent className="min-w-20 min-h-20 object-cover" /> :
-                            <ImageWithLoader src={charaData?.images[0].imageLink || ''}
+                            <ImageWithLoader src={charaData?.images[0].image_link || ''}
                                 className="w-20 h-20 object-cover" />
                         }
                     </div>
@@ -82,7 +76,7 @@ export default function CharacterPage() {
                                     <div className="text-xl font-bold">
                                         {charaData?.name}
                                     </div>
-                                    <i className="opacity-70">({charaData?.cid})</i>
+                                    <i className="opacity-70">({charaData?.id})</i>
                                 </div>
                             }
                             <div>
@@ -98,10 +92,10 @@ export default function CharacterPage() {
                     </div>
                 </div>
             </div>
-            <div> {!userLoading &&
+            <div> {!charaLoading &&
                 <div>
-                    Belongs to <Link to={getProfileLink(userData?.username || '', userData?.uid)}>
-                        <u>{userData?.username}</u></Link>
+                    Belongs to <Link to={getProfileLink(charaData?.owner.username || '')}>
+                        <u>{charaData?.owner.username}</u></Link>
                 </div>
             }</div>
             <div className="w-full flex flex-row">

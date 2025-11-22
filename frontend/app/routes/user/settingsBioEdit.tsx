@@ -3,7 +3,7 @@ import { BioEditPage } from "~/pages/user/settings/settingsBioEdit";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "Mootfight!" },
+    { title: "Settings - Bio" },
     { name: "description", content: "Welcome to React Router!" },
   ];
 }
