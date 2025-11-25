@@ -7,7 +7,7 @@ import { ImageWithLoader, ImageSkeletonComponent } from "~/components/loaders";
 import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 import { getUserInfoHook } from "~/api/userApi";
 import { Link } from "react-router";
-import { getProfileLink } from "~/functions/helper";
+import { getArtistLink, getProfileLink } from "~/functions/helper";
 import { MootButton } from "~/components/button";
 import { pb } from "~/api/pocketbase";
 
@@ -51,7 +51,7 @@ export default function CharacterPage() {
                 charaData?.images.map((image: RefImage) => {
                     return <div className="flex flex-col gap-y-2 items-center">
                         <ImageWithLoader src={image.image_link} className="w-40 h-40 object-cover" />
-                        <div> by <a href={image.artist_link} className="mootfight-link"
+                        <div> by <a href={getArtistLink(image.artist_link || '')} className="mootfight-link"
                             target="_blank" rel="noopener noreferrer">
                             {image.artist_name}
                         </a></div>

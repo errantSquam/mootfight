@@ -7,8 +7,25 @@ import { ProfileProvider } from "~/provider/profileProvider";
 import { getUserInfo } from "~/api/userApi";
 import { getProfileLink } from "~/functions/helper";
 
-export function ProfilePage() {
+export function ProfileIdRedirect() {
+    let params = useParams();
+    let navigate = useNavigate()
 
-    return <ProfileProvider><ProfileLayout/> </ProfileProvider>
+    console.log("e")
+
+    useEffect(() => {
+        console.log("yes")
+        console.log(params.id)
+        getUserInfo(params.id).then((resp) => {
+            navigate(getProfileLink(resp.username || ''))
+        })
+
+
+    }, [params.id])
+
+
+    //we NEED to switch to a provider. groans
+
+    return <LoadScreen />
 
 }

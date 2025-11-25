@@ -19,3 +19,12 @@ export function getProfileLink(username: string) {
     let link = '/user/profile/' + encodeURIComponent(username) 
     return link
 }
+
+export function getArtistLink(link: string) {
+    if (link.includes("@")) {
+        let userId = link.replace("@", "")
+        return `/user/id/${userId}`
+    } else {
+        return link
+    }
+}

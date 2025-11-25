@@ -11,6 +11,7 @@ export default [
         route("settings", "routes/user/settings.tsx"),
         route("settings/bio", "routes/user/settingsBioEdit.tsx"),
         route("profile/:username", "routes/user/profile.tsx"),
+        route("id/:id", "routes/user/profileId.tsx"),
     ]),
     ...prefix("character", [
         route(":characterId", "routes/character/character.tsx")
