@@ -400,6 +400,7 @@ export function SubmitAttackPage() {
 
         createAttack(data).then((resp) => {
             handleToast(resp)
+            navigate(`/attack/${resp.data}`)
         })
     }
 

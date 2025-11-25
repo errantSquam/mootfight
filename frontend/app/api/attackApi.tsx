@@ -4,14 +4,15 @@ import { getUserInfo } from "./userApi";
 import { useQuery } from "@tanstack/react-query";
 
 
-const createAttack = async (data: AttackSchema) => {
+const createAttack = async (data: AttackSchema): Promise<ToastResponse> => {
     try {
         //TODO: Batch update with notifications to the defenders as well? Or perhaps a Hook.
 
-        pb.collection('attacks').create(data)
+        let resp = await pb.collection('attacks').create(data)
         return {
             toast_type: ToastStatus.SUCCESS,
-            message: "Successfully created attack!"
+            message: "Successfully created attack!",
+            data: resp.id
         }
 
     } catch (error: unknown) {

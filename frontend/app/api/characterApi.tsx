@@ -57,10 +57,14 @@ const createCharacter = async (data: CharacterSchema) => {
 
         const results = await batch.send()
 
+        let charaInfo = results.filter((batchData: any) => {
+                return batchData.body.collectionName === "characters"
+            })[0].body.id
+
         return {
             toast_type: ToastStatus.SUCCESS,
             message: "Successfully created character!",
-            data: results
+            data: charaInfo
         }
 
     } catch (error: unknown) {

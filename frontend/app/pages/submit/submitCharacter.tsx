@@ -275,7 +275,7 @@ export function SubmitCharacterPage() {
             handleToast(resp)
             console.log(resp.data)
             if (resp.toast_type === ToastStatus.SUCCESS) {
-                navigate(getProfileLink(userInfo?.username!))
+                navigate(`/character/${resp.data}`)
 
             }
         })
