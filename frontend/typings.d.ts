@@ -92,7 +92,23 @@ type AttackSchema = {
     characters: string[],
     title: string,
     warnings: string | undefined,
-    created_at: number,
+    created: number,
     id?: string
 }
 
+type CommentSchema = {
+    id?: string
+    user: string,
+    userInfo: UserSchema,
+    content:string,
+    reply_to?: string, //comment id
+    attack?: string,
+    profile?: string,
+    created: number,
+    updated: number,
+    replies?: [],
+    expand?: any
+    
+
+
+}
