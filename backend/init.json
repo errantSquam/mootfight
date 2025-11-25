@@ -258,7 +258,7 @@
         "max": 255,
         "min": 0,
         "name": "username",
-        "pattern": "",
+        "pattern": "^[^@]+$",
         "presentable": false,
         "primaryKey": false,
         "required": true,
