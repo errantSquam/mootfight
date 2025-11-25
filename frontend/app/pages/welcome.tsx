@@ -10,24 +10,15 @@ import { useContext, useState } from "react";
 import { SearchBar } from "~/components/search/searchBar";
 import { SearchProvider } from "~/provider/searchProvider";
 import { SearchContext } from "~/provider/searchProvider";
+import { recentCharactersHook } from "~/api/characterApi";
 
 export function Welcome() {
 
   const [users, loading, error] = getUsersHook(1, 99);
 
-  /*
-  function transformSnapshot(snapshotData: QuerySnapshot<DocumentData, DocumentData> | undefined) {
-    if (snapshotData === undefined) {
-      return []
-    }
-    let tempArray: DocumentData[] = []
-    snapshotData.forEach((user: QueryDocumentSnapshot<DocumentData, DocumentData>) => {
-      tempArray = [...tempArray, user.data()]
-    })
-    return tempArray
+  const [characters, charaLoading, charaError] = recentCharactersHook(1, 20)
 
-  }*/
-
+  
   const {searchQuery, setSearchQuery} = useContext(SearchContext)
 
   console.log(users)
@@ -37,9 +28,24 @@ export function Welcome() {
 
   return (
     <div className="flex items-center justify-center pt-16 pb-4">
-      <div className="flex-1 flex flex-col items-center gap-16 min-h-0">
+      <div className="flex-1 flex flex-col items-center min-h-0">
         <SearchBar/>
         <div className="w-2/3 space-y-6 px-4">
+        <h3 className="ml-4">Recent Characters</h3>
+
+          <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">
+            <div>
+              <div className="flex flex-row gap-x-2">
+                {!charaLoading && characters?.map((chara) => {
+                  return <Link to={getProfileLink(chara.name)}>
+                    <div className="flex flex-col items-center" key={chara.name}>
+                      <ImageWithLoader src={chara.images[0].image_link} className="w-20 h-20 object-cover" />
+                      <span>{chara.name}</span>
+                    </div></Link>
+                })}
+              </div>
+            </div>
+          </div>
           <h3 className="ml-4">Active Users</h3>
 
           <div className="rounded-3xl border border-gray-200 p-6 dark:border-gray-700 space-y-4">

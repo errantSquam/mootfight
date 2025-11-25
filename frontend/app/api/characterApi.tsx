@@ -136,7 +136,6 @@ const getCharactersBySearch = async (substring: string, page: number = 1, limitA
 
 //username and character
 const getCharactersBySearchQueries = async (searchQuery: any, page: number = 1, limitAmount: number = 3) => {
-    console.log(`name~'${searchQuery.character}' && owner.username~'${searchQuery.user}'`)
     let chara = await pb.collection("characters").getList(page, limitAmount, {
         filter: `name~'${searchQuery.character}' && owner.username~'${searchQuery.user}'`,
         expand: 'owner, images'
@@ -166,6 +165,33 @@ const charactersSearchHook = (searchQuery: string | null = "", page: number = 1,
     return [data?.items, isLoading, error]
 }
 
+const getCharactersByRecent = async (page: number = 1, limitAmount: number = 3) => {
+    let chara = await pb.collection("characters").getList(page, limitAmount, {
+        sort: '-created',
+        expand: 'images'
+    }) as any
+
+
+    chara.items = chara.items.map((char: CharacterAmbiguousSchema) => { return parseCharacterInfo(char) })
+    return chara
+}
+
+
+const recentCharactersHook = ( page: number = 1, limitAmount: number = 3):
+    [CharacterSchema[], boolean, Error | null] => {
+
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['recentCharacters'],
+        queryFn: () => {
+            return getCharactersByRecent(page, limitAmount)
+        }
+    })
+
+    return [data?.items, isLoading, error]
+}
+
+
 
 export {
     createCharacter,
@@ -176,6 +202,7 @@ export {
     getCharactersOwners,
     getCharactersBySearch,
     getCharactersBySearchQueries,
-    charactersSearchHook
+    charactersSearchHook,
+    recentCharactersHook
 }
 
