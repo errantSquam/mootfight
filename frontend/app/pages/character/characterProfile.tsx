@@ -8,7 +8,33 @@ import { SanitizedMarkdown } from "~/components/profile/sanitizedMarkdown";
 import { getUserInfoHook } from "~/api/userApi";
 import { Link } from "react-router";
 import { getProfileLink } from "~/functions/helper";
+import { MootButton } from "~/components/button";
+import { pb } from "~/api/pocketbase";
 
+const generateExport = (data: any, filename: string = 'export') => {
+
+    const currentVersion = "0.0.1"
+
+    const a = document.createElement("a");
+
+    delete data.owner
+    delete data.collectionName 
+    delete data.collectionId
+
+    data.images = data.images.map((image: any) => {
+        delete image.collectionId
+        delete image.collectionName
+        delete image.uploader
+        return image
+    })
+    data.version = currentVersion 
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "json" });
+    const url = URL.createObjectURL(blob);
+    a.setAttribute("href", url);
+    a.setAttribute("download", `${filename}.json`);
+    a.click();
+}
 
 export default function CharacterPage() {
     let params = useParams()
@@ -45,13 +71,17 @@ export default function CharacterPage() {
         "Battles": <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">{
             charaData?.attacks?.map((attack) => {
                 return <Link to={`/attack/${attack.id}`} className="flex flex-col items-center">
-                    <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover" 
-                    spoiler = {attack?.warnings}/>
+                    <ImageWithLoader src={attack.image_link} className="w-40 h-40 object-cover"
+                        spoiler={attack?.warnings} />
                     <div className="w-40 text-center text-ellipsis overflow-hidden">{attack.title}</div>
 
                 </Link>
             })}</div>, //attacks/defences
-        "Stats": <div></div>
+        "Stats": <div></div>,
+        "Settings": <div className="flex flex-col gap-y-2">
+            <MootButton onClick={() => generateExport(charaData, `${charaData?.name}_${charaData?.id}_export`)}> Export Character Data</MootButton>
+            <MootButton> Import Character Data</MootButton>
+        </div>
     }
 
     //params.characterId
@@ -84,23 +114,24 @@ export default function CharacterPage() {
                             </div>
                             <div className="opacity-70 text-sm"><i>{charaData?.status}</i></div>
                         </div>
-                        <div className="flex flex-col grow items-start">
-                            <div className="flex flex-row gap-x-2">
-
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
             <div> {!charaLoading &&
                 <div>
-                    Belongs to <Link to={getProfileLink(charaData?.owner.username || '')}>
-                        <u>{charaData?.owner.username}</u></Link>
+                    Belongs to <Link to={getProfileLink(charaData?.owner?.username || '')}>
+                        <u>{charaData?.owner?.username}</u></Link>
                 </div>
             }</div>
             <div className="w-full flex flex-row">
                 <div className="flex flex-row w-fit">
-                    {Object.keys(CharaTabs).map((tabKey: string) => {
+                    {Object.keys(CharaTabs).filter((tab) => {
+                        if (tab === "Settings") {
+                            return pb.authStore.record?.id === charaData?.owner?.id
+                        } else {
+                            return true
+                        }
+                    }).map((tabKey: string) => {
                         return <div onClick={() => { setCharaTab(tabKey) }} className={`py-1 px-4 transition select-none cursor-pointer border-b-2  
                         ${charaTab === tabKey ? "border-b-white font-bold" : "border-slate-500"}`} key={tabKey}>
                             {tabKey}

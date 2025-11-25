@@ -133,7 +133,7 @@ const Comment = ({ commentData, handleStateRefresh, depth = 0 }:
                     depth={depth + 1} />
             })
                 :
-                <div>Read more...</div>
+                <div className = "cursor-pointer hover:underline">Read more...</div>
             }
         </div>
 
