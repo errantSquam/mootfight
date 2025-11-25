@@ -21,7 +21,9 @@ const parseUserInfo = (userInfo: UserRecord): UserAmbiguousSchema => {
 
 
             if (character.expand.attacks_via_characters) {
-                let defences = character.expand.attacks_via_characters.filter((defence: AttackSchema) => defence !== undefined)
+                let defences = character.expand.attacks_via_characters.filter((defence: AttackSchema) => {
+                    return defence !== undefined && defence?.attacker !== userInfo.id
+                })
                 defencesArray = [...defencesArray, ...defences]
             }
 
