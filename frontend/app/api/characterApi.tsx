@@ -83,6 +83,7 @@ const getCharacter = async (character_id?: string): Promise<CharacterSchema | un
 }
 
 const checkCharacterExists = async (character_id?: string): Promise<boolean> => {
+    //console.log(character_id)
     try {
         await getCharacter(character_id)
         return true

@@ -37,7 +37,7 @@ export function Welcome() {
             <div>
               <div className="flex flex-row gap-x-2">
                 {!charaLoading && characters?.map((chara) => {
-                  return <Link to={getProfileLink(chara.name)}>
+                  return <Link to={`/character/${chara.id}`}>
                     <div className="flex flex-col items-center" key={chara.name}>
                       <ImageWithLoader src={chara.images[0].image_link} className="w-20 h-20 object-cover" />
                       <span>{chara.name}</span>

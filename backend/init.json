@@ -922,6 +922,19 @@
         "type": "text"
       },
       {
+        "cascadeDelete": false,
+        "collectionId": "pbc_991009256",
+        "hidden": false,
+        "id": "relation2447711318",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "revenge",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
         "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
@@ -1083,6 +1096,16 @@
       },
       {
         "hidden": false,
+        "id": "json1874629670",
+        "maxSize": 0,
+        "name": "tags",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "json"
+      },
+      {
+        "hidden": false,
         "id": "autodate2990389176",
         "name": "created",
         "onCreate": true,
@@ -1107,11 +1130,11 @@
   },
   {
     "id": "pbc_533777971",
-    "listRule": null,
-    "viewRule": null,
-    "createRule": null,
-    "updateRule": null,
-    "deleteRule": null,
+    "listRule": "",
+    "viewRule": "",
+    "createRule": "user.id = @request.auth.id",
+    "updateRule": "user.id = @request.auth.id",
+    "deleteRule": "user.id = @request.auth.id",
     "name": "comments",
     "type": "base",
     "fields": [
@@ -1149,7 +1172,7 @@
         "maxSize": 0,
         "name": "content",
         "presentable": false,
-        "required": false,
+        "required": true,
         "system": false,
         "type": "editor"
       },
@@ -1160,7 +1183,7 @@
         "id": "relation3803249643",
         "maxSelect": 1,
         "minSelect": 0,
-        "name": "reply",
+        "name": "reply_to",
         "presentable": false,
         "required": false,
         "system": false,
@@ -1191,6 +1214,108 @@
         "required": false,
         "system": false,
         "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "autodate2990389176",
+        "name": "created",
+        "onCreate": true,
+        "onUpdate": false,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      },
+      {
+        "hidden": false,
+        "id": "autodate3332085495",
+        "name": "updated",
+        "onCreate": true,
+        "onUpdate": true,
+        "presentable": false,
+        "system": false,
+        "type": "autodate"
+      }
+    ],
+    "indexes": [],
+    "system": false
+  },
+  {
+    "id": "pbc_2301922722",
+    "listRule": "",
+    "viewRule": "",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "name": "notifications",
+    "type": "base",
+    "fields": [
+      {
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "hidden": false,
+        "id": "text3208210256",
+        "max": 15,
+        "min": 15,
+        "name": "id",
+        "pattern": "^[a-z0-9]+$",
+        "presentable": false,
+        "primaryKey": true,
+        "required": true,
+        "system": true,
+        "type": "text"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "_pb_users_auth_",
+        "hidden": false,
+        "id": "relation2375276105",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "notified_user",
+        "presentable": false,
+        "required": true,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_991009256",
+        "hidden": false,
+        "id": "relation1203776827",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "attack",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "cascadeDelete": false,
+        "collectionId": "pbc_533777971",
+        "hidden": false,
+        "id": "relation2490651244",
+        "maxSelect": 1,
+        "minSelect": 0,
+        "name": "comment",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "relation"
+      },
+      {
+        "hidden": false,
+        "id": "select1346287860",
+        "maxSelect": 1,
+        "name": "notif_type",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "reply_attack",
+          "reply_comment",
+          "new_defence"
+        ]
       },
       {
         "hidden": false,

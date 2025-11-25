@@ -1,4 +1,4 @@
-import { signIn,  logOut } from "~/api/pocketbase"
+import { signIn, logOut } from "~/api/pocketbase"
 import { Link } from "react-router"
 import { handleToast } from "~/functions/handleToast"
 import { useNavigate } from "react-router"
@@ -11,6 +11,7 @@ import { getProfileLink } from "~/functions/helper"
 import { useState } from "react"
 
 import { isScrolledNavbar, isScrolledBanner, useScrollDirection } from "./hooks/scrollHooks"
+import { getNotifCountHook } from "~/api/notificationApi"
 
 
 const SubmitDropdown = () => {
@@ -49,10 +50,20 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
         }
     }
 
+    const [notifCount, notifLoading, notifError] = getNotifCountHook()
+
+
     return <Menu>
         <MenuButton className="flex flex-row gap-x-4 items-center justify-center font-semibold text-white hover:cursor-pointer focus:outline-none">
-            <img src={userPfp} className="h-10" />
-            {<span className = "hidden md:inline">{userInfo.username}</span>}
+            <div className = "relative">
+                {!notifLoading && notifCount !== 0 && 
+                <div className={`bottom-0 left-0 -ml-2 absolute w-5 h-5 z-99 rounded-full 
+                bg-red-500 text-white flex justify-center items-center text-center`}>
+                    <span>{notifCount}</span>
+                </div>}
+                <img src={userPfp} className="h-10" />
+            </div>
+            {<span className="hidden md:inline">{userInfo.username}</span>}
             {/*<ChevronDownIcon className="size-4 fill-white/60" />*/}
         </MenuButton>
 
@@ -92,11 +103,11 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
 
 export function Banner() {
     return <div className="h-24 w-screen flex">
-          <Link to="/" className={`w-full min-h-full bg-center bg-cover cursor-pointer transition-all duration-300`} style={{
+        <Link to="/" className={`w-full min-h-full bg-center bg-cover cursor-pointer transition-all duration-300`} style={{
             backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
-          }}>
-          </Link>
-        </div>
+        }}>
+        </Link>
+    </div>
 }
 
 export function Navbar() {
@@ -107,6 +118,7 @@ export function Navbar() {
     const isScrollNavbar = isScrolledNavbar();
 
 
+
     return <div className={`w-screen bg-zinc-900 flex flex-col items-center justify-between z-10 
         transition-all duration-300 sticky ${scrollDirection === 'up' ? 'top-0' : '-top-100'}`}>
         {/*<Link to = "/" className={` w-full bg-center bg-cover cursor-pointer transition-all duration-300
@@ -114,7 +126,7 @@ export function Navbar() {
                 backgroundImage: 'url("/assets/mootfight placeholder banner.png")'
             }}>
         </Link>*/}
-        <div/>
+        <div />
         <div className={`p-4 px-10 h-10 flex flex-row text-white gap-x-4 justify-between w-full items-center `}>
             <div className="flex flex-row gap-x-4 h-full items-center">
                 <div><Link to="/">Home</Link></div>
@@ -128,5 +140,5 @@ export function Navbar() {
             </div>
 
         </div>
-        </div>
+    </div>
 }

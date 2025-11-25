@@ -150,10 +150,11 @@ async function isCharacterValid(character_id: string) {
 
 }
 
-const CharacterUploadComponent = ({ register, index }:
+const CharacterUploadComponent = ({ register, index, setValue }:
     {
         register: UseFormRegister<AttackSchema>,
-        index: number
+        index: number,
+        setValue: UseFormSetValue<any>,
     }
 ) => {
 
@@ -179,6 +180,7 @@ const CharacterUploadComponent = ({ register, index }:
 
     const handleValidate = async () => {
         setIsLoading(true)
+        console.log("Handle validate:")
         console.log(inputValue)
         let characterValidity = await isCharacterValid(inputValue)
         if (characterValidity) {
@@ -246,7 +248,6 @@ const CharacterUploadComponent = ({ register, index }:
 
                     <MootButton onClick={() => {
                         getCharactersBySearchQueries(searchQuery, 1, 99).then((resp) => {
-                            console.log(resp)
                             setSearchResults(resp.items)
                         })
                     }}>
@@ -256,9 +257,10 @@ const CharacterUploadComponent = ({ register, index }:
 
                 <div className="flex flex-row flex-wrap gap-x-2 p-2 w-full border-2 border-zinc-500 h-50 overflow-y-scroll">
                     {searchResults.map((chara) => {
-                        return <div className="flex flex-col text-center items-center cursor-pointer" key={chara.name}
+                        return <div className="flex flex-col text-center items-center cursor-pointer" key={chara.id}
                             onClick={() => {
                                 setInputValue(chara.id!)
+                                setValue(`characters.${index}`,chara.id)
                                 setSearchModal(false)
 
                             }}>
@@ -419,7 +421,7 @@ export function SubmitAttackPage() {
                         <h4>Character(s)</h4>
                         <div className="flex flex-col w-full gap-y-2">
                             {[...Array(charactersIndex + 1).keys()].map((index) => {
-                                return <CharacterUploadComponent register={register} index={index} />
+                                return <CharacterUploadComponent register={register} index={index} setValue = {setValue}/>
                             })}
 
                         </div>
@@ -441,7 +443,8 @@ export function SubmitAttackPage() {
                                 </div>
                             }
                         </div>
-                        {errors.characters && <div className="text-red-400">Characters field is required</div>}
+                        {errors.characters && <div className="text-red-400">Characters field is required
+                            {getValues("characters")}</div>}
 
                     </div>
                     <div className="flex flex-col items-start col-span-2">
