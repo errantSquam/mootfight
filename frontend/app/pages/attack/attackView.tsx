@@ -83,14 +83,19 @@ const Comment = ({ commentData, handleStateRefresh, depth = 0 }:
             </div>
 
             {/*If comment's user = current authstore id*/}
-            <div className="text-zinc-300 hover:text-white cursor-pointer">
-                Edit
-            </div>
+            {
+                pb.authStore.record?.id === userInfo?.id &&
+                <div className="text-zinc-300 hover:text-white cursor-pointer">
+                    Edit
+                </div>
+            }
 
-
-            <div className="text-zinc-300 hover:text-white cursor-pointer">
-                Delete
-            </div>
+            {
+                pb.authStore.record?.id === userInfo?.id &&
+                <div className="text-zinc-300 hover:text-white cursor-pointer">
+                    Delete
+                </div>
+            }
         </div>
 
         {
@@ -106,7 +111,7 @@ const Comment = ({ commentData, handleStateRefresh, depth = 0 }:
                                 if (resp === "success") {
                                     setIsReplying(false)
                                     repliesRef.current?.setMarkdown('')
-                                    
+
                                     handleStateRefresh()
                                 }
                             })
