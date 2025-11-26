@@ -2,6 +2,7 @@ import { handleError, pb } from "./pocketbase"
 import { ToastStatus } from "common";
 import { getUserInfo } from "./userApi";
 import { useQuery } from "@tanstack/react-query";
+import { handleToast } from "~/functions/handleToast";
 
 
 
@@ -44,7 +45,6 @@ const parseNotifInfo = (data: NotificationSchema[]) => {
         console.log(error)
     }
 
-    console.log(returnDict)
 
     return returnDict
 
@@ -137,8 +137,21 @@ const getNotifCountHook = (): [number | undefined, boolean, Error | null] => {
     return [data, isLoading, error]
 }
 
+const clearNotif = async (notif_id: string) => {
+    try {
+        let resp = await pb.collection("notifications").delete(notif_id)
+        return true
+    } catch (error: unknown) {
+        console.log(error)
+        handleError(error)
+
+    }
+
+}
+
 
 export {
     getNotifsHook,
-    getNotifCountHook
+    getNotifCountHook,
+    clearNotif
 }

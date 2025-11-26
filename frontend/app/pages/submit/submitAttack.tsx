@@ -66,7 +66,6 @@ const ImageUploadComponent = ({ register, errors, setValue }:
             setValidationError(false)
             setShowImage(true)
         } else {
-            console.log("True")
             setValidationError(true)
         }
 

@@ -25,7 +25,6 @@ export const ProfileCharactersTab = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-2">
             {
                 profileData?.characters?.map((chara) => {
-                    console.log(chara)
                     return <Link to={`/character/${chara.id}`} className="flex flex-col items-center">
                         <ImageWithLoader src={chara.images[0].image_link} className="w-40 h-40 object-cover" />
                         <div className="w-40 text-center text-ellipsis overflow-hidden">{chara.name.substring(0, characterLimit)}</div>

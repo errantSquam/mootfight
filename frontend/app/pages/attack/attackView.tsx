@@ -155,7 +155,7 @@ export default function AttackPage() {
     const queryClient = useQueryClient();
 
     const handleStateRefresh = () => {
-        queryClient.invalidateQueries({ queryKey: ['attackComments'] })
+        queryClient.resetQueries({ queryKey: ['attackComments'] })
 
 
     }

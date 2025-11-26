@@ -11,11 +11,8 @@ export function ProfileIdRedirect() {
     let params = useParams();
     let navigate = useNavigate()
 
-    console.log("e")
 
     useEffect(() => {
-        console.log("yes")
-        console.log(params.id)
         getUserInfo(params.id).then((resp) => {
             navigate(getProfileLink(resp.username || ''))
         })

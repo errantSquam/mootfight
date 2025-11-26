@@ -17,8 +17,6 @@ export function Search() {
 
     const isSearchEnabled = (searchType: string) => {
         let paramsType = searchParams.get("type")
-        console.log(paramsType)
-        console.log(paramsType === searchType)
         if (paramsType !== null && paramsType === searchType) {
             return true
         } else {

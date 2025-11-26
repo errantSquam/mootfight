@@ -6,8 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const parseCommentInfo = (data: CommentSchema) => {
     let returnInfo = data as CommentSchema
-    console.log(returnInfo)
-    //console.log(returnInfo.expand)
+
 
     //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
     try {
@@ -31,7 +30,6 @@ const parseCommentInfo = (data: CommentSchema) => {
         console.log(error)
     }
 
-    console.log(returnInfo)
 
     return returnInfo
 

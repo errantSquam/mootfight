@@ -13,7 +13,6 @@ export function useScrollDirection() {
         
         setScrollDirection(direction);
       }
-      //console.log(direction)
       lastScrollY = scrollY > 0 ? scrollY : 0;
     };
     window.addEventListener("scroll", updateScrollDirection); // add event listener

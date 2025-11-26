@@ -21,7 +21,6 @@ export function Welcome() {
   
   const {searchQuery, setSearchQuery} = useContext(SearchContext)
 
-  console.log(users)
 
 
 
