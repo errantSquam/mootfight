@@ -1,3 +1,5 @@
+//Ambiguous schema means some things may be undefined. It's not very good though... maybe worth refactoring?
+
 interface UserSchema {
     username:string,
     profile_picture?:string,
@@ -21,9 +23,7 @@ interface UserAmbiguousSchema extends UserRecord {
     emailVisibility?: boolean,
     verified?: boolean,
     expand?: any,
-    
     attacks?: AttackSchema[],
-    
     defences?: AttackSchema[],
 }
 
@@ -74,8 +74,6 @@ interface CharacterRecord {
 interface CharacterSchema extends CharacterRecord {
     images: RefImage[],
     attacks?: AttackSchema[],
-    
-    
     owner: UserAmbiguousSchema
 }
 
@@ -83,17 +81,18 @@ interface CharacterAmbiguousSchema extends CharacterSchema {
     expand?: any
 }
 
-
 type AttackSchema = {
     image_link: string,
     description: string | undefined,
     attacker: string,
+    attackerInfo: UserSchema,
     defenders: string[],
     characters: string[],
     title: string,
     warnings: string | undefined,
     created: number,
-    id?: string
+    id?: string,
+    expand?: any
 }
 
 type CommentSchema = {
@@ -108,7 +107,21 @@ type CommentSchema = {
     updated: number,
     replies?: [],
     expand?: any
+}
+
+type NotificationSchema = {
+    id: string,
+    notified_user: string,
+    notif_type: string,
+    attack?: AttackSchema,
+    comment?: CommentSchema,
+    expand?: any
+
+}
+
+
+type NotifDict = {
+    new_defences: NotificationSchema[],
+    comments:NotificationSchema[]
     
-
-
 }

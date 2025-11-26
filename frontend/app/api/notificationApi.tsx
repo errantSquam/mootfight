@@ -4,29 +4,55 @@ import { getUserInfo } from "./userApi";
 import { useQuery } from "@tanstack/react-query";
 
 
-const parseNotifInfo = (data: any) => {
-    let returnInfo = data
-    console.log(returnInfo)
-    //console.log(returnInfo.expand)
 
-    //error logging in case the field doesn't exist for whatever reason (bro forgot to expand)
+const parseNotifInfo = (data: NotificationSchema[]) => {
+
+
+    let returnDict: NotifDict = {
+        new_defences: [],
+        comments: []
+    }
+
+    if (!data) {
+        return returnDict
+    }
+
     try {
+        data.forEach((notif) => {
+            if (notif.expand.attack) {
+                notif.attack = notif.expand.attack
+                notif.attack!.attackerInfo = notif.attack!.expand.attacker
+            }
+
+            if (notif.expand.comment) {
+                notif.comment = notif.expand.comment
+                notif.comment!.userInfo = notif.comment!.expand.user
+            }
+
+            delete notif.expand
+
+            if (notif.notif_type === "reply_attack") {
+                returnDict.comments.push(notif)
+            } else if (notif.notif_type === "reply_comment") {
+                returnDict.comments.push(notif)
+            } else if (notif.notif_type === "new_defence") {
+                returnDict.new_defences.push(notif)
+            }
+        })
 
     } catch (error) {
         console.log(error)
     }
 
-    console.log(returnInfo)
+    console.log(returnDict)
 
-    return returnInfo
+    return returnDict
 
 }
 
 const getNotifCount = async () => {
 
     let uid = pb.authStore.record?.id
-
-    console.log(uid)
 
 
     let notifCount = 0
@@ -52,24 +78,29 @@ const getNotifCount = async () => {
 }
 
 const getNotifs = async (page: number = 1, limitAmount: number = 99):
-    Promise<CommentSchema[] | undefined> => {
+    Promise<NotifDict | undefined> => {
 
     let uid = pb.authStore.record?.id
 
     if (uid === null || uid === undefined) {
-        return []
+        return {
+            new_defences: [],
+            comments: []
+        }
     }
 
 
     let notifData = []
+
     try {
         notifData = await pb.collection('notifications').getList(
             page, limitAmount,
 
             {
                 filter: `notified_user="${uid}"`,
-                expand: 'comment, attack',
-                sort: '-created'
+                expand: 'comment, attack, comment.user, attack.attacker',
+                sort: '-created',
+                requestKey: 'getNotifs'
             }
 
         ) as any
@@ -77,11 +108,12 @@ const getNotifs = async (page: number = 1, limitAmount: number = 99):
         console.log(error)
     }
 
-    return notifData.items.map((notif: any) => { return parseNotifInfo(notif) })
+
+    return parseNotifInfo(notifData.items)
 }
 
 
-const getNotifsHook = (): [any[] | undefined, boolean, Error | null] => {
+const getNotifsHook = (): [NotifDict | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
         queryKey: ['notificationsFull'],

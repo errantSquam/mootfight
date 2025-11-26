@@ -80,9 +80,9 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
                 </Link>
             </MenuItem>
             <MenuItem>
-                <button className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
+                <Link to = {"/user/notifications"} className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
                     Notifications
-                </button>
+                </Link>
             </MenuItem>
             <MenuItem>
                 <Link to='/user/settings' className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">

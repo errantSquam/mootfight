@@ -54,18 +54,18 @@ const handleCommentSubmit = async (attack_id?: string, markdown?: string, reply_
 
 }
 
+//Refactor this outta there later
 
-const Comment = ({ commentData, handleStateRefresh, depth = 0 }:
-    { commentData: CommentSchema, handleStateRefresh: any, depth?: number }) => {
+export const Comment = ({ commentData, handleStateRefresh = () => {}, depth = 0, maxDepth = 2 }:
+    { commentData: CommentSchema, handleStateRefresh?: any, depth?: number, maxDepth?: number }) => {
 
-    //Change types to CommentSchema later
 
     const repliesRef = useRef<MDXEditorMethods>(null)
     const [isReplying, setIsReplying] = useState(false)
 
     let userInfo = commentData.expand?.user
     return <div className="flex flex-col items-start max-w-full gap-y-2 mt-2">
-        <Link to={'Profile link'} className="flex flex-row gap-x-2 items-center">
+        <Link to={getProfileLink(userInfo?.username)} className="flex flex-row gap-x-2 items-center">
             <img src={getPfp(userInfo?.id, userInfo?.profile_picture)} className="w-10 h-10" />
             <div className="flex flex-col gap-x-1">
                 <div className="font-bold">{userInfo?.username}</div>
@@ -111,7 +111,6 @@ const Comment = ({ commentData, handleStateRefresh, depth = 0 }:
                                 if (resp === "success") {
                                     setIsReplying(false)
                                     repliesRef.current?.setMarkdown('')
-
                                     handleStateRefresh()
                                 }
                             })
