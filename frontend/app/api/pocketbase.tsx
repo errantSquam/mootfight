@@ -6,6 +6,7 @@ import { type RecordModel } from "pocketbase";
 
 
 const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_ENDPOINT);
+pb.autoCancellation(false)
 
 const handleError = (error: unknown): { toast_type: ToastStatus, message: string } => {
     if (error instanceof ClientResponseError) {

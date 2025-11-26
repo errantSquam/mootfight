@@ -50,6 +50,30 @@ const createComment = async (data: CommentSchema) => {
     }
 }
 
+const deleteComment = async (data: CommentSchema) => {
+    try {
+        //TODO: Batch update with notifications to the defenders as well? Or perhaps a Hook.
+
+        console.log(data)
+        
+        if (data.expand.comments_via_reply_to && data.expand.comments_via_reply_to.length > 0 ) {
+            await pb.collection('comments').update(data.id || '', {
+                content: '[DELETED MESSAGE]',
+                isDeleted: true
+            })
+        } else {
+            await pb.collection('comments').delete(data.id || '')
+        }
+        return {
+            toast_type: ToastStatus.SUCCESS,
+            message: "Successfully deleted comment!"
+        }
+
+    } catch (error: unknown) {
+        return handleError(error)
+    }
+}
+
 const getCommentsFromAttack = async (aid?: string, page: number = 1, limitAmount: number = 99):
     Promise<CommentSchema[] | undefined> => {
 
@@ -131,6 +155,7 @@ const getCommentByIdHook = (id?: string): [CommentSchema | undefined, boolean, E
 
 export {
     createComment,
+    deleteComment,
     getCommentsFromAttackHook,
     getCommentByIdHook
 }

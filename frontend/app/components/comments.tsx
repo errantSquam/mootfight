@@ -8,7 +8,7 @@ import { MarkdownEditor } from "~/components/markdownEditor"
 import type { MDXEditorMethods } from "@mdxeditor/editor"
 import { Icon } from "@iconify/react"
 import { pb } from "~/api/pocketbase"
-import { createComment } from "~/api/commentApi"
+import { createComment, deleteComment } from "~/api/commentApi"
 import { handleToast } from "~/functions/handleToast"
 
 
@@ -36,7 +36,7 @@ export const handleCommentSubmit = async (attack_id?: string, markdown?: string,
 }
 
 
-export const Comment = ({ commentData, handleStateRefresh = () => {}, depth = 0, maxDepth = 2 }:
+export const Comment = ({ commentData, handleStateRefresh = () => { }, depth = 0, maxDepth = 2 }:
     { commentData: CommentSchema, handleStateRefresh?: any, depth?: number, maxDepth?: number }) => {
 
 
@@ -45,15 +45,18 @@ export const Comment = ({ commentData, handleStateRefresh = () => {}, depth = 0,
 
     let userInfo = commentData.expand?.user
     return <div className="flex flex-col items-start max-w-full gap-y-2 mt-2">
-        <Link to={getProfileLink(userInfo?.username)} className="flex flex-row gap-x-2 items-center">
-            <img src={getPfp(userInfo?.id, userInfo?.profile_picture)} className="w-10 h-10" />
-            <div className="flex flex-col gap-x-1">
-                <div className="font-bold">{userInfo?.username}</div>
-                {userInfo?.pronouns !== '' && <div className="text-zinc-400 italic">({userInfo?.pronouns})</div>}
-            </div>
-        </Link>
+        { !commentData.isDeleted &&
+            <Link to={getProfileLink(userInfo?.username)} className="flex flex-row gap-x-2 items-center">
+                <img src={getPfp(userInfo?.id, userInfo?.profile_picture)} className="w-10 h-10" />
+                <div className="flex flex-col gap-x-1">
+                    <div className="font-bold">{userInfo?.username}</div>
+                    {userInfo?.pronouns !== '' && <div className="text-zinc-400 italic">({userInfo?.pronouns})</div>}
+                </div>
+            </Link>
+        }
         <div className="ml-5 p-2 w-full border-zinc-700 border-2  rounded">
-            <SanitizedMarkdown markdown={commentData.content} />
+            {!commentData.isDeleted ? <SanitizedMarkdown markdown={commentData.content} /> :
+            <i className = "text-zinc-400">Comment was deleted.</i>}
         </div>
         <div className="ml-7 text-sm flex flex-row gap-x-2">
             <div className="flex flex-row items-center gap-x-1 text-zinc-300 hover:text-white cursor-pointer"
@@ -63,18 +66,39 @@ export const Comment = ({ commentData, handleStateRefresh = () => {}, depth = 0,
             </div>
 
             {/*If comment's user = current authstore id*/}
+            
             {
-                pb.authStore.record?.id === userInfo?.id &&
+                !commentData.isDeleted && pb.authStore.record?.id === userInfo?.id &&
                 <div className="text-zinc-300 hover:text-white cursor-pointer">
                     Edit
                 </div>
             }
 
             {
-                pb.authStore.record?.id === userInfo?.id &&
-                <div className="text-zinc-300 hover:text-white cursor-pointer">
+                !commentData.isDeleted && pb.authStore.record?.id === userInfo?.id &&
+                <div className="text-zinc-300 hover:text-white cursor-pointer"
+                    onClick={() => {
+                        deleteComment(commentData).then((resp) => {
+                            handleToast(resp)
+                            handleStateRefresh()
+                        })
+                    }}>
                     Delete
                 </div>
+            }
+
+            {
+                commentData.reply_to &&
+                <Link to={`/comment/${commentData.reply_to}`} className="text-zinc-300 hover:text-white cursor-pointer">
+                    Parent
+                </Link>
+            }
+
+            {
+                commentData.attack &&
+                <Link to={`/attack/${commentData.attack}`} className="text-zinc-300 hover:text-white cursor-pointer">
+                    Parent
+                </Link>
             }
         </div>
 
@@ -112,8 +136,8 @@ export const Comment = ({ commentData, handleStateRefresh = () => {}, depth = 0,
                     depth={depth + 1} />
             })
                 :
-                <Link to = {`/comment/${commentData.id}`} 
-                className = "cursor-pointer italic underline text-zinc-400 hover:text-white">
+                <Link to={`/comment/${commentData.id}`}
+                    className="cursor-pointer italic underline text-zinc-400 hover:text-white">
                     Read more...
                 </Link>
             }

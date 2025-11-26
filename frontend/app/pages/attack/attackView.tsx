@@ -48,9 +48,7 @@ export default function AttackPage() {
     const queryClient = useQueryClient();
 
     const handleStateRefresh = () => {
-        queryClient.resetQueries({ queryKey: ['attackComments'] })
-
-
+        queryClient.refetchQueries({ queryKey: ['attackComments'] })
     }
 
 
@@ -106,7 +104,7 @@ export default function AttackPage() {
                     }
 
                     {
-                        commentLoading &&
+                        (commentLoading || commentData === undefined) &&
                         <i> Loading comments...</i>
                     }
 

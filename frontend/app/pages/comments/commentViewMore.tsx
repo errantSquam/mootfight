@@ -10,7 +10,7 @@ export const ViewMoreCommentPage = () => {
     const queryClient = useQueryClient();
 
     const handleStateRefresh = () => {
-        queryClient.resetQueries({ queryKey: ['singleComment'] })
+        queryClient.refetchQueries({ queryKey: ['singleComment'] })
 
 
     }

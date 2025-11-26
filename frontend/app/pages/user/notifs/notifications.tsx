@@ -13,7 +13,7 @@ export const NotificationsPage = () => {
     const queryClient = useQueryClient();
 
     const handleRefresh = () => {
-        queryClient.resetQueries({ queryKey: ['notificationsFull'] })
+        queryClient.refetchQueries({ queryKey: ['notificationsFull'] })
 
     }
 

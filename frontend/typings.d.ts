@@ -106,6 +106,7 @@ type CommentSchema = {
     created: number,
     updated: number,
     replies?: [],
+    isDeleted: boolean,
     expand?: any
 }
 

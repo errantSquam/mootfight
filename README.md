@@ -46,5 +46,8 @@ Remember to edit frontend .env `VITE_POCKETBASE_ENDPOINT` to match the backend A
 ### API functions
 In arguments such as `expand` or `filter`, **DO NOT** use **NEWLINES!!!** The Pocketbase library does not play nice with newlines and doesn't appear to sanitize arguments with them. Stick to a Long String even if it looks a little ugly.
 
+### Known Limitations
+- Deleted comments with children still return the user data.
+
 ### Note to Contributors
 PRs are welcome! But please don't make PRs with AI generated code, thanks

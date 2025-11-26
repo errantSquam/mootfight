@@ -64,7 +64,7 @@ const getNotifCount = async () => {
         let notifData = await pb.collection('notifications').getList(
             1, 1,
             {
-                filter: `notified_user="${uid}"`,
+                filter: `notified_user="${uid}" && comment.isDeleted=false`,
             }
 
         ) as any
@@ -97,7 +97,7 @@ const getNotifs = async (page: number = 1, limitAmount: number = 99):
             page, limitAmount,
 
             {
-                filter: `notified_user="${uid}"`,
+                filter: `notified_user="${uid}" && comment.isDeleted=false`,
                 expand: 'comment, attack, comment.user, attack.attacker',
                 sort: '-created',
                 requestKey: 'getNotifs'
