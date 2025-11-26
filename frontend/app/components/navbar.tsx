@@ -24,7 +24,7 @@ const SubmitDropdown = () => {
         <MenuItems
             transition
             anchor="bottom start"
-            className="w-52 origin-top-right rounded-xl border border-white/5 bg-zinc-900/70 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
+            className="z-99 w-52 origin-top-right rounded-xl border border-white/5 bg-zinc-900/70 p-1 text-sm/6 text-white transition duration-100 ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
             <MenuItem>
                 <Link to="/submit/character" className="group flex w-full items-center gap-2 rounded-lg px-3 py-1.5 data-focus:bg-white/10">
@@ -70,7 +70,8 @@ const UserDropdown = ({ userInfo, userPfp }: { userInfo: any, userPfp: string })
         <MenuItems
             transition
             anchor="bottom end"
-            className="w-52 origin-top-right rounded-xl border border-white/5 
+            portal={false}
+            className="z-99 w-52 origin-top-right rounded-xl border border-white/5 
             bg-black/50 p-1 text-sm/6 text-white transition duration-100 
             ease-out [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-95 data-closed:opacity-0"
         >
