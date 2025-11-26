@@ -95,7 +95,7 @@ onRecordAfterCreateSuccess((e) => {
 
     }
 
-    if (notified_user !== commentRecord.get("id") && isNotif) {
+    if (notified_user !== commentRecord.get("user") && isNotif) {
         $app.save(notifRecord)
     }
     e.next()
