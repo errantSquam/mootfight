@@ -79,13 +79,49 @@ const getCommentsFromAttack = async (aid?: string, page: number = 1, limitAmount
     return commentsData.items.map((comment: CommentSchema) => { return parseCommentInfo(comment) })
 }
 
+const getCommentById = async (id?: string):
+    Promise<CommentSchema | undefined> => {
 
-const getCommentsFromAttackHook = (aid?: string): [CommentSchema[] | undefined, boolean, Error | null] => {
+    if (id === undefined) {
+        return undefined
+    }
+
+
+    let commentData = undefined
+    try {
+        commentData = await pb.collection('comments').getOne(id,
+            {expand: 'comments_via_reply_to, user,' + 
+                'comments_via_reply_to.comments_via_reply_to, comments_via_reply_to.user,' + 
+                'comments_via_reply_to.comments_via_reply_to.comments_via_reply_to,' +
+                'comments_via_reply_to.comments_via_reply_to.user',
+            }
+        ) as any
+    } catch (error: unknown) {
+        console.log(error)
+    }
+
+    return commentData as CommentSchema
+}
+
+
+const getCommentsFromAttackHook = (id?: string): [CommentSchema[] | undefined, boolean, Error | null] => {
 
     const { isLoading, error, data } = useQuery({
-        queryKey: ['attackComments', aid],
+        queryKey: ['attackComments', id],
         queryFn: () => {
-            return getCommentsFromAttack(aid)
+            return getCommentsFromAttack(id)
+        }
+    })
+
+    return [data, isLoading, error]
+}
+
+const getCommentByIdHook = (id?: string): [CommentSchema | undefined, boolean, Error | null] => {
+
+    const { isLoading, error, data } = useQuery({
+        queryKey: ['singleComment', id],
+        queryFn: () => {
+            return getCommentById(id)
         }
     })
 
@@ -95,5 +131,6 @@ const getCommentsFromAttackHook = (aid?: string): [CommentSchema[] | undefined, 
 
 export {
     createComment,
-    getCommentsFromAttackHook
+    getCommentsFromAttackHook,
+    getCommentByIdHook
 }

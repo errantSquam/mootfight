@@ -20,6 +20,9 @@ export default [
     ...prefix("attack", [
         route(":attackId", "routes/attack/attack.tsx")
     ]),
+    ...prefix("comment", [
+        route(":commentId", "routes/comments/viewComment.tsx")
+    ]),
     route("search", "routes/search/search.tsx")
 
 ] satisfies RouteConfig;

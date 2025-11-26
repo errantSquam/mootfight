@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router"
 import { getNotifsHook } from "~/api/notificationApi"
 import { ImageWithLoader } from "~/components/loaders"
-import { Comment } from "~/pages/attack/attackView"
 import { clearNotif } from "~/api/notificationApi"
+import { Comment } from "~/components/comments"
 
 export const NotificationsPage = () => {
     const [notifData, notifLoading, notifError] = getNotifsHook()

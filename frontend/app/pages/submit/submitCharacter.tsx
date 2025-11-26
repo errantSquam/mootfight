@@ -268,9 +268,6 @@ export function SubmitCharacterPage() {
             return tempImage
         })
 
-        console.log("Data:")
-        console.log(submitData)
-
         createCharacter(submitData).then((resp) => {
             handleToast(resp)
             console.log(resp.data)
